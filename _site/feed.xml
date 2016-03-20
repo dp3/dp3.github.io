@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>DevonPeel.me</title>
+		<description> Personal  Website  for  Devon  Peel. Christ follower, Techie, Kansas State and KC Royals Fan</description>
+		<link>https://devonpeel.me</link>
+		<atom:link href="https://devonpeel.me/feed.xml" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Plex Media Server</title>
+				<description>&lt;p&gt;Plex with Samba
+Samba Install&lt;/p&gt;
+
+&lt;p&gt;Use apt-get to pull the samba packages:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo apt-get update
+$ sudo apt-get install samba
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Lets create a samba user:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ useradd USER
+$ passwd USER
+$ smbpasswd -a USER
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now edit the config file:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo vim /etc/samba/smb.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Insert the following lines:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#this allows everyone to view the network share
+[SMABA UNSECURE]
+comment=PLEX-SAMBA
+path= /location/to/the/folder/you/want/to/share
+browsable=yes
+writable=yes
+guest ok=yes
+admin users= adminuser
+
+#this only allows the smbuser to access the directory
+[SAMBA PASSWORD PROMPT]
+path = /location/to/the/folder/you/want/to/share
+valid users = smbuser
+browseable = yes
+writeable = yes
+read only = no
+guest ok = yes
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Run ‘testparm’ to verify the config works:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ testparm
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Restart samba&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo service smbd restart
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Plex Install&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ wget https://downloads.plex.tv/plex-media-server/0.9.14.6.1620-e0b7243/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
+$ sudo dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+</description>
+				<pubDate>Sat, 19 Mar 2016 18:25:06 -0500</pubDate>
+				<link>https://devonpeel.me/2016/03/Plex-media-server</link>
+				<guid isPermaLink="true">https://devonpeel.me/2016/03/Plex-media-server</guid>
+			</item>
+		
+	</channel>
+</rss>
