@@ -54,6 +54,10 @@
     <h1>Recent Posts</h1>
     <ul>
         
+          <li><a href="/2016/05/chocolatey">Chocolatey "The Windows" Package Manager</a></li>
+        
+          <li><a href="/2016/05/irssi">Irssi Setup</a></li>
+        
           <li><a href="/2016/05/Oni">Oni 3D Printer</a></li>
         
           <li><a href="/2016/04/ffmpeg">Tip and Trick for ffmpeg</a></li>
@@ -78,7 +82,7 @@
             
 <div class="article">
     <div class="well">
-        <h1><a href="/2016/05/Oni">May 10, 2016 - Oni 3D Printer</a></h1>
+        <h1><a href="/2016/05/chocolatey">May 10, 2016 - Chocolatey "The Windows" Package Manager</a></h1>
         
         <div class="content">
             
@@ -89,45 +93,10 @@
 
 <div class="article">
     <div class="well">
-        <h1><a href="/2016/04/ffmpeg">Apr 12, 2016 - Tip and Trick for ffmpeg</a></h1>
+        <h1><a href="/2016/05/irssi">May 10, 2016 - Irssi Setup</a></h1>
         
         <div class="content">
-            <p>Creating a Time Lapse with Jpeg Photo</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>ffmpeg -i '%*.JPG' -r 30 -q:v 2 timelapse.mp4
-</code></pre>
-</div>
-
-<p>For iMovie</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>ffmpeg -i '%*.JPG' -r 30 -q:v 2 -pix_fmt yuv420p  timelapse.mp4
-</code></pre>
-</div>
-
-<p>Merge videos into one</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>cat list.txt
-
-file 'GOPR4922.MP4'
-file 'GP014922.MP4'
-file 'GP024922.MP4'
-
-ffmpeg -f concat -i list.txt -c copy merged.mp4
-</code></pre>
-</div>
-
-<p>Speedup video by X4</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>ffmpeg -i input.mp4 -strict -2 -vf "setpts=0.25*PTS" outputX4.mp4
-</code></pre>
-</div>
-
-<p>Select a section from a video (minutes 26-32:10)</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>ffmpeg -i merged.mp4 -ss 00:26:00 -to 00:32:10 -c:v copy -c:a copy part2.mp4
-</code></pre>
-</div>
-
+            
 
         </div>
     </div>
@@ -135,74 +104,10 @@ ffmpeg -f concat -i list.txt -c copy merged.mp4
 
 <div class="article">
     <div class="well">
-        <h1><a href="/2016/03/Plex-media-server">Mar 19, 2016 - Plex Media Server</a></h1>
+        <h1><a href="/2016/05/Oni">May 10, 2016 - Oni 3D Printer</a></h1>
         
         <div class="content">
-            <p>Plex with Samba
-Samba Install</p>
-
-<p>Use apt-get to pull the samba packages:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>$ sudo apt-get update
-$ sudo apt-get install samba
-</code></pre>
-</div>
-
-<p>Lets create a samba user:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>$ useradd USER
-$ passwd USER
-$ smbpasswd -a USER
-</code></pre>
-</div>
-
-<p>Now edit the config file:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>$ sudo vim /etc/samba/smb.conf
-</code></pre>
-</div>
-
-<p>Insert the following lines:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>#this allows everyone to view the network share
-[SMABA UNSECURE]
-comment=PLEX-SAMBA
-path= /location/to/the/folder/you/want/to/share
-browsable=yes
-writable=yes
-guest ok=yes
-admin users= adminuser
-
-#this only allows the smbuser to access the directory
-[SAMBA PASSWORD PROMPT]
-path = /location/to/the/folder/you/want/to/share
-valid users = smbuser
-browseable = yes
-writeable = yes
-read only = no
-guest ok = yes
-</code></pre>
-</div>
-
-<p>Run ‘testparm’ to verify the config works:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>$ testparm
-</code></pre>
-</div>
-
-<p>Restart samba</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>$ sudo service smbd restart
-</code></pre>
-</div>
-
-<p>Plex Install</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>$ wget https://downloads.plex.tv/plex-media-server/0.9.14.6.1620-e0b7243/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
-$ sudo dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
-</code></pre>
-</div>
-
+            
 
         </div>
     </div>
@@ -211,7 +116,9 @@ $ sudo dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
 
 <div class="pagination">
   
-  <span class="page_number ">Page: 1 of 1</span>
+  <span class="page_number ">Page: 1 of 2</span>
+  
+    <a class="btn btn-default" href="/page2" class="next">Older</a>
   
 </div>
 

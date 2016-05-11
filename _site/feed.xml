@@ -7,6 +7,24 @@
 		<atom:link href="https://devonpeel.me/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>Chocolatey "The Windows" Package Manager</title>
+				<description>
+</description>
+				<pubDate>Tue, 10 May 2016 12:10:06 -0500</pubDate>
+				<link>https://devonpeel.me/2016/05/chocolatey</link>
+				<guid isPermaLink="true">https://devonpeel.me/2016/05/chocolatey</guid>
+			</item>
+		
+			<item>
+				<title>Irssi Setup</title>
+				<description>
+</description>
+				<pubDate>Tue, 10 May 2016 12:10:06 -0500</pubDate>
+				<link>https://devonpeel.me/2016/05/irssi</link>
+				<guid isPermaLink="true">https://devonpeel.me/2016/05/irssi</guid>
+			</item>
+		
+			<item>
 				<title>Oni 3D Printer</title>
 				<description>
 </description>
