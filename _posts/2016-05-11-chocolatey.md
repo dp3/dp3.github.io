@@ -22,4 +22,4 @@ Create a repo
  choco new <project name>
 ```
 
-Edit the <project name>.nuspect file and the install, uninstall files under the tools directory
+Edit the <project name>.nuspect file, install, and uninstall files under the tools directory
