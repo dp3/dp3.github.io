@@ -9,22 +9,38 @@
 			<item>
 				<title>Chore App</title>
 				<description>&lt;h2 id=&quot;chore-app&quot;&gt;Chore App&lt;/h2&gt;
-&lt;p&gt;I made this chore asigning application for a small college dorm. Its purpose is to randomly assign chore to residents. Note random is not fair. Good Luck&lt;/p&gt;
+&lt;p&gt;I made this chore asigning application for a small college dorm. Its purpose is to randomly assign chores to residents with respect to gender. A male (m) will get a male chore or gender neutral chore (n) and female (f) will get a female chore or gender neutral chore. Note random is not fair. Good Luck&lt;/p&gt;
 
 &lt;p&gt;The files needed&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;list of residents&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;list of chores&lt;/p&gt;
-  &lt;/li&gt;
+  &lt;li&gt;list of residents&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   gender firstname lastname
+   m john smith
+   f julie smith
+   m tom appleseed
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;list of chores&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  gender chore
+  f clean womens bathroom
+  n mop hallway
+  m clean mens showers
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
   &lt;li&gt;
     &lt;p&gt;ChoreApp.py&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;clean.icns - the icon file&lt;/p&gt;
+    &lt;p&gt;clean.icns - an icon file&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
@@ -40,9 +56,82 @@ pip install xlwt py2app
 &lt;/div&gt;
 
 &lt;h2 id=&quot;chore-app-code&quot;&gt;Chore App Code&lt;/h2&gt;
-&lt;p&gt;Please place chore app code in a seperate directory than the python virtual environment.&lt;/p&gt;
+&lt;p&gt;Please place chore app code in a seperate directory differnet to the python virtual environment.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import os, sys,random, xlwt, time, datetime
+from xlwt import *
+
+#file imports
+chore_file=open(&quot;../../../chores.txt&quot;, &quot;r&quot;)
+chores = chore_file.readlines()
+#print chores
+
+resident_file=open(&quot;../../../residents.txt&quot;, &quot;r&quot;)
+residents = resident_file.readlines()
+#print residents
+
+#create a psueode final enum
+# m equals male
+# f equals female
+# n equals neutral
+
+#creates excel file
+book = xlwt.Workbook(encoding=&quot;utf-8&quot;)
+sheet1 = book.add_sheet(&quot;Sheet 1&quot;)
+
+font0 = Font()
+font0.bold = True
+
+style0 = XFStyle()
+style0.font = font0
+
+
+#error check
+if len(chores) != len(residents):
+    print &quot;Error:&quot;
+    if len(chores) &amp;gt; len(residents):
+            sys.exit(&quot; Too many chores&quot;)
+    else:
+            sys.exit(&quot; Too many residents&quot;)
+
+assignment = []
+i = 0
+while(residents):
+    rand = random.randrange(0, len(residents))
+
+    # retrieves the f or m before residents name
+    resident = residents[rand]
+    resident_gender = resident[0:1]
+    chore_gender = chores[i][0:1]
+
+    if(resident_gender == chore_gender) or (chore_gender == &#39;n&#39;):
+        len_chore = len(chores[i])
+        len_resident = len(resident)
+        print resident[2:len_resident] + &quot; &quot;  + chores[i][2:len_chore]
+        tupl = [resident[2:len_resident].replace(&#39;\n&#39;,&#39;&#39;), chores[i][2:len_chore].replace(&#39;\n&#39;,&#39;&#39;)]
+        assignment.append(tupl)
+        residents.pop(rand)
+        i=i+1
+
+#alphabetically sort
+assignment.sort()
+#write out alphabetically sorted chore list
+j=1
+date = datetime.datetime.now()
+enddate = datetime.datetime.now() + datetime.timedelta(days=6)
+sheet1.write(0,0,&quot;Chore List For Week Of &quot; + date.strftime(&#39;%m/%d&#39;) +&quot; - &quot;+ enddate.strftime(&#39;%m/%d&#39;), style0)
+for i in assignment:
+    sheet1.write(j,0,i[0])
+    sheet1.write(j,1,i[1])
+    sheet1.write(j+1,0,&#39;&#39;)
+    j=j+2
+
+#saves excell file
+book.save(&quot;../../../chores&quot;+ date.strftime(&#39;%Y_%m_%d&#39;) + &quot;.xls&quot;)
+#book.save(&quot;chores&quot;+ date.strftime(&#39;%Y_%m_%d&#39;) + &quot;.xls&quot;)
+
+
+&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
 &lt;h2 id=&quot;the-build&quot;&gt;The Build&lt;/h2&gt;

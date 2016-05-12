@@ -85,22 +85,38 @@
             
             <div class="post-content">
             <h2 id="chore-app">Chore App</h2>
-<p>I made this chore asigning application for a small college dorm. Its purpose is to randomly assign chore to residents. Note random is not fair. Good Luck</p>
+<p>I made this chore asigning application for a small college dorm. Its purpose is to randomly assign chores to residents with respect to gender. A male (m) will get a male chore or gender neutral chore (n) and female (f) will get a female chore or gender neutral chore. Note random is not fair. Good Luck</p>
 
 <p>The files needed</p>
 
 <ul>
-  <li>
-    <p>list of residents</p>
-  </li>
-  <li>
-    <p>list of chores</p>
-  </li>
+  <li>list of residents</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>   gender firstname lastname
+   m john smith
+   f julie smith
+   m tom appleseed
+</code></pre>
+</div>
+
+<ul>
+  <li>list of chores</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>  gender chore
+  f clean womens bathroom
+  n mop hallway
+  m clean mens showers
+</code></pre>
+</div>
+
+<ul>
   <li>
     <p>ChoreApp.py</p>
   </li>
   <li>
-    <p>clean.icns - the icon file</p>
+    <p>clean.icns - an icon file</p>
   </li>
 </ul>
 
@@ -116,9 +132,82 @@ pip install xlwt py2app
 </div>
 
 <h2 id="chore-app-code">Chore App Code</h2>
-<p>Please place chore app code in a seperate directory than the python virtual environment.</p>
+<p>Please place chore app code in a seperate directory differnet to the python virtual environment.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code></code></pre>
+<div class="highlighter-rouge"><pre class="highlight"><code>import os, sys,random, xlwt, time, datetime
+from xlwt import *
+
+#file imports
+chore_file=open("../../../chores.txt", "r")
+chores = chore_file.readlines()
+#print chores
+
+resident_file=open("../../../residents.txt", "r")
+residents = resident_file.readlines()
+#print residents
+
+#create a psueode final enum
+# m equals male
+# f equals female
+# n equals neutral
+
+#creates excel file
+book = xlwt.Workbook(encoding="utf-8")
+sheet1 = book.add_sheet("Sheet 1")
+
+font0 = Font()
+font0.bold = True
+
+style0 = XFStyle()
+style0.font = font0
+
+
+#error check
+if len(chores) != len(residents):
+    print "Error:"
+    if len(chores) &gt; len(residents):
+            sys.exit(" Too many chores")
+    else:
+            sys.exit(" Too many residents")
+
+assignment = []
+i = 0
+while(residents):
+    rand = random.randrange(0, len(residents))
+
+    # retrieves the f or m before residents name
+    resident = residents[rand]
+    resident_gender = resident[0:1]
+    chore_gender = chores[i][0:1]
+
+    if(resident_gender == chore_gender) or (chore_gender == 'n'):
+        len_chore = len(chores[i])
+        len_resident = len(resident)
+        print resident[2:len_resident] + " "  + chores[i][2:len_chore]
+        tupl = [resident[2:len_resident].replace('\n',''), chores[i][2:len_chore].replace('\n','')]
+        assignment.append(tupl)
+        residents.pop(rand)
+        i=i+1
+
+#alphabetically sort
+assignment.sort()
+#write out alphabetically sorted chore list
+j=1
+date = datetime.datetime.now()
+enddate = datetime.datetime.now() + datetime.timedelta(days=6)
+sheet1.write(0,0,"Chore List For Week Of " + date.strftime('%m/%d') +" - "+ enddate.strftime('%m/%d'), style0)
+for i in assignment:
+    sheet1.write(j,0,i[0])
+    sheet1.write(j,1,i[1])
+    sheet1.write(j+1,0,'')
+    j=j+2
+
+#saves excell file
+book.save("../../../chores"+ date.strftime('%Y_%m_%d') + ".xls")
+#book.save("chores"+ date.strftime('%Y_%m_%d') + ".xls")
+
+
+</code></pre>
 </div>
 
 <h2 id="the-build">The Build</h2>
