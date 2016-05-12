@@ -8,7 +8,25 @@
 		
 			<item>
 				<title>Chocolatey "The Windows" Package Manager</title>
-				<description>
+				<description>&lt;p&gt;Install Chocolatey via PowerShell&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;iex ((new-object net.webclient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;)) 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Install via Command Prompt&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;@powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;iex ((new-object net.webclient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;))&quot; &amp;amp;&amp;amp; SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Create a repo&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; choco new &amp;lt;project name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Edit the &lt;project name=&quot;&quot;&gt;.nuspect file and the install, uninstall files under the tools directory&lt;/project&gt;&lt;/p&gt;
 </description>
 				<pubDate>Tue, 10 May 2016 12:10:06 -0500</pubDate>
 				<link>https://devonpeel.me/2016/05/chocolatey</link>
@@ -17,7 +35,19 @@
 		
 			<item>
 				<title>Irssi Setup</title>
-				<description>
+				<description>&lt;p&gt;Default Config
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Scripts&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;crapbuster.pl&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;-&lt;/p&gt;
+
+&lt;p&gt;-&lt;/p&gt;
 </description>
 				<pubDate>Tue, 10 May 2016 12:10:06 -0500</pubDate>
 				<link>https://devonpeel.me/2016/05/irssi</link>
