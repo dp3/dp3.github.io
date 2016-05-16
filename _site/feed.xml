@@ -178,6 +178,8 @@ setup(
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
+&lt;h2 id=&quot;run-choreapp&quot;&gt;Run ChoreApp&lt;/h2&gt;
+&lt;p&gt;Place the ChoreApp file created in the above command with the chores.txt file and residents.txt file in the same directory. Then click on the ChoreApp to generate the output file assigning chores to residents.&lt;/p&gt;
 </description>
 				<pubDate>Thu, 12 May 2016 02:00:00 -0500</pubDate>
 				<link>https://devonpeel.me/2016/05/ChoreApp</link>
