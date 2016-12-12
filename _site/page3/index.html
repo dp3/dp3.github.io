@@ -79,102 +79,96 @@
 
         </div>
         <div class="col-md-9">
-          <div class="article">
-            <div class="well">
-                <h1><a href="/2016/05/irssi">May 10, 2016 - Irssi Setup</a></h1>
             
-            <div class="post-content">
-            <h2 id="in-the-irssi-config-add-the-following">In the irssi config add the following:</h2>
+<div class="article">
+    <div class="well">
+        <h1><a href="/2016/03/Plex-media-server">Mar 19, 2016 - Plex Media Server</a></h1>
+        
+        <div class="content">
+            <p>Plex with Samba
+Samba Install</p>
 
-<h2 id="setting-up-crapbuserpl">Setting up crapbuser.pl</h2>
-<p>In the aliases section add</p>
+<p>Use apt-get to pull the samba packages:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>cb = "/crapbuster";
+<div class="highlighter-rouge"><pre class="highlight"><code>$ sudo apt-get update
+$ sudo apt-get install samba
 </code></pre>
 </div>
 
-<p>In the setting section add</p>
+<p>Lets create a samba user:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>  "perl/core/scripts" = {
-              crapbuster_levels = "JOINS PARTS QUITS  CLIENTCRAP CRAP MODE  KICKSi";
-   };
+<div class="highlighter-rouge"><pre class="highlight"><code>$ useradd USER
+$ passwd USER
+$ smbpasswd -a USER
 </code></pre>
 </div>
 
-<h2 id="setting-up-logging">Setting Up logging</h2>
-<p>In the setting section add the following</p>
+<p>Now edit the config file:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>settings = {
-  core = {    log_timestamp = "%H:%M:%S ";
-    recode_autodetect_utf8 = "yes";
-    recode_fallback = "ISO-8859-15";
-    recode_out_default_charset = "ISO-8859-15";
-    recode_transliterate = "yes";
-    recode = "yes";
-  };
-  "fe-text" = { actlist_sort = "refnum"; };
-  "fe-common/core" = {
-    autolog = "yes";
-    autolog_path = "~/.irssi/logs/%Y/$0/%m-%d.log";
-    term_charset = "utf-8";
-    activity_hide_level = "= JOINS QUITS";
-  };
- 
-};
+<div class="highlighter-rouge"><pre class="highlight"><code>$ sudo vim /etc/samba/smb.conf
 </code></pre>
 </div>
 
-<h2 id="downloading-the-scripts">Downloading the Scripts</h2>
-<p>In .irssi/scripts add the following perlscripts from https://scripts.irssi.org/</p>
+<p>Insert the following lines:</p>
 
-<ul>
-  <li>
-    <p>awayproxy.pl</p>
-  </li>
-  <li>
-    <p>crapbuster.pl</p>
-  </li>
-  <li>
-    <p>screen_away.pl (may want to eidt this script)</p>
-  </li>
-</ul>
+<div class="highlighter-rouge"><pre class="highlight"><code>#this allows everyone to view the network share
+[SMABA UNSECURE]
+comment=PLEX-SAMBA
+path= /location/to/the/folder/you/want/to/share
+browsable=yes
+writable=yes
+guest ok=yes
+admin users= adminuser
 
-<h2 id="startup">Startup</h2>
-
-<p>Create a startup script in .irssi/startup</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>/set term_charset utf-8
-/set recode_autodetect_utf8 ON
-/set recode_fallback ISO-8859-15
-/set recode_out_default_charset ISO-8859-15
-/set recode_transliterate ON
-/set recode ON
-/load crapbuster.pl
-/set crapbuster_levels JOINS PARTS QUITS  CLIENTCRAP CRAP MODE  KICKSi
-/alias cb /crapbuster
-/load awayproxy.pl
-/load screen_away.pl
+#this only allows the smbuser to access the directory
+[SAMBA PASSWORD PROMPT]
+path = /location/to/the/folder/you/want/to/share
+valid users = smbuser
+browseable = yes
+writeable = yes
+read only = no
+guest ok = yes
 </code></pre>
 </div>
 
-            </div>
-            
-            </div>
-          </div>
-          <div class="pagination">
-              
-                <a class="btn btn-default" href="/2016/05/chocolatey" class="next">Newer Post</a>
-              
-              
-                <a class="btn btn-default" href="/2016/05/Oni" class="previous">Older Post</a>
-              
+<p>Run ‘testparm’ to verify the config works:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$ testparm
+</code></pre>
 </div>
+
+<p>Restart samba</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$ sudo service smbd restart
+</code></pre>
+</div>
+
+<p>Plex Install</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$ wget https://downloads.plex.tv/plex-media-server/0.9.14.6.1620-e0b7243/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
+$ sudo dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
+</code></pre>
+</div>
+
 
         </div>
     </div>
 </div>
 
 
+<div class="pagination">
+  
+      
+        <a class="btn btn-default" href="/page2" class="previous">Newer</a>
+      
+  
+  <span class="page_number ">Page: 3 of 3</span>
+  
+</div>
+
+        </div>
+    </div>
+</div>
 
 <div class="container-fluid">
     <div class="row-fluid">
