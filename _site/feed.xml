@@ -3,23 +3,23 @@
 	<channel>
 		<title>DevonPeel.me</title>
 		<description> Personal  Website  for  Devon  Peel. Christ follower, Techie, Kansas State and KC Royals Fan</description>
-		<link>http://localhost:4000</link>
-		<atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+		<link>https://devonpeel.me</link>
+		<atom:link href="https://devonpeel.me/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
 				<title>Google Analytics</title>
 				<description>&lt;p&gt;I am not sure  of the Russian interest in this website.&lt;/p&gt;
 
 &lt;p&gt;These are some funny languages 
-&lt;img src=&quot;http://localhost:4000/images/Google_Analytics_language.png&quot; alt=&quot;screenshotOne&quot; class=&quot;img-responsive&quot; /&gt;
-&lt;img src=&quot;http://localhost:4000/images/Google_Analytics_Country.png&quot; alt=&quot;screenshotTwo&quot; class=&quot;img-responsive&quot; /&gt; 
-&lt;img src=&quot;http://localhost:4000/images/Google_Analytics_city.png&quot; alt=&quot;screenshotThree&quot; class=&quot;img-responsive&quot; /&gt;
-&lt;img src=&quot;http://localhost:4000/images/Google_Analytics_time.png&quot; alt=&quot;screenshotFour&quot; class=&quot;img-responsive&quot; /&gt;
-&lt;img src=&quot;http://localhost:4000/images/Google_Analytics_chart.png&quot; alt=&quot;screenshotFive&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/images/Google_Analytics_language.png&quot; alt=&quot;screenshotOne&quot; class=&quot;img-responsive&quot; /&gt;
+&lt;img src=&quot;/images/Google_Analytics_Country.png&quot; alt=&quot;screenshotTwo&quot; class=&quot;img-responsive&quot; /&gt; 
+&lt;img src=&quot;/images/Google_Analytics_city.png&quot; alt=&quot;screenshotThree&quot; class=&quot;img-responsive&quot; /&gt;
+&lt;img src=&quot;/images/Google_Analytics_time.png&quot; alt=&quot;screenshotFour&quot; class=&quot;img-responsive&quot; /&gt;
+&lt;img src=&quot;/images/Google_Analytics_chart.png&quot; alt=&quot;screenshotFive&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 </description>
 				<pubDate>Mon, 12 Dec 2016 10:09:06 -0600</pubDate>
-				<link>http://localhost:4000/2016/12/Google-Analytics</link>
-				<guid isPermaLink="true">http://localhost:4000/2016/12/Google-Analytics</guid>
+				<link>https://devonpeel.me/2016/12/Google-Analytics</link>
+				<guid isPermaLink="true">https://devonpeel.me/2016/12/Google-Analytics</guid>
 			</item>
 		
 			<item>
@@ -198,8 +198,8 @@ setup(
 &lt;p&gt;Place the ChoreApp file created in the above command with the chores.txt file and residents.txt file in the same directory. Then click on the ChoreApp to generate the output file assigning chores to residents.&lt;/p&gt;
 </description>
 				<pubDate>Thu, 12 May 2016 02:00:00 -0500</pubDate>
-				<link>http://localhost:4000/2016/05/ChoreApp</link>
-				<guid isPermaLink="true">http://localhost:4000/2016/05/ChoreApp</guid>
+				<link>https://devonpeel.me/2016/05/ChoreApp</link>
+				<guid isPermaLink="true">https://devonpeel.me/2016/05/ChoreApp</guid>
 			</item>
 		
 			<item>
@@ -225,8 +225,8 @@ setup(
 &lt;p&gt;Edit the &lt;project name=&quot;&quot;&gt;.nuspect file, install, and uninstall files under the tools directory&lt;/project&gt;&lt;/p&gt;
 </description>
 				<pubDate>Wed, 11 May 2016 12:10:06 -0500</pubDate>
-				<link>http://localhost:4000/2016/05/chocolatey</link>
-				<guid isPermaLink="true">http://localhost:4000/2016/05/chocolatey</guid>
+				<link>https://devonpeel.me/2016/05/chocolatey</link>
+				<guid isPermaLink="true">https://devonpeel.me/2016/05/chocolatey</guid>
 			</item>
 		
 			<item>
@@ -305,8 +305,8 @@ setup(
 &lt;/div&gt;
 </description>
 				<pubDate>Tue, 10 May 2016 12:10:06 -0500</pubDate>
-				<link>http://localhost:4000/2016/05/irssi</link>
-				<guid isPermaLink="true">http://localhost:4000/2016/05/irssi</guid>
+				<link>https://devonpeel.me/2016/05/irssi</link>
+				<guid isPermaLink="true">https://devonpeel.me/2016/05/irssi</guid>
 			</item>
 		
 			<item>
@@ -314,8 +314,8 @@ setup(
 				<description>
 </description>
 				<pubDate>Tue, 10 May 2016 11:09:06 -0500</pubDate>
-				<link>http://localhost:4000/2016/05/Oni</link>
-				<guid isPermaLink="true">http://localhost:4000/2016/05/Oni</guid>
+				<link>https://devonpeel.me/2016/05/Oni</link>
+				<guid isPermaLink="true">https://devonpeel.me/2016/05/Oni</guid>
 			</item>
 		
 			<item>
@@ -358,8 +358,8 @@ ffmpeg -f concat -i list.txt -c copy merged.mp4
 
 </description>
 				<pubDate>Tue, 12 Apr 2016 11:09:06 -0500</pubDate>
-				<link>http://localhost:4000/2016/04/ffmpeg</link>
-				<guid isPermaLink="true">http://localhost:4000/2016/04/ffmpeg</guid>
+				<link>https://devonpeel.me/2016/04/ffmpeg</link>
+				<guid isPermaLink="true">https://devonpeel.me/2016/04/ffmpeg</guid>
 			</item>
 		
 			<item>
@@ -431,8 +431,8 @@ $ sudo dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
 
 </description>
 				<pubDate>Sat, 19 Mar 2016 18:25:06 -0500</pubDate>
-				<link>http://localhost:4000/2016/03/Plex-media-server</link>
-				<guid isPermaLink="true">http://localhost:4000/2016/03/Plex-media-server</guid>
+				<link>https://devonpeel.me/2016/03/Plex-media-server</link>
+				<guid isPermaLink="true">https://devonpeel.me/2016/03/Plex-media-server</guid>
 			</item>
 		
 	</channel>
