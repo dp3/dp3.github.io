@@ -1,0 +1,72 @@
+<h2 id="in-the-irssi-config-add-the-following">In the irssi config add the following:</h2>
+
+<h2 id="setting-up-crapbuserpl">Setting up crapbuser.pl</h2>
+<p>In the aliases section add</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cb = "/crapbuster";
+</code></pre>
+</div>
+
+<p>In the setting section add</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>  "perl/core/scripts" = {
+              crapbuster_levels = "JOINS PARTS QUITS  CLIENTCRAP CRAP MODE  KICKSi";
+   };
+</code></pre>
+</div>
+
+<h2 id="setting-up-logging">Setting Up logging</h2>
+<p>In the setting section add the following</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>settings = {
+  core = {    log_timestamp = "%H:%M:%S ";
+    recode_autodetect_utf8 = "yes";
+    recode_fallback = "ISO-8859-15";
+    recode_out_default_charset = "ISO-8859-15";
+    recode_transliterate = "yes";
+    recode = "yes";
+  };
+  "fe-text" = { actlist_sort = "refnum"; };
+  "fe-common/core" = {
+    autolog = "yes";
+    autolog_path = "~/.irssi/logs/%Y/$0/%m-%d.log";
+    term_charset = "utf-8";
+    activity_hide_level = "= JOINS QUITS";
+  };
+ 
+};
+</code></pre>
+</div>
+
+<h2 id="downloading-the-scripts">Downloading the Scripts</h2>
+<p>In .irssi/scripts add the following perlscripts from https://scripts.irssi.org/</p>
+
+<ul>
+  <li>
+    <p>awayproxy.pl</p>
+  </li>
+  <li>
+    <p>crapbuster.pl</p>
+  </li>
+  <li>
+    <p>screen_away.pl (may want to eidt this script)</p>
+  </li>
+</ul>
+
+<h2 id="startup">Startup</h2>
+
+<p>Create a startup script in .irssi/startup</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>/set term_charset utf-8
+/set recode_autodetect_utf8 ON
+/set recode_fallback ISO-8859-15
+/set recode_out_default_charset ISO-8859-15
+/set recode_transliterate ON
+/set recode ON
+/load crapbuster.pl
+/set crapbuster_levels JOINS PARTS QUITS  CLIENTCRAP CRAP MODE  KICKSi
+/alias cb /crapbuster
+/load awayproxy.pl
+/load screen_away.pl
+</code></pre>
+</div>
