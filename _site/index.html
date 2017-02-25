@@ -88,48 +88,61 @@
             <p>How to run a python pyramid application under apache2(httpd) using the mod_wgsi.</p>
 
 <ol>
-  <li>Create application user 
-<code class="highlighter-rouge">
-  useradd appdeploy
-</code></li>
-  <li>Edit /etc/passwd
-<code class="highlighter-rouge">
-  appdeploy:x:&lt;uid&gt;:&lt;gid&gt;:appdeploy:/&lt;home&gt;/&lt;directory&gt;:/sbin/nologin
-</code></li>
-  <li>Create an apache2 config file under /etc/httpd/conf.d/
-```</li>
+  <li>Create application user</li>
 </ol>
-<p>&lt;virtuallHost *:80&gt;
-  ServerName archive.math.ksu.edu</p>
 
-<h1 id="use-only-1-python-sub-interpreter--multiple-sub-interpreters">Use only 1 Python sub-interpreter.  Multiple sub-interpreters</h1>
-<p># play badly with C extensions.  See
+<div class="highlighter-rouge"><pre class="highlight"><code>  useradd appdeploy
+</code></pre>
+</div>
+
+<ol>
+  <li>Edit /etc/passwd</li>
+</ol>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>  appdeploy:x:&lt;uid&gt;:&lt;gid&gt;:appdeploy:/&lt;home&gt;/&lt;directory&gt;:/sbin/nologin
+</code></pre>
+</div>
+
+<ol>
+  <li>Create an apache2 config file under /etc/httpd/conf.d/</li>
+</ol>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;virtuallHost *:80&gt;
+  ServerName archive.math.ksu.edu
+
+# Use only 1 Python sub-interpreter.  Multiple sub-interpreters
+# play badly with C extensions.  See
 # http://stackoverflow.com/a/10558360/209039
 WSGIApplicationGroup %{GLOBAL}
 WSGIPassAuthorization On
 WSGIDaemonProcess pyramid user=appdeploy    group=appdeploy  threads=4 \
    python-path=/var/www/archive/temp_py/lib/python2.7/site-packages
-WSGIScriptAlias / /var/www/archive/pyramid.wsgi</p>
+WSGIScriptAlias / /var/www/archive/pyramid.wsgi
 
-<p>&lt;Directory /var/www/archive&gt;
+&lt;Directory /var/www/archive&gt;
   WSGIProcessGroup pyramid
   Order allow,deny
   Allow from all
-&lt;/Directory&gt;</p>
+&lt;/Directory&gt;
 
-<p>&lt;/VirtualHost&gt;
-<code class="highlighter-rouge">
-4. Create a WSGI file in the application directory that will be called by the apache2 service.
-</code>
-import os,sys,site</p>
+&lt;/VirtualHost&gt;
+</code></pre>
+</div>
 
-<p>os.environ[‘PYTHON_EGG_CACHE’] = ‘/var/www/archive/temp_py’</p>
+<ol>
+  <li>Create a WSGI file in the application directory that will be called by the apache2 service.</li>
+</ol>
 
-<p>from pyramid.paster import get_app, setup_logging
-ini_path = ‘/var/www/archive/production.ini’
+<div class="highlighter-rouge"><pre class="highlight"><code>import os,sys,site
+
+os.environ['PYTHON_EGG_CACHE'] = '/var/www/archive/temp_py'
+
+from pyramid.paster import get_app, setup_logging
+ini_path = '/var/www/archive/production.ini'
 #setup_logging(ini_path)
-application = get_app(ini_path, ‘main’)
-```</p>
+application = get_app(ini_path, 'main')
+</code></pre>
+</div>
 
 
         </div>
