@@ -7,6 +7,63 @@
 		<atom:link href="https://devonpeel.me/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>Python WSGI</title>
+				<description>&lt;p&gt;How to run a python pyramid application under apache2(httpd) using the mod_wgsi.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;Create application user 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+  useradd appdeploy
+&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Create an apache2 config file under /etc/httpd/conf.d/
+```&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&amp;lt;virtuallHost *:80&amp;gt;
+  ServerName archive.math.ksu.edu&lt;/p&gt;
+
+&lt;h1 id=&quot;use-only-1-python-sub-interpreter--multiple-sub-interpreters&quot;&gt;Use only 1 Python sub-interpreter.  Multiple sub-interpreters&lt;/h1&gt;
+&lt;p&gt;# play badly with C extensions.  See
+# http://stackoverflow.com/a/10558360/209039
+WSGIApplicationGroup %{GLOBAL}
+WSGIPassAuthorization On
+WSGIDaemonProcess pyramid user=appdeploy    group=appdeploy  threads=4 \
+   python-path=/var/www/archive/temp_py/lib/python2.7/site-packages
+WSGIScriptAlias / /var/www/archive/pyramid.wsgi&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;Directory /var/www/archive&amp;gt;
+  WSGIProcessGroup pyramid
+  Order allow,deny
+  Allow from all
+&amp;lt;/Directory&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;lt;/VirtualHost&amp;gt;
+```&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Create a WSGI file in the application directory that will be called by the apache2 service.
+```
+import os,sys,site&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;os.environ[‘PYTHON_EGG_CACHE’] = ‘/var/www/archive/temp_py’&lt;/p&gt;
+
+&lt;p&gt;from pyramid.paster import get_app, setup_logging
+ini_path = ‘/var/www/archive/production.ini’
+#setup_logging(ini_path)
+application = get_app(ini_path, ‘main’)
+```&lt;/p&gt;
+
+</description>
+				<pubDate>Tue, 17 Jan 2017 10:09:06 -0600</pubDate>
+				<link>https://devonpeel.me/2017/01/Python-WSGI</link>
+				<guid isPermaLink="true">https://devonpeel.me/2017/01/Python-WSGI</guid>
+			</item>
+		
+			<item>
 				<title>Google Analytics</title>
 				<description>&lt;p&gt;I am not sure  of the Russian interest in this website.&lt;/p&gt;
 
@@ -120,11 +177,11 @@ while(residents):
     resident_gender = resident[0:1]
     chore_gender = chores[i][0:1]
 
-    if(resident_gender == chore_gender) or (chore_gender == 'n'):
+    if(resident_gender == chore_gender) or (chore_gender == &#39;n&#39;):
         len_chore = len(chores[i])
         len_resident = len(resident)
         print resident[2:len_resident] + &quot; &quot;  + chores[i][2:len_chore]
-        tupl = [resident[2:len_resident].replace('\n',''), chores[i][2:len_chore].replace('\n','')]
+        tupl = [resident[2:len_resident].replace(&#39;\n&#39;,&#39;&#39;), chores[i][2:len_chore].replace(&#39;\n&#39;,&#39;&#39;)]
         assignment.append(tupl)
         residents.pop(rand)
         i=i+1
@@ -135,16 +192,16 @@ assignment.sort()
 j=1
 date = datetime.datetime.now()
 enddate = datetime.datetime.now() + datetime.timedelta(days=6)
-sheet1.write(0,0,&quot;Chore List For Week Of &quot; + date.strftime('%m/%d') +&quot; - &quot;+ enddate.strftime('%m/%d'), style0)
+sheet1.write(0,0,&quot;Chore List For Week Of &quot; + date.strftime(&#39;%m/%d&#39;) +&quot; - &quot;+ enddate.strftime(&#39;%m/%d&#39;), style0)
 for i in assignment:
     sheet1.write(j,0,i[0])
     sheet1.write(j,1,i[1])
-    sheet1.write(j+1,0,'')
+    sheet1.write(j+1,0,&#39;&#39;)
     j=j+2
 
 #saves excell file
-book.save(&quot;../../../chores&quot;+ date.strftime('%Y_%m_%d') + &quot;.xls&quot;)
-#book.save(&quot;chores&quot;+ date.strftime('%Y_%m_%d') + &quot;.xls&quot;)
+book.save(&quot;../../../chores&quot;+ date.strftime(&#39;%Y_%m_%d&#39;) + &quot;.xls&quot;)
+#book.save(&quot;chores&quot;+ date.strftime(&#39;%Y_%m_%d&#39;) + &quot;.xls&quot;)
 
 
 &lt;/code&gt;&lt;/pre&gt;
@@ -163,26 +220,26 @@ vim setup.py
    &quot;&quot;&quot;
    from setuptools import setup
 
-   APP = ['ChoreApp.py']
-   DATA_FILES = ['chores.txt','residents.txt']
+   APP = [&#39;ChoreApp.py&#39;]
+   DATA_FILES = [&#39;chores.txt&#39;,&#39;residents.txt&#39;]
    OPTIONS = {
-    'argv_emulation': True,
-    'iconfile': 'clean.icns',
-    'plist': {
-        'CFBundleName': &quot;ChoreApp&quot;,
-        'CFBundleDisplayName': &quot;ChoreApp&quot;,
-        'CFBundleGetInfoString': &quot;App for assigning chore&quot;,
-        'CFBundleVersion': &quot;0.2.0&quot;,
-        'CFBundleShortVersionString': &quot;0.2.0&quot;,
-        'NSHumanReadableCopyright': u&quot;Copyleft Devon Peel&quot;
+    &#39;argv_emulation&#39;: True,
+    &#39;iconfile&#39;: &#39;clean.icns&#39;,
+    &#39;plist&#39;: {
+        &#39;CFBundleName&#39;: &quot;ChoreApp&quot;,
+        &#39;CFBundleDisplayName&#39;: &quot;ChoreApp&quot;,
+        &#39;CFBundleGetInfoString&#39;: &quot;App for assigning chore&quot;,
+        &#39;CFBundleVersion&#39;: &quot;0.2.0&quot;,
+        &#39;CFBundleShortVersionString&#39;: &quot;0.2.0&quot;,
+        &#39;NSHumanReadableCopyright&#39;: u&quot;Copyleft Devon Peel&quot;
     }
 }
 
 setup(
     app=APP,
     data_files=DATA_FILES,
-    options={'py2app': OPTIONS},
-    setup_requires=['py2app'],
+    options={&#39;py2app&#39;: OPTIONS},
+    setup_requires=[&#39;py2app&#39;],
 )
 
 &lt;/code&gt;&lt;/pre&gt;
@@ -206,13 +263,13 @@ setup(
 				<title>Chocolatey "The Windows" Package Manager</title>
 				<description>&lt;p&gt;Install Chocolatey via PowerShell&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1')) 
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;iex ((new-object net.webclient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;)) 
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
 &lt;p&gt;Install via Command Prompt&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;@powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))&quot; &amp;amp;&amp;amp; SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;@powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;iex ((new-object net.webclient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;))&quot; &amp;amp;&amp;amp; SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
@@ -314,6 +371,15 @@ setup(
 				<description>
 </description>
 				<pubDate>Tue, 10 May 2016 11:09:06 -0500</pubDate>
+				<link>https://devonpeel.me/2016/05/template</link>
+				<guid isPermaLink="true">https://devonpeel.me/2016/05/template</guid>
+			</item>
+		
+			<item>
+				<title>Oni 3D Printer</title>
+				<description>
+</description>
+				<pubDate>Tue, 10 May 2016 11:09:06 -0500</pubDate>
 				<link>https://devonpeel.me/2016/05/Oni</link>
 				<guid isPermaLink="true">https://devonpeel.me/2016/05/Oni</guid>
 			</item>
@@ -322,13 +388,13 @@ setup(
 				<title>Tip and Trick for ffmpeg</title>
 				<description>&lt;p&gt;Creating a Time Lapse with Jpeg Photo&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ffmpeg -i '%*.JPG' -r 30 -q:v 2 timelapse.mp4
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ffmpeg -i &#39;%*.JPG&#39; -r 30 -q:v 2 timelapse.mp4
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
 &lt;p&gt;For iMovie&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ffmpeg -i '%*.JPG' -r 30 -q:v 2 -pix_fmt yuv420p  timelapse.mp4
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ffmpeg -i &#39;%*.JPG&#39; -r 30 -q:v 2 -pix_fmt yuv420p  timelapse.mp4
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
@@ -336,9 +402,9 @@ setup(
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cat list.txt
 
-file 'GOPR4922.MP4'
-file 'GP014922.MP4'
-file 'GP024922.MP4'
+file &#39;GOPR4922.MP4&#39;
+file &#39;GP014922.MP4&#39;
+file &#39;GP024922.MP4&#39;
 
 ffmpeg -f concat -i list.txt -c copy merged.mp4
 &lt;/code&gt;&lt;/pre&gt;

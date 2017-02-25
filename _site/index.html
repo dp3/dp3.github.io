@@ -54,6 +54,8 @@
     <h1>Recent Posts</h1>
     <ul>
         
+          <li><a href="/2017/01/Python-WSGI">Python WSGI</a></li>
+        
           <li><a href="/2016/12/Google-Analytics">Google Analytics</a></li>
         
           <li><a href="/2016/05/ChoreApp">Chore App</a></li>
@@ -61,8 +63,6 @@
           <li><a href="/2016/05/chocolatey">Chocolatey "The Windows" Package Manager</a></li>
         
           <li><a href="/2016/05/irssi">Irssi Setup</a></li>
-        
-          <li><a href="/2016/05/Oni">Oni 3D Printer</a></li>
         
     </ul>
 </div>
@@ -80,6 +80,65 @@
         </div>
         <div class="col-md-9">
             
+<div class="article">
+    <div class="well">
+        <h1><a href="/2017/01/Python-WSGI">Jan 17, 2017 - Python WSGI</a></h1>
+        
+        <div class="content">
+            <p>How to run a python pyramid application under apache2(httpd) using the mod_wgsi.</p>
+
+<ol>
+  <li>
+    <p>Create application user 
+<code class="highlighter-rouge">
+  useradd appdeploy
+</code></p>
+  </li>
+  <li>
+    <p>Create an apache2 config file under /etc/httpd/conf.d/
+```</p>
+  </li>
+</ol>
+<p>&lt;virtuallHost *:80&gt;
+  ServerName archive.math.ksu.edu</p>
+
+<h1 id="use-only-1-python-sub-interpreter--multiple-sub-interpreters">Use only 1 Python sub-interpreter.  Multiple sub-interpreters</h1>
+<p># play badly with C extensions.  See
+# http://stackoverflow.com/a/10558360/209039
+WSGIApplicationGroup %{GLOBAL}
+WSGIPassAuthorization On
+WSGIDaemonProcess pyramid user=appdeploy    group=appdeploy  threads=4 \
+   python-path=/var/www/archive/temp_py/lib/python2.7/site-packages
+WSGIScriptAlias / /var/www/archive/pyramid.wsgi</p>
+
+<p>&lt;Directory /var/www/archive&gt;
+  WSGIProcessGroup pyramid
+  Order allow,deny
+  Allow from all
+&lt;/Directory&gt;</p>
+
+<p>&lt;/VirtualHost&gt;
+```</p>
+
+<ol>
+  <li>Create a WSGI file in the application directory that will be called by the apache2 service.
+```
+import os,sys,site</li>
+</ol>
+
+<p>os.environ[‘PYTHON_EGG_CACHE’] = ‘/var/www/archive/temp_py’</p>
+
+<p>from pyramid.paster import get_app, setup_logging
+ini_path = ‘/var/www/archive/production.ini’
+#setup_logging(ini_path)
+application = get_app(ini_path, ‘main’)
+```</p>
+
+
+        </div>
+    </div>
+</div>
+
 <div class="article">
     <div class="well">
         <h1><a href="/2016/12/Google-Analytics">Dec 12, 2016 - Google Analytics</a></h1>
@@ -280,35 +339,6 @@ setup(
     </div>
 </div>
 
-<div class="article">
-    <div class="well">
-        <h1><a href="/2016/05/chocolatey">May 11, 2016 - Chocolatey "The Windows" Package Manager</a></h1>
-        
-        <div class="content">
-            <p>Install Chocolatey via PowerShell</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1')) 
-</code></pre>
-</div>
-
-<p>Install via Command Prompt</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>@powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))" &amp;&amp; SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
-</code></pre>
-</div>
-
-<p>Create a repo</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code> choco new &lt;project name&gt;
-</code></pre>
-</div>
-
-<p>Edit the <project name="">.nuspect file, install, and uninstall files under the tools directory</project></p>
-
-        </div>
-    </div>
-</div>
-
 
 <div class="pagination">
   
@@ -325,7 +355,7 @@ setup(
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12 footer navbar-inverse navbar-fixed-bottom">
-            <p class="copyright">&copy;  2016 DevonPeel.me</a>
+            <p class="copyright">&copy;  2017 DevonPeel.me</a>
         </div>
     </div>
 </div>

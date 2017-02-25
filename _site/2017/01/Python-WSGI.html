@@ -79,145 +79,77 @@
 
         </div>
         <div class="col-md-9">
+          <div class="article">
+            <div class="well">
+                <h1><a href="/2017/01/Python-WSGI">Jan 17, 2017 - Python WSGI</a></h1>
             
-<div class="article">
-    <div class="well">
-        <h1><a href="/2016/05/chocolatey">May 11, 2016 - Chocolatey "The Windows" Package Manager</a></h1>
-        
-        <div class="content">
-            <p>Install Chocolatey via PowerShell</p>
+            <div class="post-content">
+            <p>How to run a python pyramid application under apache2(httpd) using the mod_wgsi.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1')) 
-</code></pre>
-</div>
-
-<p>Install via Command Prompt</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>@powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))" &amp;&amp; SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
-</code></pre>
-</div>
-
-<p>Create a repo</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code> choco new &lt;project name&gt;
-</code></pre>
-</div>
-
-<p>Edit the <project name="">.nuspect file, install, and uninstall files under the tools directory</project></p>
-
-        </div>
-    </div>
-</div>
-
-<div class="article">
-    <div class="well">
-        <h1><a href="/2016/05/irssi">May 10, 2016 - Irssi Setup</a></h1>
-        
-        <div class="content">
-            <h2 id="in-the-irssi-config-add-the-following">In the irssi config add the following:</h2>
-
-<h2 id="setting-up-crapbuserpl">Setting up crapbuser.pl</h2>
-<p>In the aliases section add</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>cb = "/crapbuster";
-</code></pre>
-</div>
-
-<p>In the setting section add</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>  "perl/core/scripts" = {
-              crapbuster_levels = "JOINS PARTS QUITS  CLIENTCRAP CRAP MODE  KICKSi";
-   };
-</code></pre>
-</div>
-
-<h2 id="setting-up-logging">Setting Up logging</h2>
-<p>In the setting section add the following</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>settings = {
-  core = {    log_timestamp = "%H:%M:%S ";
-    recode_autodetect_utf8 = "yes";
-    recode_fallback = "ISO-8859-15";
-    recode_out_default_charset = "ISO-8859-15";
-    recode_transliterate = "yes";
-    recode = "yes";
-  };
-  "fe-text" = { actlist_sort = "refnum"; };
-  "fe-common/core" = {
-    autolog = "yes";
-    autolog_path = "~/.irssi/logs/%Y/$0/%m-%d.log";
-    term_charset = "utf-8";
-    activity_hide_level = "= JOINS QUITS";
-  };
- 
-};
-</code></pre>
-</div>
-
-<h2 id="downloading-the-scripts">Downloading the Scripts</h2>
-<p>In .irssi/scripts add the following perlscripts from https://scripts.irssi.org/</p>
-
-<ul>
+<ol>
   <li>
-    <p>awayproxy.pl</p>
+    <p>Create application user 
+<code class="highlighter-rouge">
+  useradd appdeploy
+</code></p>
   </li>
   <li>
-    <p>crapbuster.pl</p>
+    <p>Create an apache2 config file under /etc/httpd/conf.d/
+```</p>
   </li>
-  <li>
-    <p>screen_away.pl (may want to eidt this script)</p>
-  </li>
-</ul>
+</ol>
+<p>&lt;virtuallHost *:80&gt;
+  ServerName archive.math.ksu.edu</p>
 
-<h2 id="startup">Startup</h2>
+<h1 id="use-only-1-python-sub-interpreter--multiple-sub-interpreters">Use only 1 Python sub-interpreter.  Multiple sub-interpreters</h1>
+<p># play badly with C extensions.  See
+# http://stackoverflow.com/a/10558360/209039
+WSGIApplicationGroup %{GLOBAL}
+WSGIPassAuthorization On
+WSGIDaemonProcess pyramid user=appdeploy    group=appdeploy  threads=4 \
+   python-path=/var/www/archive/temp_py/lib/python2.7/site-packages
+WSGIScriptAlias / /var/www/archive/pyramid.wsgi</p>
 
-<p>Create a startup script in .irssi/startup</p>
+<p>&lt;Directory /var/www/archive&gt;
+  WSGIProcessGroup pyramid
+  Order allow,deny
+  Allow from all
+&lt;/Directory&gt;</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>/set term_charset utf-8
-/set recode_autodetect_utf8 ON
-/set recode_fallback ISO-8859-15
-/set recode_out_default_charset ISO-8859-15
-/set recode_transliterate ON
-/set recode ON
-/load crapbuster.pl
-/set crapbuster_levels JOINS PARTS QUITS  CLIENTCRAP CRAP MODE  KICKSi
-/alias cb /crapbuster
-/load awayproxy.pl
-/load screen_away.pl
-</code></pre>
-</div>
+<p>&lt;/VirtualHost&gt;
+```</p>
 
-        </div>
-    </div>
-</div>
+<ol>
+  <li>Create a WSGI file in the application directory that will be called by the apache2 service.
+```
+import os,sys,site</li>
+</ol>
 
-<div class="article">
-    <div class="well">
-        <h1><a href="/2016/05/template">May 10, 2016 - Oni 3D Printer</a></h1>
-        
-        <div class="content">
+<p>os.environ[‘PYTHON_EGG_CACHE’] = ‘/var/www/archive/temp_py’</p>
+
+<p>from pyramid.paster import get_app, setup_logging
+ini_path = ‘/var/www/archive/production.ini’
+#setup_logging(ini_path)
+application = get_app(ini_path, ‘main’)
+```</p>
+
+
+            </div>
             
-
-        </div>
-    </div>
-</div>
-
-
-<div class="pagination">
-  
-      
-        <a class="btn btn-default" href="/index.html" class="previous">Newer</a>
-      
-  
-  <span class="page_number ">Page: 2 of 3</span>
-  
-    <a class="btn btn-default" href="/page3" class="next">Older</a>
-  
+            </div>
+          </div>
+          <div class="pagination">
+              
+              
+                <a class="btn btn-default" href="/2016/12/Google-Analytics" class="previous">Older Post</a>
+              
 </div>
 
         </div>
     </div>
 </div>
+
+
 
 <div class="container-fluid">
     <div class="row-fluid">

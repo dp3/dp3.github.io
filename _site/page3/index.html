@@ -54,6 +54,8 @@
     <h1>Recent Posts</h1>
     <ul>
         
+          <li><a href="/2017/01/Python-WSGI">Python WSGI</a></li>
+        
           <li><a href="/2016/12/Google-Analytics">Google Analytics</a></li>
         
           <li><a href="/2016/05/ChoreApp">Chore App</a></li>
@@ -61,8 +63,6 @@
           <li><a href="/2016/05/chocolatey">Chocolatey "The Windows" Package Manager</a></li>
         
           <li><a href="/2016/05/irssi">Irssi Setup</a></li>
-        
-          <li><a href="/2016/05/Oni">Oni 3D Printer</a></li>
         
     </ul>
 </div>
@@ -80,6 +80,63 @@
         </div>
         <div class="col-md-9">
             
+<div class="article">
+    <div class="well">
+        <h1><a href="/2016/05/Oni">May 10, 2016 - Oni 3D Printer</a></h1>
+        
+        <div class="content">
+            
+
+        </div>
+    </div>
+</div>
+
+<div class="article">
+    <div class="well">
+        <h1><a href="/2016/04/ffmpeg">Apr 12, 2016 - Tip and Trick for ffmpeg</a></h1>
+        
+        <div class="content">
+            <p>Creating a Time Lapse with Jpeg Photo</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ffmpeg -i '%*.JPG' -r 30 -q:v 2 timelapse.mp4
+</code></pre>
+</div>
+
+<p>For iMovie</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ffmpeg -i '%*.JPG' -r 30 -q:v 2 -pix_fmt yuv420p  timelapse.mp4
+</code></pre>
+</div>
+
+<p>Merge videos into one</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cat list.txt
+
+file 'GOPR4922.MP4'
+file 'GP014922.MP4'
+file 'GP024922.MP4'
+
+ffmpeg -f concat -i list.txt -c copy merged.mp4
+</code></pre>
+</div>
+
+<p>Speedup video by X4</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ffmpeg -i input.mp4 -strict -2 -vf "setpts=0.25*PTS" outputX4.mp4
+</code></pre>
+</div>
+
+<p>Select a section from a video (minutes 26-32:10)</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ffmpeg -i merged.mp4 -ss 00:26:00 -to 00:32:10 -c:v copy -c:a copy part2.mp4
+</code></pre>
+</div>
+
+
+        </div>
+    </div>
+</div>
+
 <div class="article">
     <div class="well">
         <h1><a href="/2016/03/Plex-media-server">Mar 19, 2016 - Plex Media Server</a></h1>
@@ -173,7 +230,7 @@ $ sudo dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12 footer navbar-inverse navbar-fixed-bottom">
-            <p class="copyright">&copy;  2016 DevonPeel.me</a>
+            <p class="copyright">&copy;  2017 DevonPeel.me</a>
         </div>
     </div>
 </div>
