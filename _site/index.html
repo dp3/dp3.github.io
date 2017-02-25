@@ -87,25 +87,19 @@
         <div class="content">
             <p>How to run a python pyramid application under apache2(httpd) using the mod_wgsi.</p>
 
-<ol>
-  <li>Create application user</li>
-</ol>
+<p>Create application user</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>  useradd appdeploy
 </code></pre>
 </div>
 
-<ol>
-  <li>Edit /etc/passwd</li>
-</ol>
+<p>Edit /etc/passwd</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>  appdeploy:x:&lt;uid&gt;:&lt;gid&gt;:appdeploy:/&lt;home&gt;/&lt;directory&gt;:/sbin/nologin
 </code></pre>
 </div>
 
-<ol>
-  <li>Create an apache2 config file under /etc/httpd/conf.d/</li>
-</ol>
+<p>Create an apache2 config file under /etc/httpd/conf.d/</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>&lt;virtuallHost *:80&gt;
   ServerName archive.math.ksu.edu
@@ -129,9 +123,7 @@ WSGIScriptAlias / /var/www/archive/pyramid.wsgi
 </code></pre>
 </div>
 
-<ol>
-  <li>Create a WSGI file in the application directory that will be called by the apache2 service.</li>
-</ol>
+<p>Create a WSGI file in the application directory that will be called by the apache2 service.</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>import os,sys,site
 
