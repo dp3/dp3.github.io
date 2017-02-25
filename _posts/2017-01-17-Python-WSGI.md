@@ -7,11 +7,19 @@ comments: false
 How to run a python pyramid application under apache2(httpd) using the mod_wgsi.
 
 1. Create application user 
+
 ```
   useradd appdeploy
 ```
 
-2. Create an apache2 config file under /etc/httpd/conf.d/
+2. Edit /etc/passwd
+
+```
+  appdeploy:x:<uid>:<gid>:appdeploy:/<home>/<directory>:/sbin/nologin
+```
+
+3. Create an apache2 config file under /etc/httpd/conf.d/
+
 ```
 <virtuallHost *:80>
   ServerName archive.math.ksu.edu
@@ -34,7 +42,8 @@ WSGIScriptAlias / /var/www/archive/pyramid.wsgi
 </VirtualHost>
 ```
 
-3. Create a WSGI file in the application directory that will be called by the apache2 service.
+4. Create a WSGI file in the application directory that will be called by the apache2 service.
+
 ```
 import os,sys,site
 
