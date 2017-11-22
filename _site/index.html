@@ -54,6 +54,8 @@
     <h1>Recent Posts</h1>
     <ul>
         
+          <li><a href="/2017/02/SMTPtoSMSrelay">SMTP to SMS relay</a></li>
+        
           <li><a href="/2017/01/Python-WSGI">Python WSGI</a></li>
         
           <li><a href="/2016/12/Google-Analytics">Google Analytics</a></li>
@@ -61,8 +63,6 @@
           <li><a href="/2016/05/ChoreApp">Chore App</a></li>
         
           <li><a href="/2016/05/chocolatey">Chocolatey "The Windows" Package Manager</a></li>
-        
-          <li><a href="/2016/05/irssi">Irssi Setup</a></li>
         
     </ul>
 </div>
@@ -82,6 +82,45 @@
             
 <div class="article">
     <div class="well">
+        <h1><a href="/2017/02/SMTPtoSMSrelay">Feb 25, 2017 - SMTP to SMS relay</a></h1>
+        
+        <div class="content">
+            <p>This script will send SMS via various smtp relays.</p>
+
+<p>```
+import smtplib</p>
+
+<h1 id="use-sms-gateway-provided-by-mobile-carrier">Use sms gateway provided by mobile carrier:</h1>
+<p># alltel         number@message.Alltel.com 
+# at&amp;t:          number@mms.att.net
+# boost:         number@myboostmobile.com
+# google voice   number@@txt.voice.google.com (needs work)
+# metro pcs:     number@mymetropcs.com
+# sprint:        number@page.nextel.com
+# straight talk  number@mypixmessages.com
+# t-mobile:      number@tmomail.net
+# us cellular:   number@mms.uscc.net<br />
+# verizon:-       number@vtext.com
+# virgin:        number@vmpix.com</p>
+
+<p>server = smtplib.SMTP( “smtp.gmail.com”, 587 )
+server.ehlo()
+server.starttls()
+server.ehlo()
+server.login( ‘Google username’, ‘<google app="" password="">' )</google></p>
+
+<h1 id="serversendmail-from-numbertmomailnet-hello-">server.sendmail( ‘<from>', '<number>@tmomail.net', 'Hello!' )</number></from></h1>
+
+<p>server.sendmail( ‘<sending phone="" number="">', '<receiving phone="" numver="">@<domain.com>', 'Leory Jenkins!!!!' )
+```</domain.com></receiving></sending></p>
+
+
+        </div>
+    </div>
+</div>
+
+<div class="article">
+    <div class="well">
         <h1><a href="/2017/01/Python-WSGI">Jan 17, 2017 - Python WSGI</a></h1>
         
         <div class="content">
@@ -89,52 +128,52 @@
 
 <p>Create application user</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>  useradd appdeploy
-</code></pre>
-</div>
+<p><code class="highlighter-rouge">
+  useradd appdeploy
+</code></p>
 
 <p>Edit /etc/passwd</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>  appdeploy:x:&lt;uid&gt;:&lt;gid&gt;:appdeploy:/&lt;home&gt;/&lt;directory&gt;:/sbin/nologin
-</code></pre>
-</div>
+<p><code class="highlighter-rouge">
+  appdeploy:x:&lt;uid&gt;:&lt;gid&gt;:appdeploy:/&lt;home&gt;/&lt;directory&gt;:/sbin/nologin
+</code></p>
 
 <p>Create an apache2 config file under /etc/httpd/conf.d/</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;virtuallHost *:80&gt;
-  ServerName archive.math.ksu.edu
+<p>```
+&lt;virtuallHost *:80&gt;
+  ServerName archive.math.ksu.edu</p>
 
-# Use only 1 Python sub-interpreter.  Multiple sub-interpreters
-# play badly with C extensions.  See
+<h1 id="use-only-1-python-sub-interpreter--multiple-sub-interpreters">Use only 1 Python sub-interpreter.  Multiple sub-interpreters</h1>
+<p># play badly with C extensions.  See
 # http://stackoverflow.com/a/10558360/209039
 WSGIApplicationGroup %{GLOBAL}
 WSGIPassAuthorization On
 WSGIDaemonProcess pyramid user=appdeploy    group=appdeploy  threads=4 \
    python-path=/var/www/archive/temp_py/lib/python2.7/site-packages
-WSGIScriptAlias / /var/www/archive/pyramid.wsgi
+WSGIScriptAlias / /var/www/archive/pyramid.wsgi</p>
 
-&lt;Directory /var/www/archive&gt;
+<p>&lt;Directory /var/www/archive&gt;
   WSGIProcessGroup pyramid
   Order allow,deny
   Allow from all
-&lt;/Directory&gt;
+&lt;/Directory&gt;</p>
 
-&lt;/VirtualHost&gt;
-</code></pre>
-</div>
+<p>&lt;/VirtualHost&gt;
+```</p>
 
 <p>Create a WSGI file in the application directory that will be called by the apache2 service.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>import os,sys,site
+<p>```
+import os,sys,site</p>
 
-os.environ['PYTHON_EGG_CACHE'] = '/var/www/archive/temp_py'
+<p>os.environ[‘PYTHON_EGG_CACHE’] = ‘/var/www/archive/temp_py’</p>
 
-from pyramid.paster import get_app, setup_logging
-ini_path = '/var/www/archive/production.ini'
+<p>from pyramid.paster import get_app, setup_logging
+ini_path = ‘/var/www/archive/production.ini’
 #setup_logging(ini_path)
-application = get_app(ini_path, 'main')
-</code></pre>
-</div>
+application = get_app(ini_path, ‘main’)
+```</p>
 
 
         </div>
@@ -159,192 +198,10 @@ application = get_app(ini_path, 'main')
     </div>
 </div>
 
-<div class="article">
-    <div class="well">
-        <h1><a href="/2016/05/ChoreApp">May 12, 2016 - Chore App</a></h1>
-        
-        <div class="content">
-            <h2 id="chore-app">Chore App</h2>
-<p>I made this chore asigning application for a small college dorm. Its purpose is to randomly assign chores to residents with respect to gender. A male (m) will get a male chore or gender neutral chore (n) and female (f) will get a female chore or gender neutral chore. Note random is not fair. Good Luck</p>
-
-<p>The files needed</p>
-
-<ul>
-  <li>list of residents</li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>   gender firstname lastname
-   m john smith
-   f julie smith
-   m tom appleseed
-</code></pre>
-</div>
-
-<ul>
-  <li>list of chores</li>
-</ul>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>  gender chore
-  f clean womens bathroom
-  n mop hallway
-  m clean mens showers
-</code></pre>
-</div>
-
-<ul>
-  <li>
-    <p>ChoreApp.py</p>
-  </li>
-  <li>
-    <p>clean.icns - an icon file</p>
-  </li>
-</ul>
-
-<h2 id="build-the-app">Build the App</h2>
-
-<h2 id="setup-python-virtaul-environment">Setup Python Virtaul Environment</h2>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>pip install virtualenv
-virtualenv venv
-source venv/bin/activate
-pip install xlwt py2app
-</code></pre>
-</div>
-
-<h2 id="chore-app-code">Chore App Code</h2>
-<p>Please place chore app code in a seperate directory differnet to the python virtual environment.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>import os, sys,random, xlwt, time, datetime
-from xlwt import *
-
-#file imports
-chore_file=open("../../../chores.txt", "r")
-chores = chore_file.readlines()
-#print chores
-
-resident_file=open("../../../residents.txt", "r")
-residents = resident_file.readlines()
-#print residents
-
-#create a psueode final enum
-# m equals male
-# f equals female
-# n equals neutral
-
-#creates excel file
-book = xlwt.Workbook(encoding="utf-8")
-sheet1 = book.add_sheet("Sheet 1")
-
-font0 = Font()
-font0.bold = True
-
-style0 = XFStyle()
-style0.font = font0
-
-
-#error check
-if len(chores) != len(residents):
-    print "Error:"
-    if len(chores) &gt; len(residents):
-            sys.exit(" Too many chores")
-    else:
-            sys.exit(" Too many residents")
-
-assignment = []
-i = 0
-while(residents):
-    rand = random.randrange(0, len(residents))
-
-    # retrieves the f or m before residents name
-    resident = residents[rand]
-    resident_gender = resident[0:1]
-    chore_gender = chores[i][0:1]
-
-    if(resident_gender == chore_gender) or (chore_gender == 'n'):
-        len_chore = len(chores[i])
-        len_resident = len(resident)
-        print resident[2:len_resident] + " "  + chores[i][2:len_chore]
-        tupl = [resident[2:len_resident].replace('\n',''), chores[i][2:len_chore].replace('\n','')]
-        assignment.append(tupl)
-        residents.pop(rand)
-        i=i+1
-
-#alphabetically sort
-assignment.sort()
-#write out alphabetically sorted chore list
-j=1
-date = datetime.datetime.now()
-enddate = datetime.datetime.now() + datetime.timedelta(days=6)
-sheet1.write(0,0,"Chore List For Week Of " + date.strftime('%m/%d') +" - "+ enddate.strftime('%m/%d'), style0)
-for i in assignment:
-    sheet1.write(j,0,i[0])
-    sheet1.write(j,1,i[1])
-    sheet1.write(j+1,0,'')
-    j=j+2
-
-#saves excell file
-book.save("../../../chores"+ date.strftime('%Y_%m_%d') + ".xls")
-#book.save("chores"+ date.strftime('%Y_%m_%d') + ".xls")
-
-
-</code></pre>
-</div>
-
-<h2 id="the-build">The Build</h2>
-<p>Change the the working direcotry to the chore_app and create a file called setup.py</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>cd chore_app
-vim setup.py
-   """
-   This is a setup.py script generated by py2applet
-
-   Usage:
-   python setup.py py2app
-   """
-   from setuptools import setup
-
-   APP = ['ChoreApp.py']
-   DATA_FILES = ['chores.txt','residents.txt']
-   OPTIONS = {
-    'argv_emulation': True,
-    'iconfile': 'clean.icns',
-    'plist': {
-        'CFBundleName': "ChoreApp",
-        'CFBundleDisplayName': "ChoreApp",
-        'CFBundleGetInfoString': "App for assigning chore",
-        'CFBundleVersion': "0.2.0",
-        'CFBundleShortVersionString': "0.2.0",
-        'NSHumanReadableCopyright': u"Copyleft Devon Peel"
-    }
-}
-
-setup(
-    app=APP,
-    data_files=DATA_FILES,
-    options={'py2app': OPTIONS},
-    setup_requires=['py2app'],
-)
-
-</code></pre>
-</div>
-
-<p>Time to build the App</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>python setup.py py2app
-</code></pre>
-</div>
-
-<h2 id="run-choreapp">Run ChoreApp</h2>
-<p>Place the ChoreApp file created in the above command with the chores.txt file and residents.txt file in the same directory. Then click on the ChoreApp to generate the output file assigning chores to residents.</p>
-
-        </div>
-    </div>
-</div>
-
 
 <div class="pagination">
   
-  <span class="page_number ">Page: 1 of 3</span>
+  <span class="page_number ">Page: 1 of 4</span>
   
     <a class="btn btn-default" href="/page2" class="next">Older</a>
   

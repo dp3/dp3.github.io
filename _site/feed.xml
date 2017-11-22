@@ -7,57 +7,94 @@
 		<atom:link href="https://devonpeel.me/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>SMTP to SMS relay</title>
+				<description>&lt;p&gt;This script will send SMS via various smtp relays.&lt;/p&gt;
+
+&lt;p&gt;```
+import smtplib&lt;/p&gt;
+
+&lt;h1 id=&quot;use-sms-gateway-provided-by-mobile-carrier&quot;&gt;Use sms gateway provided by mobile carrier:&lt;/h1&gt;
+&lt;p&gt;# alltel         number@message.Alltel.com 
+# at&amp;amp;t:          number@mms.att.net
+# boost:         number@myboostmobile.com
+# google voice   number@@txt.voice.google.com (needs work)
+# metro pcs:     number@mymetropcs.com
+# sprint:        number@page.nextel.com
+# straight talk  number@mypixmessages.com
+# t-mobile:      number@tmomail.net
+# us cellular:   number@mms.uscc.net&lt;br /&gt;
+# verizon:-       number@vtext.com
+# virgin:        number@vmpix.com&lt;/p&gt;
+
+&lt;p&gt;server = smtplib.SMTP( “smtp.gmail.com”, 587 )
+server.ehlo()
+server.starttls()
+server.ehlo()
+server.login( ‘Google username’, ‘&lt;google app=&quot;&quot; password=&quot;&quot;&gt;&#39; )&lt;/google&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;serversendmail-from-numbertmomailnet-hello-&quot;&gt;server.sendmail( ‘&lt;from&gt;&#39;, &#39;&lt;number&gt;@tmomail.net&#39;, &#39;Hello!&#39; )&lt;/number&gt;&lt;/from&gt;&lt;/h1&gt;
+
+&lt;p&gt;server.sendmail( ‘&lt;sending phone=&quot;&quot; number=&quot;&quot;&gt;&#39;, &#39;&lt;receiving phone=&quot;&quot; numver=&quot;&quot;&gt;@&lt;domain.com&gt;&#39;, &#39;Leory Jenkins!!!!&#39; )
+```&lt;/domain.com&gt;&lt;/receiving&gt;&lt;/sending&gt;&lt;/p&gt;
+
+</description>
+				<pubDate>Sat, 25 Feb 2017 12:12:06 -0600</pubDate>
+				<link>https://devonpeel.me/2017/02/SMTPtoSMSrelay</link>
+				<guid isPermaLink="true">https://devonpeel.me/2017/02/SMTPtoSMSrelay</guid>
+			</item>
+		
+			<item>
 				<title>Python WSGI</title>
 				<description>&lt;p&gt;How to run a python pyramid application under apache2(httpd) using the mod_wgsi.&lt;/p&gt;
 
 &lt;p&gt;Create application user&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  useradd appdeploy
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+  useradd appdeploy
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Edit /etc/passwd&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  appdeploy:x:&amp;lt;uid&amp;gt;:&amp;lt;gid&amp;gt;:appdeploy:/&amp;lt;home&amp;gt;/&amp;lt;directory&amp;gt;:/sbin/nologin
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+  appdeploy:x:&amp;lt;uid&amp;gt;:&amp;lt;gid&amp;gt;:appdeploy:/&amp;lt;home&amp;gt;/&amp;lt;directory&amp;gt;:/sbin/nologin
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Create an apache2 config file under /etc/httpd/conf.d/&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;virtuallHost *:80&amp;gt;
-  ServerName archive.math.ksu.edu
+&lt;p&gt;```
+&amp;lt;virtuallHost *:80&amp;gt;
+  ServerName archive.math.ksu.edu&lt;/p&gt;
 
-# Use only 1 Python sub-interpreter.  Multiple sub-interpreters
-# play badly with C extensions.  See
+&lt;h1 id=&quot;use-only-1-python-sub-interpreter--multiple-sub-interpreters&quot;&gt;Use only 1 Python sub-interpreter.  Multiple sub-interpreters&lt;/h1&gt;
+&lt;p&gt;# play badly with C extensions.  See
 # http://stackoverflow.com/a/10558360/209039
 WSGIApplicationGroup %{GLOBAL}
 WSGIPassAuthorization On
 WSGIDaemonProcess pyramid user=appdeploy    group=appdeploy  threads=4 \
    python-path=/var/www/archive/temp_py/lib/python2.7/site-packages
-WSGIScriptAlias / /var/www/archive/pyramid.wsgi
+WSGIScriptAlias / /var/www/archive/pyramid.wsgi&lt;/p&gt;
 
-&amp;lt;Directory /var/www/archive&amp;gt;
+&lt;p&gt;&amp;lt;Directory /var/www/archive&amp;gt;
   WSGIProcessGroup pyramid
   Order allow,deny
   Allow from all
-&amp;lt;/Directory&amp;gt;
+&amp;lt;/Directory&amp;gt;&lt;/p&gt;
 
-&amp;lt;/VirtualHost&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;&amp;lt;/VirtualHost&amp;gt;
+```&lt;/p&gt;
 
 &lt;p&gt;Create a WSGI file in the application directory that will be called by the apache2 service.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import os,sys,site
+&lt;p&gt;```
+import os,sys,site&lt;/p&gt;
 
-os.environ[&#39;PYTHON_EGG_CACHE&#39;] = &#39;/var/www/archive/temp_py&#39;
+&lt;p&gt;os.environ[‘PYTHON_EGG_CACHE’] = ‘/var/www/archive/temp_py’&lt;/p&gt;
 
-from pyramid.paster import get_app, setup_logging
-ini_path = &#39;/var/www/archive/production.ini&#39;
+&lt;p&gt;from pyramid.paster import get_app, setup_logging
+ini_path = ‘/var/www/archive/production.ini’
 #setup_logging(ini_path)
-application = get_app(ini_path, &#39;main&#39;)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+application = get_app(ini_path, ‘main’)
+```&lt;/p&gt;
 
 </description>
 				<pubDate>Tue, 17 Jan 2017 10:09:06 -0600</pubDate>
@@ -92,23 +129,23 @@ application = get_app(ini_path, &#39;main&#39;)
   &lt;li&gt;list of residents&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   gender firstname lastname
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+   gender firstname lastname
    m john smith
    f julie smith
    m tom appleseed
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;list of chores&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  gender chore
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+  gender chore
   f clean womens bathroom
   n mop hallway
   m clean mens showers
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -123,135 +160,135 @@ application = get_app(ini_path, &#39;main&#39;)
 
 &lt;h2 id=&quot;setup-python-virtaul-environment&quot;&gt;Setup Python Virtaul Environment&lt;/h2&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pip install virtualenv
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+pip install virtualenv
 virtualenv venv
 source venv/bin/activate
 pip install xlwt py2app
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;chore-app-code&quot;&gt;Chore App Code&lt;/h2&gt;
 &lt;p&gt;Please place chore app code in a seperate directory differnet to the python virtual environment.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import os, sys,random, xlwt, time, datetime
-from xlwt import *
+&lt;p&gt;```
+import os, sys,random, xlwt, time, datetime
+from xlwt import *&lt;/p&gt;
 
-#file imports
-chore_file=open(&quot;../../../chores.txt&quot;, &quot;r&quot;)
+&lt;h1 id=&quot;file-imports&quot;&gt;file imports&lt;/h1&gt;
+&lt;p&gt;chore_file=open(“../../../chores.txt”, “r”)
 chores = chore_file.readlines()
-#print chores
+#print chores&lt;/p&gt;
 
-resident_file=open(&quot;../../../residents.txt&quot;, &quot;r&quot;)
+&lt;p&gt;resident_file=open(“../../../residents.txt”, “r”)
 residents = resident_file.readlines()
-#print residents
+#print residents&lt;/p&gt;
 
-#create a psueode final enum
-# m equals male
+&lt;h1 id=&quot;create-a-psueode-final-enum&quot;&gt;create a psueode final enum&lt;/h1&gt;
+&lt;p&gt;# m equals male
 # f equals female
-# n equals neutral
+# n equals neutral&lt;/p&gt;
 
-#creates excel file
-book = xlwt.Workbook(encoding=&quot;utf-8&quot;)
-sheet1 = book.add_sheet(&quot;Sheet 1&quot;)
+&lt;h1 id=&quot;creates-excel-file&quot;&gt;creates excel file&lt;/h1&gt;
+&lt;p&gt;book = xlwt.Workbook(encoding=”utf-8”)
+sheet1 = book.add_sheet(“Sheet 1”)&lt;/p&gt;
 
-font0 = Font()
-font0.bold = True
+&lt;p&gt;font0 = Font()
+font0.bold = True&lt;/p&gt;
 
-style0 = XFStyle()
-style0.font = font0
+&lt;p&gt;style0 = XFStyle()
+style0.font = font0&lt;/p&gt;
 
-
-#error check
-if len(chores) != len(residents):
-    print &quot;Error:&quot;
+&lt;h1 id=&quot;error-check&quot;&gt;error check&lt;/h1&gt;
+&lt;p&gt;if len(chores) != len(residents):
+    print “Error:”
     if len(chores) &amp;gt; len(residents):
-            sys.exit(&quot; Too many chores&quot;)
+            sys.exit(“ Too many chores”)
     else:
-            sys.exit(&quot; Too many residents&quot;)
+            sys.exit(“ Too many residents”)&lt;/p&gt;
 
-assignment = []
+&lt;p&gt;assignment = []
 i = 0
 while(residents):
-    rand = random.randrange(0, len(residents))
+    rand = random.randrange(0, len(residents))&lt;/p&gt;
 
-    # retrieves the f or m before residents name
-    resident = residents[rand]
-    resident_gender = resident[0:1]
-    chore_gender = chores[i][0:1]
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# retrieves the f or m before residents name
+resident = residents[rand]
+resident_gender = resident[0:1]
+chore_gender = chores[i][0:1]
 
-    if(resident_gender == chore_gender) or (chore_gender == &#39;n&#39;):
-        len_chore = len(chores[i])
-        len_resident = len(resident)
-        print resident[2:len_resident] + &quot; &quot;  + chores[i][2:len_chore]
-        tupl = [resident[2:len_resident].replace(&#39;\n&#39;,&#39;&#39;), chores[i][2:len_chore].replace(&#39;\n&#39;,&#39;&#39;)]
-        assignment.append(tupl)
-        residents.pop(rand)
-        i=i+1
+if(resident_gender == chore_gender) or (chore_gender == &#39;n&#39;):
+    len_chore = len(chores[i])
+    len_resident = len(resident)
+    print resident[2:len_resident] + &quot; &quot;  + chores[i][2:len_chore]
+    tupl = [resident[2:len_resident].replace(&#39;\n&#39;,&#39;&#39;), chores[i][2:len_chore].replace(&#39;\n&#39;,&#39;&#39;)]
+    assignment.append(tupl)
+    residents.pop(rand)
+    i=i+1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
-#alphabetically sort
-assignment.sort()
+&lt;h1 id=&quot;alphabetically-sort&quot;&gt;alphabetically sort&lt;/h1&gt;
+&lt;p&gt;assignment.sort()
 #write out alphabetically sorted chore list
 j=1
 date = datetime.datetime.now()
 enddate = datetime.datetime.now() + datetime.timedelta(days=6)
-sheet1.write(0,0,&quot;Chore List For Week Of &quot; + date.strftime(&#39;%m/%d&#39;) +&quot; - &quot;+ enddate.strftime(&#39;%m/%d&#39;), style0)
+sheet1.write(0,0,”Chore List For Week Of “ + date.strftime(‘%m/%d’) +” - “+ enddate.strftime(‘%m/%d’), style0)
 for i in assignment:
     sheet1.write(j,0,i[0])
     sheet1.write(j,1,i[1])
-    sheet1.write(j+1,0,&#39;&#39;)
-    j=j+2
+    sheet1.write(j+1,0,’’)
+    j=j+2&lt;/p&gt;
 
-#saves excell file
-book.save(&quot;../../../chores&quot;+ date.strftime(&#39;%Y_%m_%d&#39;) + &quot;.xls&quot;)
-#book.save(&quot;chores&quot;+ date.strftime(&#39;%Y_%m_%d&#39;) + &quot;.xls&quot;)
+&lt;h1 id=&quot;saves-excell-file&quot;&gt;saves excell file&lt;/h1&gt;
+&lt;p&gt;book.save(“../../../chores”+ date.strftime(‘%Y_%m_%d’) + “.xls”)
+#book.save(“chores”+ date.strftime(‘%Y_%m_%d’) + “.xls”)&lt;/p&gt;
 
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;```&lt;/p&gt;
 
 &lt;h2 id=&quot;the-build&quot;&gt;The Build&lt;/h2&gt;
 &lt;p&gt;Change the the working direcotry to the chore_app and create a file called setup.py&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cd chore_app
+&lt;p&gt;```
+cd chore_app
 vim setup.py
-   &quot;&quot;&quot;
-   This is a setup.py script generated by py2applet
+   “””
+   This is a setup.py script generated by py2applet&lt;/p&gt;
 
-   Usage:
+&lt;p&gt;Usage:
    python setup.py py2app
-   &quot;&quot;&quot;
-   from setuptools import setup
+   “””
+   from setuptools import setup&lt;/p&gt;
 
-   APP = [&#39;ChoreApp.py&#39;]
-   DATA_FILES = [&#39;chores.txt&#39;,&#39;residents.txt&#39;]
+&lt;p&gt;APP = [‘ChoreApp.py’]
+   DATA_FILES = [‘chores.txt’,’residents.txt’]
    OPTIONS = {
-    &#39;argv_emulation&#39;: True,
-    &#39;iconfile&#39;: &#39;clean.icns&#39;,
-    &#39;plist&#39;: {
-        &#39;CFBundleName&#39;: &quot;ChoreApp&quot;,
-        &#39;CFBundleDisplayName&#39;: &quot;ChoreApp&quot;,
-        &#39;CFBundleGetInfoString&#39;: &quot;App for assigning chore&quot;,
-        &#39;CFBundleVersion&#39;: &quot;0.2.0&quot;,
-        &#39;CFBundleShortVersionString&#39;: &quot;0.2.0&quot;,
-        &#39;NSHumanReadableCopyright&#39;: u&quot;Copyleft Devon Peel&quot;
+    ‘argv_emulation’: True,
+    ‘iconfile’: ‘clean.icns’,
+    ‘plist’: {
+        ‘CFBundleName’: “ChoreApp”,
+        ‘CFBundleDisplayName’: “ChoreApp”,
+        ‘CFBundleGetInfoString’: “App for assigning chore”,
+        ‘CFBundleVersion’: “0.2.0”,
+        ‘CFBundleShortVersionString’: “0.2.0”,
+        ‘NSHumanReadableCopyright’: u”Copyleft Devon Peel”
     }
-}
+}&lt;/p&gt;
 
-setup(
+&lt;p&gt;setup(
     app=APP,
     data_files=DATA_FILES,
-    options={&#39;py2app&#39;: OPTIONS},
-    setup_requires=[&#39;py2app&#39;],
-)
+    options={‘py2app’: OPTIONS},
+    setup_requires=[‘py2app’],
+)&lt;/p&gt;
 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;```&lt;/p&gt;
 
 &lt;p&gt;Time to build the App&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;python setup.py py2app
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+python setup.py py2app
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;run-choreapp&quot;&gt;Run ChoreApp&lt;/h2&gt;
 &lt;p&gt;Place the ChoreApp file created in the above command with the chores.txt file and residents.txt file in the same directory. Then click on the ChoreApp to generate the output file assigning chores to residents.&lt;/p&gt;
@@ -265,21 +302,21 @@ setup(
 				<title>Chocolatey "The Windows" Package Manager</title>
 				<description>&lt;p&gt;Install Chocolatey via PowerShell&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;iex ((new-object net.webclient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;)) 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+iex ((new-object net.webclient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;)) 
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Install via Command Prompt&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;@powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;iex ((new-object net.webclient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;))&quot; &amp;amp;&amp;amp; SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+@powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;iex ((new-object net.webclient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;))&quot; &amp;amp;&amp;amp; SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Create a repo&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; choco new &amp;lt;project name&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+ choco new &amp;lt;project name&amp;gt;
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Edit the &lt;project name=&quot;&quot;&gt;.nuspect file, install, and uninstall files under the tools directory&lt;/project&gt;&lt;/p&gt;
 </description>
@@ -295,40 +332,40 @@ setup(
 &lt;h2 id=&quot;setting-up-crapbuserpl&quot;&gt;Setting up crapbuser.pl&lt;/h2&gt;
 &lt;p&gt;In the aliases section add&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cb = &quot;/crapbuster&quot;;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+cb = &quot;/crapbuster&quot;;
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;In the setting section add&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &quot;perl/core/scripts&quot; = {
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+  &quot;perl/core/scripts&quot; = {
               crapbuster_levels = &quot;JOINS PARTS QUITS  CLIENTCRAP CRAP MODE  KICKSi&quot;;
    };
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;setting-up-logging&quot;&gt;Setting Up logging&lt;/h2&gt;
 &lt;p&gt;In the setting section add the following&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;settings = {
-  core = {    log_timestamp = &quot;%H:%M:%S &quot;;
-    recode_autodetect_utf8 = &quot;yes&quot;;
-    recode_fallback = &quot;ISO-8859-15&quot;;
-    recode_out_default_charset = &quot;ISO-8859-15&quot;;
-    recode_transliterate = &quot;yes&quot;;
-    recode = &quot;yes&quot;;
+&lt;p&gt;```
+settings = {
+  core = {    log_timestamp = “%H:%M:%S “;
+    recode_autodetect_utf8 = “yes”;
+    recode_fallback = “ISO-8859-15”;
+    recode_out_default_charset = “ISO-8859-15”;
+    recode_transliterate = “yes”;
+    recode = “yes”;
   };
-  &quot;fe-text&quot; = { actlist_sort = &quot;refnum&quot;; };
-  &quot;fe-common/core&quot; = {
-    autolog = &quot;yes&quot;;
-    autolog_path = &quot;~/.irssi/logs/%Y/$0/%m-%d.log&quot;;
-    term_charset = &quot;utf-8&quot;;
-    activity_hide_level = &quot;= JOINS QUITS&quot;;
-  };
- 
-};
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+  “fe-text” = { actlist_sort = “refnum”; };
+  “fe-common/core” = {
+    autolog = “yes”;
+    autolog_path = “~/.irssi/logs/%Y/$0/%m-%d.log”;
+    term_charset = “utf-8”;
+    activity_hide_level = “= JOINS QUITS”;
+  };&lt;/p&gt;
+
+&lt;p&gt;};
+```&lt;/p&gt;
 
 &lt;h2 id=&quot;downloading-the-scripts&quot;&gt;Downloading the Scripts&lt;/h2&gt;
 &lt;p&gt;In .irssi/scripts add the following perlscripts from https://scripts.irssi.org/&lt;/p&gt;
@@ -349,7 +386,8 @@ setup(
 
 &lt;p&gt;Create a startup script in .irssi/startup&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/set term_charset utf-8
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+/set term_charset utf-8
 /set recode_autodetect_utf8 ON
 /set recode_fallback ISO-8859-15
 /set recode_out_default_charset ISO-8859-15
@@ -360,8 +398,7 @@ setup(
 /alias cb /crapbuster
 /load awayproxy.pl
 /load screen_away.pl
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/p&gt;
 </description>
 				<pubDate>Tue, 10 May 2016 12:10:06 -0500</pubDate>
 				<link>https://devonpeel.me/2016/05/irssi</link>
@@ -390,39 +427,44 @@ setup(
 				<title>Tip and Trick for ffmpeg</title>
 				<description>&lt;p&gt;Creating a Time Lapse with Jpeg Photo&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ffmpeg -i &#39;%*.JPG&#39; -r 30 -q:v 2 timelapse.mp4
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+ffmpeg -i &#39;%*.JPG&#39; -r 30 -q:v 2 timelapse.mp4
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;For iMovie&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ffmpeg -i &#39;%*.JPG&#39; -r 30 -q:v 2 -pix_fmt yuv420p  timelapse.mp4
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+ffmpeg -i &#39;%*.JPG&#39; -r 30 -q:v 2 -pix_fmt yuv420p  timelapse.mp4
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Merge videos into one&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cat list.txt
+&lt;p&gt;```
+cat list.txt&lt;/p&gt;
 
-file &#39;GOPR4922.MP4&#39;
-file &#39;GP014922.MP4&#39;
-file &#39;GP024922.MP4&#39;
+&lt;p&gt;file ‘GOPR4922.MP4’
+file ‘GP014922.MP4’
+file ‘GP024922.MP4’&lt;/p&gt;
 
-ffmpeg -f concat -i list.txt -c copy merged.mp4
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;ffmpeg -f concat -i list.txt -c copy merged.mp4
+```&lt;/p&gt;
 
 &lt;p&gt;Speedup video by X4&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ffmpeg -i input.mp4 -strict -2 -vf &quot;setpts=0.25*PTS&quot; outputX4.mp4
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+ffmpeg -i input.mp4 -strict -2 -vf &quot;setpts=0.25*PTS&quot; outputX4.mp4
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Select a section from a video (minutes 26-32:10)&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ffmpeg -i merged.mp4 -ss 00:26:00 -to 00:32:10 -c:v copy -c:a copy part2.mp4
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+ffmpeg -i merged.mp4 -ss 00:26:00 -to 00:32:10 -c:v copy -c:a copy part2.mp4
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Merge MTS files from a video camera 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+ffmpeg -i &quot;concat:00000.MTS|00001.MTS|00002.MTS|00003.MTS|00004.MTS|00005.MTS|00006.MTS&quot; output.mp4
+&lt;/code&gt;&lt;/p&gt;
 
 </description>
 				<pubDate>Tue, 12 Apr 2016 11:09:06 -0500</pubDate>
@@ -437,65 +479,65 @@ Samba Install&lt;/p&gt;
 
 &lt;p&gt;Use apt-get to pull the samba packages:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo apt-get update
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+$ sudo apt-get update
 $ sudo apt-get install samba
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Lets create a samba user:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ useradd USER
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+$ useradd USER
 $ passwd USER
 $ smbpasswd -a USER
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Now edit the config file:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo vim /etc/samba/smb.conf
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+$ sudo vim /etc/samba/smb.conf
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Insert the following lines:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#this allows everyone to view the network share
+&lt;p&gt;```
+#this allows everyone to view the network share
 [SMABA UNSECURE]
 comment=PLEX-SAMBA
 path= /location/to/the/folder/you/want/to/share
 browsable=yes
 writable=yes
 guest ok=yes
-admin users= adminuser
+admin users= adminuser&lt;/p&gt;
 
-#this only allows the smbuser to access the directory
-[SAMBA PASSWORD PROMPT]
+&lt;h1 id=&quot;this-only-allows-the-smbuser-to-access-the-directory&quot;&gt;this only allows the smbuser to access the directory&lt;/h1&gt;
+&lt;p&gt;[SAMBA PASSWORD PROMPT]
 path = /location/to/the/folder/you/want/to/share
 valid users = smbuser
 browseable = yes
 writeable = yes
 read only = no
 guest ok = yes
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+```&lt;/p&gt;
 
 &lt;p&gt;Run ‘testparm’ to verify the config works:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ testparm
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+$ testparm
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Restart samba&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ sudo service smbd restart
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+$ sudo service smbd restart
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Plex Install&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ wget https://downloads.plex.tv/plex-media-server/0.9.14.6.1620-e0b7243/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+$ wget https://downloads.plex.tv/plex-media-server/0.9.14.6.1620-e0b7243/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
 $ sudo dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/p&gt;
 
 </description>
 				<pubDate>Sat, 19 Mar 2016 18:25:06 -0500</pubDate>

@@ -81,10 +81,38 @@
         <div class="col-md-9">
           <div class="article">
             <div class="well">
-                <h1><a href="/2016/05/Oni">May 10, 2016 - Oni 3D Printer</a></h1>
+                <h1><a href="/2017/02/SMTPtoSMSrelay">Feb 25, 2017 - SMTP to SMS relay</a></h1>
             
             <div class="post-content">
-            
+            <p>This script will send SMS via various smtp relays.</p>
+
+<p>```
+import smtplib</p>
+
+<h1 id="use-sms-gateway-provided-by-mobile-carrier">Use sms gateway provided by mobile carrier:</h1>
+<p># alltel         number@message.Alltel.com 
+# at&amp;t:          number@mms.att.net
+# boost:         number@myboostmobile.com
+# google voice   number@@txt.voice.google.com (needs work)
+# metro pcs:     number@mymetropcs.com
+# sprint:        number@page.nextel.com
+# straight talk  number@mypixmessages.com
+# t-mobile:      number@tmomail.net
+# us cellular:   number@mms.uscc.net<br />
+# verizon:-       number@vtext.com
+# virgin:        number@vmpix.com</p>
+
+<p>server = smtplib.SMTP( “smtp.gmail.com”, 587 )
+server.ehlo()
+server.starttls()
+server.ehlo()
+server.login( ‘Google username’, ‘<google app="" password="">' )</google></p>
+
+<h1 id="serversendmail-from-numbertmomailnet-hello-">server.sendmail( ‘<from>', '<number>@tmomail.net', 'Hello!' )</number></from></h1>
+
+<p>server.sendmail( ‘<sending phone="" number="">', '<receiving phone="" numver="">@<domain.com>', 'Leory Jenkins!!!!' )
+```</domain.com></receiving></sending></p>
+
 
             </div>
             
@@ -92,10 +120,8 @@
           </div>
           <div class="pagination">
               
-                <a class="btn btn-default" href="/2016/05/template" class="next">Newer Post</a>
               
-              
-                <a class="btn btn-default" href="/2016/04/ffmpeg" class="previous">Older Post</a>
+                <a class="btn btn-default" href="/2017/01/Python-WSGI" class="previous">Older Post</a>
               
 </div>
 

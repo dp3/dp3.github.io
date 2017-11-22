@@ -79,31 +79,96 @@
 
         </div>
         <div class="col-md-9">
-          <div class="article">
-            <div class="well">
-                <h1><a href="/2016/05/Oni">May 10, 2016 - Oni 3D Printer</a></h1>
             
-            <div class="post-content">
-            
+<div class="article">
+    <div class="well">
+        <h1><a href="/2016/03/Plex-media-server">Mar 19, 2016 - Plex Media Server</a></h1>
+        
+        <div class="content">
+            <p>Plex with Samba
+Samba Install</p>
 
-            </div>
-            
-            </div>
-          </div>
-          <div class="pagination">
-              
-                <a class="btn btn-default" href="/2016/05/template" class="next">Newer Post</a>
-              
-              
-                <a class="btn btn-default" href="/2016/04/ffmpeg" class="previous">Older Post</a>
-              
-</div>
+<p>Use apt-get to pull the samba packages:</p>
+
+<p><code class="highlighter-rouge">
+$ sudo apt-get update
+$ sudo apt-get install samba
+</code></p>
+
+<p>Lets create a samba user:</p>
+
+<p><code class="highlighter-rouge">
+$ useradd USER
+$ passwd USER
+$ smbpasswd -a USER
+</code></p>
+
+<p>Now edit the config file:</p>
+
+<p><code class="highlighter-rouge">
+$ sudo vim /etc/samba/smb.conf
+</code></p>
+
+<p>Insert the following lines:</p>
+
+<p>```
+#this allows everyone to view the network share
+[SMABA UNSECURE]
+comment=PLEX-SAMBA
+path= /location/to/the/folder/you/want/to/share
+browsable=yes
+writable=yes
+guest ok=yes
+admin users= adminuser</p>
+
+<h1 id="this-only-allows-the-smbuser-to-access-the-directory">this only allows the smbuser to access the directory</h1>
+<p>[SAMBA PASSWORD PROMPT]
+path = /location/to/the/folder/you/want/to/share
+valid users = smbuser
+browseable = yes
+writeable = yes
+read only = no
+guest ok = yes
+```</p>
+
+<p>Run ‘testparm’ to verify the config works:</p>
+
+<p><code class="highlighter-rouge">
+$ testparm
+</code></p>
+
+<p>Restart samba</p>
+
+<p><code class="highlighter-rouge">
+$ sudo service smbd restart
+</code></p>
+
+<p>Plex Install</p>
+
+<p><code class="highlighter-rouge">
+$ wget https://downloads.plex.tv/plex-media-server/0.9.14.6.1620-e0b7243/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
+$ sudo dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
+</code></p>
+
 
         </div>
     </div>
 </div>
 
 
+<div class="pagination">
+  
+      
+        <a class="btn btn-default" href="/page3" class="previous">Newer</a>
+      
+  
+  <span class="page_number ">Page: 4 of 4</span>
+  
+</div>
+
+        </div>
+    </div>
+</div>
 
 <div class="container-fluid">
     <div class="row-fluid">
