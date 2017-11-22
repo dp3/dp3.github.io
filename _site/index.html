@@ -154,8 +154,8 @@ $packages = Get-WmiObject -Class Win32_Product
 $returnpackages = @{}
 foreach ($package in $packages)
 {
-            $subpackagedictionary = @{"Name" = $Package.Name; "Version" = $Package.Version; "Caption" = $Package.Caption;}
-                $returnpackages.Add($Package.Name, $subpackagedictionary)
+   $subpackagedictionary = @{"Name" = $Package.Name; "Version" = $Package.Version; "Caption" = $Package.Caption;}
+   $returnpackages.Add($Package.Name, $subpackagedictionary)
 }
 #Write-Host $returnpackages."Google Chrome".Name
 #Write-Host $returnpackages."Google Chrome".Version
@@ -164,6 +164,15 @@ $returnpackages
 
 <p>For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a <code class="highlighter-rouge">facts/templates/dumpall.j2</code> and add the following.
 ```</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>{{ vars_hack</td>
+      <td>to_json }}</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>```</p>
 
@@ -187,20 +196,20 @@ sys.setdefaultencoding(‘utf-8’)</p>
 <p>tempfolder = ‘../roles/facts/files/data/json/’</p>
 
 <p>if not os.path.isdir(tempfolder):
-    os.makedirs(tempfolder)</p>
+  os.makedirs(tempfolder)</p>
 
 <p>onlyfiles = [f for f in listdir(tempfolder) if isfile(join(tempfolder, f))]</p>
 
 <p>for file in onlyfiles:
-    host_name = str(file).replace(‘.json’,’’)  ##I am using host ips, to use hostnames use str(file).split(“.”)[3]
-    with open(os.path.join(tempfolder, file),’r+’) as data_file:
-        data = json.load(data_file)
-        data[‘ansible_password’] = ‘’
-        data[‘ansible_password_ad’] = ‘’
-        data_file.close()
-    with open(tempfolder+’/’+file, ‘w+’) as outfile:
-      json.dump(data, outfile, sort_keys=True, indent=2, separators=(‘,’, ‘: ‘))
-    outfile.close()
+  host_name = str(file).replace(‘.json’,’’)  ##I am using host ips, to use hostnames use str(file).split(“.”)[3]
+  with open(os.path.join(tempfolder, file),’r+’) as data_file:
+      data = json.load(data_file)
+      data[‘ansible_password’] = ‘’
+      data[‘ansible_password_ad’] = ‘’
+      data_file.close()
+  with open(tempfolder+’/’+file, ‘w+’) as outfile:
+    json.dump(data, outfile, sort_keys=True, indent=2, separators=(‘,’, ‘: ‘))
+  outfile.close()
 ```</p>
 
 <p>Create one last file the vars file for the role. Create <code class="highlighter-rouge">vars/main.yml</code> and add the following.</p>

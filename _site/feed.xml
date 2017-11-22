@@ -77,8 +77,8 @@ $packages = Get-WmiObject -Class Win32_Product
 $returnpackages = @{}
 foreach ($package in $packages)
 {
-            $subpackagedictionary = @{&quot;Name&quot; = $Package.Name; &quot;Version&quot; = $Package.Version; &quot;Caption&quot; = $Package.Caption;}
-                $returnpackages.Add($Package.Name, $subpackagedictionary)
+   $subpackagedictionary = @{&quot;Name&quot; = $Package.Name; &quot;Version&quot; = $Package.Version; &quot;Caption&quot; = $Package.Caption;}
+   $returnpackages.Add($Package.Name, $subpackagedictionary)
 }
 #Write-Host $returnpackages.&quot;Google Chrome&quot;.Name
 #Write-Host $returnpackages.&quot;Google Chrome&quot;.Version
@@ -87,6 +87,15 @@ $returnpackages
 
 &lt;p&gt;For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a &lt;code class=&quot;highlighter-rouge&quot;&gt;facts/templates/dumpall.j2&lt;/code&gt; and add the following.
 ```&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;{{ vars_hack&lt;/td&gt;
+      &lt;td&gt;to_json }}&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 
 &lt;p&gt;```&lt;/p&gt;
 
@@ -110,20 +119,20 @@ sys.setdefaultencoding(‘utf-8’)&lt;/p&gt;
 &lt;p&gt;tempfolder = ‘../roles/facts/files/data/json/’&lt;/p&gt;
 
 &lt;p&gt;if not os.path.isdir(tempfolder):
-    os.makedirs(tempfolder)&lt;/p&gt;
+  os.makedirs(tempfolder)&lt;/p&gt;
 
 &lt;p&gt;onlyfiles = [f for f in listdir(tempfolder) if isfile(join(tempfolder, f))]&lt;/p&gt;
 
 &lt;p&gt;for file in onlyfiles:
-    host_name = str(file).replace(‘.json’,’’)  ##I am using host ips, to use hostnames use str(file).split(“.”)[3]
-    with open(os.path.join(tempfolder, file),’r+’) as data_file:
-        data = json.load(data_file)
-        data[‘ansible_password’] = ‘’
-        data[‘ansible_password_ad’] = ‘’
-        data_file.close()
-    with open(tempfolder+’/’+file, ‘w+’) as outfile:
-      json.dump(data, outfile, sort_keys=True, indent=2, separators=(‘,’, ‘: ‘))
-    outfile.close()
+  host_name = str(file).replace(‘.json’,’’)  ##I am using host ips, to use hostnames use str(file).split(“.”)[3]
+  with open(os.path.join(tempfolder, file),’r+’) as data_file:
+      data = json.load(data_file)
+      data[‘ansible_password’] = ‘’
+      data[‘ansible_password_ad’] = ‘’
+      data_file.close()
+  with open(tempfolder+’/’+file, ‘w+’) as outfile:
+    json.dump(data, outfile, sort_keys=True, indent=2, separators=(‘,’, ‘: ‘))
+  outfile.close()
 ```&lt;/p&gt;
 
 &lt;p&gt;Create one last file the vars file for the role. Create &lt;code class=&quot;highlighter-rouge&quot;&gt;vars/main.yml&lt;/code&gt; and add the following.&lt;/p&gt;

@@ -3,6 +3,7 @@ layout: post
 title: "Additional Ansible Windows Facts"
 date: 2017-11-14 11:37:06 -0700
 comments: false
+tags: ansible windows list programs role redis
 ---
 Ansible is a great tool to manage anyhost Linux or Windows. However it is missing some key tools and features. Here is a playbook and instructions to gather all installed programs on a Windows host.
 
@@ -60,8 +61,8 @@ $packages = Get-WmiObject -Class Win32_Product
 $returnpackages = @{}
 foreach ($package in $packages)
 {
-            $subpackagedictionary = @{"Name" = $Package.Name; "Version" = $Package.Version; "Caption" = $Package.Caption;}
-                $returnpackages.Add($Package.Name, $subpackagedictionary)
+   $subpackagedictionary = @{"Name" = $Package.Name; "Version" = $Package.Version; "Caption" = $Package.Caption;}
+   $returnpackages.Add($Package.Name, $subpackagedictionary)
 }
 #Write-Host $returnpackages."Google Chrome".Name
 #Write-Host $returnpackages."Google Chrome".Version
@@ -70,8 +71,10 @@ $returnpackages
 
 For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a ```facts/templates/dumpall.j2``` and add the following.
 ```
+{% raw %}
   {{ vars_hack | to_json }}
 
+{% endraw %}
 ```
 
 Create the ```facts\files\app.py``` and add the following below. This files erases passwords dumped in the the json files.
@@ -94,20 +97,20 @@ sys.setdefaultencoding('utf-8')
 tempfolder = '../roles/facts/files/data/json/'
 
 if not os.path.isdir(tempfolder):
-    os.makedirs(tempfolder)
+  os.makedirs(tempfolder)
 
 onlyfiles = [f for f in listdir(tempfolder) if isfile(join(tempfolder, f))]
 
 for file in onlyfiles:
-    host_name = str(file).replace('.json','')  ##I am using host ips, to use hostnames use str(file).split(".")[3]
-    with open(os.path.join(tempfolder, file),'r+') as data_file:
-        data = json.load(data_file)
-        data['ansible_password'] = ''
-        data['ansible_password_ad'] = ''
-        data_file.close()
-    with open(tempfolder+'/'+file, 'w+') as outfile:
-      json.dump(data, outfile, sort_keys=True, indent=2, separators=(',', ': '))
-    outfile.close()
+  host_name = str(file).replace('.json','')  ##I am using host ips, to use hostnames use str(file).split(".")[3]
+  with open(os.path.join(tempfolder, file),'r+') as data_file:
+      data = json.load(data_file)
+      data['ansible_password'] = ''
+      data['ansible_password_ad'] = ''
+      data_file.close()
+  with open(tempfolder+'/'+file, 'w+') as outfile:
+    json.dump(data, outfile, sort_keys=True, indent=2, separators=(',', ': '))
+  outfile.close()
 ```
 
 Create one last file the vars file for the role. Create ```vars/main.yml``` and add the following.
