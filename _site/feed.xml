@@ -8,7 +8,7 @@
 		
 			<item>
 				<title>Additional Ansible Windows Facts</title>
-				<description>&lt;p&gt;Ansible is a great tool to manage anyhost Linux or Windows. However it is missing some key tools and features. Here is a playbook and instructions to gather all installed programs on a Windows host.&lt;/p&gt;
+				<description>&lt;p&gt;Ansible is a great tool to manage any Linux or Windows host. However it is missing some key tools and features. Here is a playbook and instructions to gather all installed programs on a Windows host.&lt;/p&gt;
 
 &lt;p&gt;Start with creating a new role, I named mine facts.&lt;/p&gt;
 
@@ -85,16 +85,19 @@ foreach ($package in $packages)
 $returnpackages
 &lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a &lt;code class=&quot;highlighter-rouge&quot;&gt;facts/templates/dumpall.j2&lt;/code&gt; and add the following.&lt;/p&gt;
+&lt;p&gt;For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a &lt;code class=&quot;highlighter-rouge&quot;&gt;facts/templates/dumpall.j2&lt;/code&gt; and add the following.
+```&lt;/p&gt;
 
 &lt;table&gt;
   &lt;tbody&gt;
     &lt;tr&gt;
-      &lt;td&gt;{{ vars_hack&lt;/td&gt;
+      &lt;td&gt;`  {{ vars_hack&lt;/td&gt;
       &lt;td&gt;to_json }}&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
+
+&lt;p&gt;```&lt;/p&gt;
 
 &lt;p&gt;Create the &lt;code class=&quot;highlighter-rouge&quot;&gt;facts\files\app.py&lt;/code&gt; and add the following below. This files erases passwords dumped in the the json files.
 ```
@@ -152,7 +155,7 @@ systemctl start redis
 echo &quot;redis-password-string&quot; | sha256sum 
 &lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;Edit the redis config file in &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/redis.conf&lt;/code&gt;and find the line &lt;em&gt;requirepass&lt;/em&gt; and insert the genrated hash&lt;/p&gt;
+&lt;p&gt;Edit the redis config file in &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/redis.conf&lt;/code&gt;and find the line &lt;em&gt;requirepass&lt;/em&gt; and insert the generated hash&lt;/p&gt;
 
 &lt;p&gt;Edit your base ansible.cfg usualy in the first directory of your ansible setup and add the line&lt;/p&gt;
 

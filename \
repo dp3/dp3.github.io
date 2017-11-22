@@ -5,7 +5,7 @@ date: 2017-11-14 11:37:06 -0700
 comments: false
 tags: ansible windows list programs role redis
 ---
-Ansible is a great tool to manage any Linux or Windows host. However it is missing some key tools and features. Here is a playbook and instructions to gather all installed programs on a Windows host.
+Ansible is a great tool to manage anyhost Linux or Windows. However it is missing some key tools and features. Here is a playbook and instructions to gather all installed programs on a Windows host.
 
 Start with creating a new role, I named mine facts.
 
@@ -70,11 +70,9 @@ $returnpackages
 ```
 
 For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a ```facts/templates/dumpall.j2``` and add the following.
-```
 {% raw %}
-`  {{ vars_hack | to_json }}
+  {{ vars_hack | to_json }}
 {% endraw %}
-```
 
 Create the ```facts\files\app.py``` and add the following below. This files erases passwords dumped in the the json files.
 ```

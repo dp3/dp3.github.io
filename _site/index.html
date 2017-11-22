@@ -85,7 +85,7 @@
         <h1><a href="/2017/11/addition-ansible-windows-facts">Nov 14, 2017 - Additional Ansible Windows Facts</a></h1>
         
         <div class="content">
-            <p>Ansible is a great tool to manage anyhost Linux or Windows. However it is missing some key tools and features. Here is a playbook and instructions to gather all installed programs on a Windows host.</p>
+            <p>Ansible is a great tool to manage any Linux or Windows host. However it is missing some key tools and features. Here is a playbook and instructions to gather all installed programs on a Windows host.</p>
 
 <p>Start with creating a new role, I named mine facts.</p>
 
@@ -162,16 +162,19 @@ foreach ($package in $packages)
 $returnpackages
 </code></p>
 
-<p>For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a <code class="highlighter-rouge">facts/templates/dumpall.j2</code> and add the following.</p>
+<p>For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a <code class="highlighter-rouge">facts/templates/dumpall.j2</code> and add the following.
+```</p>
 
 <table>
   <tbody>
     <tr>
-      <td>{{ vars_hack</td>
+      <td>`  {{ vars_hack</td>
       <td>to_json }}</td>
     </tr>
   </tbody>
 </table>
+
+<p>```</p>
 
 <p>Create the <code class="highlighter-rouge">facts\files\app.py</code> and add the following below. This files erases passwords dumped in the the json files.
 ```
@@ -229,7 +232,7 @@ systemctl start redis
 echo "redis-password-string" | sha256sum 
 </code></p>
 
-<p>Edit the redis config file in <code class="highlighter-rouge">/etc/redis.conf</code>and find the line <em>requirepass</em> and insert the genrated hash</p>
+<p>Edit the redis config file in <code class="highlighter-rouge">/etc/redis.conf</code>and find the line <em>requirepass</em> and insert the generated hash</p>
 
 <p>Edit your base ansible.cfg usualy in the first directory of your ansible setup and add the line</p>
 
