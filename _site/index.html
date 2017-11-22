@@ -162,8 +162,7 @@ foreach ($package in $packages)
 $returnpackages
 </code></p>
 
-<p>For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a <code class="highlighter-rouge">facts/templates/dumpall.j2</code> and add the following.
-```</p>
+<p>For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a <code class="highlighter-rouge">facts/templates/dumpall.j2</code> and add the following.</p>
 
 <table>
   <tbody>
@@ -173,8 +172,6 @@ $returnpackages
     </tr>
   </tbody>
 </table>
-
-<p>```</p>
 
 <p>Create the <code class="highlighter-rouge">facts\files\app.py</code> and add the following below. This files erases passwords dumped in the the json files.
 ```
@@ -222,9 +219,9 @@ host_program_csv: '../roles/facts/files/data/programs'
 <p>Now install the redis service.
 For Centos 7
 <code class="highlighter-rouge">
-  yum install redis
-  systemctl enable redis
-  systemctl start redis
+yum install redis
+systemctl enable redis
+systemctl start redis
 </code></p>
 
 <p>Generate a hash for redis
@@ -236,10 +233,9 @@ echo "redis-password-string" | sha256sum
 
 <p>Edit your base ansible.cfg usualy in the first directory of your ansible setup and add the line</p>
 
-<p>```
-fact_caching_connection = <redis-ip>:6379:0:<redis-hash></redis-hash></redis-ip></p>
-
-<p>```</p>
+<p><code class="highlighter-rouge">
+fact_caching_connection = &lt;redis-ip&gt;:6379:0:&lt;redis-hash&gt;
+</code></p>
 
         </div>
     </div>

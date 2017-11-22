@@ -70,12 +70,11 @@ $returnpackages
 ```
 
 For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a ```facts/templates/dumpall.j2``` and add the following.
-```
+
 {% raw %}
   {{ vars_hack | to_json }}
 
 {% endraw %}
-```
 
 Create the ```facts\files\app.py``` and add the following below. This files erases passwords dumped in the the json files.
 ```
@@ -123,9 +122,9 @@ host_program_csv: '../roles/facts/files/data/programs'
 Now install the redis service.
 For Centos 7
 ```
-  yum install redis
-  systemctl enable redis
-  systemctl start redis
+yum install redis
+systemctl enable redis
+systemctl start redis
 ```
 
 Generate a hash for redis
@@ -139,5 +138,4 @@ Edit your base ansible.cfg usualy in the first directory of your ansible setup a
 
 ```
 fact_caching_connection = <redis-ip>:6379:0:<redis-hash>
-
 ```

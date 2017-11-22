@@ -85,8 +85,7 @@ foreach ($package in $packages)
 $returnpackages
 &lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a &lt;code class=&quot;highlighter-rouge&quot;&gt;facts/templates/dumpall.j2&lt;/code&gt; and add the following.
-```&lt;/p&gt;
+&lt;p&gt;For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a &lt;code class=&quot;highlighter-rouge&quot;&gt;facts/templates/dumpall.j2&lt;/code&gt; and add the following.&lt;/p&gt;
 
 &lt;table&gt;
   &lt;tbody&gt;
@@ -96,8 +95,6 @@ $returnpackages
     &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
-
-&lt;p&gt;```&lt;/p&gt;
 
 &lt;p&gt;Create the &lt;code class=&quot;highlighter-rouge&quot;&gt;facts\files\app.py&lt;/code&gt; and add the following below. This files erases passwords dumped in the the json files.
 ```
@@ -145,9 +142,9 @@ host_program_csv: &#39;../roles/facts/files/data/programs&#39;
 &lt;p&gt;Now install the redis service.
 For Centos 7
 &lt;code class=&quot;highlighter-rouge&quot;&gt;
-  yum install redis
-  systemctl enable redis
-  systemctl start redis
+yum install redis
+systemctl enable redis
+systemctl start redis
 &lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;Generate a hash for redis
@@ -159,10 +156,9 @@ echo &quot;redis-password-string&quot; | sha256sum
 
 &lt;p&gt;Edit your base ansible.cfg usualy in the first directory of your ansible setup and add the line&lt;/p&gt;
 
-&lt;p&gt;```
-fact_caching_connection = &lt;redis-ip&gt;:6379:0:&lt;redis-hash&gt;&lt;/redis-hash&gt;&lt;/redis-ip&gt;&lt;/p&gt;
-
-&lt;p&gt;```&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+fact_caching_connection = &amp;lt;redis-ip&amp;gt;:6379:0:&amp;lt;redis-hash&amp;gt;
+&lt;/code&gt;&lt;/p&gt;
 </description>
 				<pubDate>Tue, 14 Nov 2017 12:37:06 -0600</pubDate>
 				<link>https://devonpeel.me/2017/11/addition-ansible-windows-facts</link>
