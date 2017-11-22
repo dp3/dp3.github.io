@@ -79,12 +79,11 @@
 
         </div>
         <div class="col-md-9">
+          <div class="article">
+            <div class="well">
+                <h1><a href="/2017/11/addition-ansible-windows-facts">Nov 14, 2017 - Additional Ansible Windows Facts</a></h1>
             
-<div class="article">
-    <div class="well">
-        <h1><a href="/2017/11/addition-ansible-windows-facts">Nov 14, 2017 - Additional Ansible Windows Facts</a></h1>
-        
-        <div class="content">
+            <div class="post-content">
             <p>Ansible is a great tool to manage anyhost Linux or Windows. However it is missing some key tools and features. Here is a playbook and instructions to gather all installed programs on a Windows host.</p>
 
 <p>Start with creating a new role, I named mine facts.</p>
@@ -232,122 +231,22 @@ fact_caching_connection = <redis-ip>:6379:0:<redis-hash></redis-hash></redis-ip>
 
 <p>```</p>
 
-        </div>
-    </div>
-</div>
-
-<div class="article">
-    <div class="well">
-        <h1><a href="/2017/02/SMTPtoSMSrelay">Feb 25, 2017 - SMTP to SMS relay</a></h1>
-        
-        <div class="content">
-            <p>This script will send SMS via various smtp relays.</p>
-
-<p>```
-import smtplib</p>
-
-<h1 id="use-sms-gateway-provided-by-mobile-carrier">Use sms gateway provided by mobile carrier:</h1>
-<p># alltel         number@message.Alltel.com 
-# at&amp;t:          number@mms.att.net
-# boost:         number@myboostmobile.com
-# google voice   number@@txt.voice.google.com (needs work)
-# metro pcs:     number@mymetropcs.com
-# sprint:        number@page.nextel.com
-# straight talk  number@mypixmessages.com
-# t-mobile:      number@tmomail.net
-# us cellular:   number@mms.uscc.net<br />
-# verizon:-       number@vtext.com
-# virgin:        number@vmpix.com</p>
-
-<p>server = smtplib.SMTP( “smtp.gmail.com”, 587 )
-server.ehlo()
-server.starttls()
-server.ehlo()
-server.login( ‘Google username’, ‘<google app="" password="">' )</google></p>
-
-<h1 id="serversendmail-from-numbertmomailnet-hello-">server.sendmail( ‘<from>', '<number>@tmomail.net', 'Hello!' )</number></from></h1>
-
-<p>server.sendmail( ‘<sending phone="" number="">', '<receiving phone="" numver="">@<domain.com>', 'Leory Jenkins!!!!' )
-```</domain.com></receiving></sending></p>
-
-
-        </div>
-    </div>
-</div>
-
-<div class="article">
-    <div class="well">
-        <h1><a href="/2017/01/Python-WSGI">Jan 17, 2017 - Python WSGI</a></h1>
-        
-        <div class="content">
-            <p>How to run a python pyramid application under apache2(httpd) using the mod_wgsi.</p>
-
-<p>Create application user</p>
-
-<p><code class="highlighter-rouge">
-  useradd appdeploy
-</code></p>
-
-<p>Edit /etc/passwd</p>
-
-<p><code class="highlighter-rouge">
-  appdeploy:x:&lt;uid&gt;:&lt;gid&gt;:appdeploy:/&lt;home&gt;/&lt;directory&gt;:/sbin/nologin
-</code></p>
-
-<p>Create an apache2 config file under /etc/httpd/conf.d/</p>
-
-<p>```
-&lt;virtuallHost *:80&gt;
-  ServerName archive.math.ksu.edu</p>
-
-<h1 id="use-only-1-python-sub-interpreter--multiple-sub-interpreters">Use only 1 Python sub-interpreter.  Multiple sub-interpreters</h1>
-<p># play badly with C extensions.  See
-# http://stackoverflow.com/a/10558360/209039
-WSGIApplicationGroup %{GLOBAL}
-WSGIPassAuthorization On
-WSGIDaemonProcess pyramid user=appdeploy    group=appdeploy  threads=4 \
-   python-path=/var/www/archive/temp_py/lib/python2.7/site-packages
-WSGIScriptAlias / /var/www/archive/pyramid.wsgi</p>
-
-<p>&lt;Directory /var/www/archive&gt;
-  WSGIProcessGroup pyramid
-  Order allow,deny
-  Allow from all
-&lt;/Directory&gt;</p>
-
-<p>&lt;/VirtualHost&gt;
-```</p>
-
-<p>Create a WSGI file in the application directory that will be called by the apache2 service.</p>
-
-<p>```
-import os,sys,site</p>
-
-<p>os.environ[‘PYTHON_EGG_CACHE’] = ‘/var/www/archive/temp_py’</p>
-
-<p>from pyramid.paster import get_app, setup_logging
-ini_path = ‘/var/www/archive/production.ini’
-#setup_logging(ini_path)
-application = get_app(ini_path, ‘main’)
-```</p>
-
-
-        </div>
-    </div>
-</div>
-
-
-<div class="pagination">
-  
-  <span class="page_number ">Page: 1 of 4</span>
-  
-    <a class="btn btn-default" href="/page2" class="next">Older</a>
-  
+            </div>
+            
+            </div>
+          </div>
+          <div class="pagination">
+              
+              
+                <a class="btn btn-default" href="/2017/02/SMTPtoSMSrelay" class="previous">Older Post</a>
+              
 </div>
 
         </div>
     </div>
 </div>
+
+
 
 <div class="container-fluid">
     <div class="row-fluid">

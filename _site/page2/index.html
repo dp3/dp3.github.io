@@ -54,6 +54,8 @@
     <h1>Recent Posts</h1>
     <ul>
         
+          <li><a href="/2017/11/addition-ansible-windows-facts">Additional Ansible Windows Facts</a></li>
+        
           <li><a href="/2017/02/SMTPtoSMSrelay">SMTP to SMS relay</a></li>
         
           <li><a href="/2017/01/Python-WSGI">Python WSGI</a></li>
@@ -61,8 +63,6 @@
           <li><a href="/2016/12/Google-Analytics">Google Analytics</a></li>
         
           <li><a href="/2016/05/ChoreApp">Chore App</a></li>
-        
-          <li><a href="/2016/05/chocolatey">Chocolatey "The Windows" Package Manager</a></li>
         
     </ul>
 </div>
@@ -80,6 +80,24 @@
         </div>
         <div class="col-md-9">
             
+<div class="article">
+    <div class="well">
+        <h1><a href="/2016/12/Google-Analytics">Dec 12, 2016 - Google Analytics</a></h1>
+        
+        <div class="content">
+            <p>I am not sure  of the Russian interest in this website.</p>
+
+<p>These are some funny languages 
+<img src="/images/Google_Analytics_language.png" alt="screenshotOne" class="img-responsive" />
+<img src="/images/Google_Analytics_Country.png" alt="screenshotTwo" class="img-responsive" /> 
+<img src="/images/Google_Analytics_city.png" alt="screenshotThree" class="img-responsive" />
+<img src="/images/Google_Analytics_time.png" alt="screenshotFour" class="img-responsive" />
+<img src="/images/Google_Analytics_chart.png" alt="screenshotFive" class="img-responsive" /></p>
+
+        </div>
+    </div>
+</div>
+
 <div class="article">
     <div class="well">
         <h1><a href="/2016/05/ChoreApp">May 12, 2016 - Chore App</a></h1>
@@ -286,88 +304,6 @@ iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.p
 </code></p>
 
 <p>Edit the <project name="">.nuspect file, install, and uninstall files under the tools directory</project></p>
-
-        </div>
-    </div>
-</div>
-
-<div class="article">
-    <div class="well">
-        <h1><a href="/2016/05/irssi">May 10, 2016 - Irssi Setup</a></h1>
-        
-        <div class="content">
-            <h2 id="in-the-irssi-config-add-the-following">In the irssi config add the following:</h2>
-
-<h2 id="setting-up-crapbuserpl">Setting up crapbuser.pl</h2>
-<p>In the aliases section add</p>
-
-<p><code class="highlighter-rouge">
-cb = "/crapbuster";
-</code></p>
-
-<p>In the setting section add</p>
-
-<p><code class="highlighter-rouge">
-  "perl/core/scripts" = {
-              crapbuster_levels = "JOINS PARTS QUITS  CLIENTCRAP CRAP MODE  KICKSi";
-   };
-</code></p>
-
-<h2 id="setting-up-logging">Setting Up logging</h2>
-<p>In the setting section add the following</p>
-
-<p>```
-settings = {
-  core = {    log_timestamp = “%H:%M:%S “;
-    recode_autodetect_utf8 = “yes”;
-    recode_fallback = “ISO-8859-15”;
-    recode_out_default_charset = “ISO-8859-15”;
-    recode_transliterate = “yes”;
-    recode = “yes”;
-  };
-  “fe-text” = { actlist_sort = “refnum”; };
-  “fe-common/core” = {
-    autolog = “yes”;
-    autolog_path = “~/.irssi/logs/%Y/$0/%m-%d.log”;
-    term_charset = “utf-8”;
-    activity_hide_level = “= JOINS QUITS”;
-  };</p>
-
-<p>};
-```</p>
-
-<h2 id="downloading-the-scripts">Downloading the Scripts</h2>
-<p>In .irssi/scripts add the following perlscripts from https://scripts.irssi.org/</p>
-
-<ul>
-  <li>
-    <p>awayproxy.pl</p>
-  </li>
-  <li>
-    <p>crapbuster.pl</p>
-  </li>
-  <li>
-    <p>screen_away.pl (may want to eidt this script)</p>
-  </li>
-</ul>
-
-<h2 id="startup">Startup</h2>
-
-<p>Create a startup script in .irssi/startup</p>
-
-<p><code class="highlighter-rouge">
-/set term_charset utf-8
-/set recode_autodetect_utf8 ON
-/set recode_fallback ISO-8859-15
-/set recode_out_default_charset ISO-8859-15
-/set recode_transliterate ON
-/set recode ON
-/load crapbuster.pl
-/set crapbuster_levels JOINS PARTS QUITS  CLIENTCRAP CRAP MODE  KICKSi
-/alias cb /crapbuster
-/load awayproxy.pl
-/load screen_away.pl
-</code></p>
 
         </div>
     </div>

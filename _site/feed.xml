@@ -7,6 +7,160 @@
 		<atom:link href="https://devonpeel.me/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>Additional Ansible Windows Facts</title>
+				<description>&lt;p&gt;Ansible is a great tool to manage anyhost Linux or Windows. However it is missing some key tools and features. Here is a playbook and instructions to gather all installed programs on a Windows host.&lt;/p&gt;
+
+&lt;p&gt;Start with creating a new role, I named mine facts.&lt;/p&gt;
+
+&lt;p&gt;Create the &lt;code class=&quot;highlighter-rouge&quot;&gt;facts\tasks\main.yml&lt;/code&gt; file and add the following&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;```&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;name: create Scripts dir on remote host
+win_file:
+  path: C:\Scripts
+  state: directory&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;name: copy custom facts file
+win_copy:
+  src: getFacts.ps1
+  dest: C:\Scripts\&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;name: gather extra facts
+setup:
+  fact_path: C:\Scripts&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;name: Set intermediate fact
+set_fact:
+  vars_hack: “”&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;name: set program facts
+set_fact:
+  one_fact: ansible_getFacts
+  var_hack:  “”&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;dont-delete-the-entire-dir-delete-the-file-to-update-it&quot;&gt;dont delete the entire dir, delete the file to update it.&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;name: delete json file
+file:
+  path: “/.json”
+  state: absent
+failed_when: false
+delegate_to: localhost&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;name: Dump all vars for dedugging
+action: template src=templates/dumpall.j2 dest=”/.json”
+delegate_to: localhost&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;name: run app.py to clean sensitive data from the json file
+script: app.py
+delegate_to: localhost
+ignore_errors: true
+```&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now create the &lt;code class=&quot;highlighter-rouge&quot;&gt;facts/files/getFacts.ps1&lt;/code&gt; file and add the follwoing below. This file will be copied to each Windows host and run return a dictionary of all installed programs.
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+#sourced from https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/
+$packages = Get-WmiObject -Class Win32_Product
+$returnpackages = @{}
+foreach ($package in $packages)
+{
+            $subpackagedictionary = @{&quot;Name&quot; = $Package.Name; &quot;Version&quot; = $Package.Version; &quot;Caption&quot; = $Package.Caption;}
+                $returnpackages.Add($Package.Name, $subpackagedictionary)
+}
+#Write-Host $returnpackages.&quot;Google Chrome&quot;.Name
+#Write-Host $returnpackages.&quot;Google Chrome&quot;.Version
+$returnpackages
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a &lt;code class=&quot;highlighter-rouge&quot;&gt;facts/templates/dumpall.j2&lt;/code&gt; and add the following.
+```&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;Create the &lt;code class=&quot;highlighter-rouge&quot;&gt;facts\files\app.py&lt;/code&gt; and add the following below. This files erases passwords dumped in the the json files.
+```
+#!/usr/bin/env python
+# orginal found at https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/&lt;/p&gt;
+
+&lt;p&gt;import os
+import rethinkdb
+import json
+import rethinkdb as r&lt;/p&gt;
+
+&lt;p&gt;from os import listdir
+from os.path import isfile, join&lt;/p&gt;
+
+&lt;p&gt;import sys
+reload(sys)
+sys.setdefaultencoding(‘utf-8’)&lt;/p&gt;
+
+&lt;p&gt;tempfolder = ‘../roles/facts/files/data/json/’&lt;/p&gt;
+
+&lt;p&gt;if not os.path.isdir(tempfolder):
+    os.makedirs(tempfolder)&lt;/p&gt;
+
+&lt;p&gt;onlyfiles = [f for f in listdir(tempfolder) if isfile(join(tempfolder, f))]&lt;/p&gt;
+
+&lt;p&gt;for file in onlyfiles:
+    host_name = str(file).replace(‘.json’,’’)  ##I am using host ips, to use hostnames use str(file).split(“.”)[3]
+    with open(os.path.join(tempfolder, file),’r+’) as data_file:
+        data = json.load(data_file)
+        data[‘ansible_password’] = ‘’
+        data[‘ansible_password_ad’] = ‘’
+        data_file.close()
+    with open(tempfolder+’/’+file, ‘w+’) as outfile:
+      json.dump(data, outfile, sort_keys=True, indent=2, separators=(‘,’, ‘: ‘))
+    outfile.close()
+```&lt;/p&gt;
+
+&lt;p&gt;Create one last file the vars file for the role. Create &lt;code class=&quot;highlighter-rouge&quot;&gt;vars/main.yml&lt;/code&gt; and add the following.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+json_files: &#39;../roles/facts/files/data/json/&#39;
+host_program_csv: &#39;../roles/facts/files/data/programs&#39;
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Now install the redis service.
+For Centos 7
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+  yum install redis
+  systemctl enable redis
+  systemctl start redis
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Generate a hash for redis
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+echo &quot;redis-password-string&quot; | sha256sum 
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Edit the redis config file in &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/redis.conf&lt;/code&gt;and find the line &lt;em&gt;requirepass&lt;/em&gt; and insert the genrated hash&lt;/p&gt;
+
+&lt;p&gt;Edit your base ansible.cfg usualy in the first directory of your ansible setup and add the line&lt;/p&gt;
+
+&lt;p&gt;```
+fact_caching_connection = &lt;redis-ip&gt;:6379:0:&lt;redis-hash&gt;&lt;/redis-hash&gt;&lt;/redis-ip&gt;&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+</description>
+				<pubDate>Tue, 14 Nov 2017 12:37:06 -0600</pubDate>
+				<link>https://devonpeel.me/2017/11/addition-ansible-windows-facts</link>
+				<guid isPermaLink="true">https://devonpeel.me/2017/11/addition-ansible-windows-facts</guid>
+			</item>
+		
+			<item>
 				<title>SMTP to SMS relay</title>
 				<description>&lt;p&gt;This script will send SMS via various smtp relays.&lt;/p&gt;
 
@@ -470,79 +624,6 @@ ffmpeg -i &quot;concat:00000.MTS|00001.MTS|00002.MTS|00003.MTS|00004.MTS|00005.M
 				<pubDate>Tue, 12 Apr 2016 11:09:06 -0500</pubDate>
 				<link>https://devonpeel.me/2016/04/ffmpeg</link>
 				<guid isPermaLink="true">https://devonpeel.me/2016/04/ffmpeg</guid>
-			</item>
-		
-			<item>
-				<title>Plex Media Server</title>
-				<description>&lt;p&gt;Plex with Samba
-Samba Install&lt;/p&gt;
-
-&lt;p&gt;Use apt-get to pull the samba packages:&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
-$ sudo apt-get update
-$ sudo apt-get install samba
-&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Lets create a samba user:&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
-$ useradd USER
-$ passwd USER
-$ smbpasswd -a USER
-&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Now edit the config file:&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
-$ sudo vim /etc/samba/smb.conf
-&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Insert the following lines:&lt;/p&gt;
-
-&lt;p&gt;```
-#this allows everyone to view the network share
-[SMABA UNSECURE]
-comment=PLEX-SAMBA
-path= /location/to/the/folder/you/want/to/share
-browsable=yes
-writable=yes
-guest ok=yes
-admin users= adminuser&lt;/p&gt;
-
-&lt;h1 id=&quot;this-only-allows-the-smbuser-to-access-the-directory&quot;&gt;this only allows the smbuser to access the directory&lt;/h1&gt;
-&lt;p&gt;[SAMBA PASSWORD PROMPT]
-path = /location/to/the/folder/you/want/to/share
-valid users = smbuser
-browseable = yes
-writeable = yes
-read only = no
-guest ok = yes
-```&lt;/p&gt;
-
-&lt;p&gt;Run ‘testparm’ to verify the config works:&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
-$ testparm
-&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Restart samba&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
-$ sudo service smbd restart
-&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Plex Install&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
-$ wget https://downloads.plex.tv/plex-media-server/0.9.14.6.1620-e0b7243/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
-$ sudo dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
-&lt;/code&gt;&lt;/p&gt;
-
-</description>
-				<pubDate>Sat, 19 Mar 2016 18:25:06 -0500</pubDate>
-				<link>https://devonpeel.me/2016/03/Plex-media-server</link>
-				<guid isPermaLink="true">https://devonpeel.me/2016/03/Plex-media-server</guid>
 			</item>
 		
 	</channel>
