@@ -7,6 +7,73 @@
 		<atom:link href="https://devonpeel.me/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>Using Additional Ansible Facts</title>
+				<description>&lt;p&gt;This article is an addition to Additional Ansible Windows Facts.&lt;/p&gt;
+
+&lt;p&gt;To view the facts after running the role enter in the following in a terminal.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
+ansible &amp;lt;HOST or GROUP&amp;gt;  -m debug -a &quot;var=ansible_getFacts&quot;
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;To check if a program is installed
+1. Set the register variable 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+- name: get variables
+  debug: var=hostvars[inventory_hostname][&#39;ansible_getFacts&#39;][&#39;&amp;lt;PROGRAM NAME&amp;gt;&#39;]
+    register: &amp;lt;PROGRAM NAME&amp;gt;
+&lt;/code&gt;
+2. Next use the register with the ansible ‘when’ command. Below is an exaple that will run in cases of the program missing. 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;
+  when: hostvars[inventory_hostname][&#39;ansible_getFacts&#39;][&#39;&amp;lt;PROGRAM NAME&amp;gt;&#39;] is undefined
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Complete Example 
+```
+- name: get variables
+  debug: var=hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office Professional Plus 2016’]
+  register: msoffice_check&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;name: create  ms office dir 
+win_file:
+  path: C:\msoffice
+  state: directory 
+when: hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office Professional Plus 2016’] is undefined&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;name: copy ms office dir to c drive
+win_copy:
+  src:  /misc/software/msoffice2016/
+  dest: C:\msoffice
+ignore_errors: yes
+when: hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office Professional Plus 2016’] is undefined&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;name:  Install msoffice
+win_command: choco install msoffice.20.16.1.nupkg -y
+args: 
+  chdir: C:\msoffice
+ignore_errors: yes
+when: hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office Professional Plus 2016’] is undefined&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;name: remove MS office dir
+win_file:
+  path: C:\msoffice
+  state: absent
+when: hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office Professional Plus 2016’] is defined
+```&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+				<pubDate>Thu, 21 Dec 2017 18:09:06 -0600</pubDate>
+				<link>https://devonpeel.me/2017/12/using-additional-ansible-facts</link>
+				<guid isPermaLink="true">https://devonpeel.me/2017/12/using-additional-ansible-facts</guid>
+			</item>
+		
+			<item>
 				<title>Additional Ansible Windows Facts</title>
 				<description>&lt;p&gt;Ansible is a great tool to manage any Linux or Windows host. However it is missing some key tools and features. Here is a playbook and instructions to gather all installed programs on a Windows host.&lt;/p&gt;
 
@@ -91,7 +158,7 @@ $returnpackages
 &lt;table&gt;
   &lt;tbody&gt;
     &lt;tr&gt;
-      &lt;td&gt;`  {{ vars_hack&lt;/td&gt;
+      &lt;td&gt;{{ vars_hack&lt;/td&gt;
       &lt;td&gt;to_json }}&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/tbody&gt;
@@ -583,55 +650,6 @@ settings = {
 				<pubDate>Tue, 10 May 2016 11:09:06 -0500</pubDate>
 				<link>https://devonpeel.me/2016/05/Oni</link>
 				<guid isPermaLink="true">https://devonpeel.me/2016/05/Oni</guid>
-			</item>
-		
-			<item>
-				<title>Tip and Trick for ffmpeg</title>
-				<description>&lt;p&gt;Creating a Time Lapse with Jpeg Photo&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
-ffmpeg -i &#39;%*.JPG&#39; -r 30 -q:v 2 timelapse.mp4
-&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;For iMovie&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
-ffmpeg -i &#39;%*.JPG&#39; -r 30 -q:v 2 -pix_fmt yuv420p  timelapse.mp4
-&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Merge videos into one&lt;/p&gt;
-
-&lt;p&gt;```
-cat list.txt&lt;/p&gt;
-
-&lt;p&gt;file ‘GOPR4922.MP4’
-file ‘GP014922.MP4’
-file ‘GP024922.MP4’&lt;/p&gt;
-
-&lt;p&gt;ffmpeg -f concat -i list.txt -c copy merged.mp4
-```&lt;/p&gt;
-
-&lt;p&gt;Speedup video by X4&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
-ffmpeg -i input.mp4 -strict -2 -vf &quot;setpts=0.25*PTS&quot; outputX4.mp4
-&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Select a section from a video (minutes 26-32:10)&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;
-ffmpeg -i merged.mp4 -ss 00:26:00 -to 00:32:10 -c:v copy -c:a copy part2.mp4
-&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;Merge MTS files from a video camera 
-&lt;code class=&quot;highlighter-rouge&quot;&gt;
-ffmpeg -i &quot;concat:00000.MTS|00001.MTS|00002.MTS|00003.MTS|00004.MTS|00005.MTS|00006.MTS&quot; output.mp4
-&lt;/code&gt;&lt;/p&gt;
-
-</description>
-				<pubDate>Tue, 12 Apr 2016 11:09:06 -0500</pubDate>
-				<link>https://devonpeel.me/2016/04/ffmpeg</link>
-				<guid isPermaLink="true">https://devonpeel.me/2016/04/ffmpeg</guid>
 			</item>
 		
 	</channel>

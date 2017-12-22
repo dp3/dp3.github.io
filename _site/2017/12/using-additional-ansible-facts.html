@@ -81,60 +81,68 @@
         <div class="col-md-9">
           <div class="article">
             <div class="well">
-                <h1><a href="/2017/01/Python-WSGI">Jan 17, 2017 - Python WSGI</a></h1>
+                <h1><a href="/2017/12/using-additional-ansible-facts">Dec 21, 2017 - Using Additional Ansible Facts</a></h1>
             
             <div class="post-content">
-            <p>How to run a python pyramid application under apache2(httpd) using the mod_wgsi.</p>
+            <p>This article is an addition to Additional Ansible Windows Facts.</p>
 
-<p>Create application user</p>
-
-<p><code class="highlighter-rouge">
-  useradd appdeploy
-</code></p>
-
-<p>Edit /etc/passwd</p>
+<p>To view the facts after running the role enter in the following in a terminal.</p>
 
 <p><code class="highlighter-rouge">
-  appdeploy:x:&lt;uid&gt;:&lt;gid&gt;:appdeploy:/&lt;home&gt;/&lt;directory&gt;:/sbin/nologin
+ansible &lt;HOST or GROUP&gt;  -m debug -a "var=ansible_getFacts"
 </code></p>
 
-<p>Create an apache2 config file under /etc/httpd/conf.d/</p>
+<p>To check if a program is installed
+1. Set the register variable 
+<code class="highlighter-rouge">
+- name: get variables
+  debug: var=hostvars[inventory_hostname]['ansible_getFacts']['&lt;PROGRAM NAME&gt;']
+    register: &lt;PROGRAM NAME&gt;
+</code>
+2. Next use the register with the ansible ‘when’ command. Below is an exaple that will run in cases of the program missing. 
+<code class="highlighter-rouge">
+  when: hostvars[inventory_hostname]['ansible_getFacts']['&lt;PROGRAM NAME&gt;'] is undefined
+</code></p>
 
-<p>```
-&lt;virtuallHost *:80&gt;
-  ServerName archive.math.ksu.edu</p>
+<p>Complete Example 
+```
+- name: get variables
+  debug: var=hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office Professional Plus 2016’]
+  register: msoffice_check</p>
 
-<h1 id="use-only-1-python-sub-interpreter--multiple-sub-interpreters">Use only 1 Python sub-interpreter.  Multiple sub-interpreters</h1>
-<p># play badly with C extensions.  See
-# http://stackoverflow.com/a/10558360/209039
-WSGIApplicationGroup %{GLOBAL}
-WSGIPassAuthorization On
-WSGIDaemonProcess pyramid user=appdeploy    group=appdeploy  threads=4 \
-   python-path=/var/www/archive/temp_py/lib/python2.7/site-packages
-WSGIScriptAlias / /var/www/archive/pyramid.wsgi</p>
-
-<p>&lt;Directory /var/www/archive&gt;
-  WSGIProcessGroup pyramid
-  Order allow,deny
-  Allow from all
-&lt;/Directory&gt;</p>
-
-<p>&lt;/VirtualHost&gt;
+<ul>
+  <li>
+    <p>name: create  ms office dir 
+win_file:
+  path: C:\msoffice
+  state: directory 
+when: hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office Professional Plus 2016’] is undefined</p>
+  </li>
+  <li>
+    <p>name: copy ms office dir to c drive
+win_copy:
+  src:  /misc/software/msoffice2016/
+  dest: C:\msoffice
+ignore_errors: yes
+when: hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office Professional Plus 2016’] is undefined</p>
+  </li>
+  <li>
+    <p>name:  Install msoffice
+win_command: choco install msoffice.20.16.1.nupkg -y
+args: 
+  chdir: C:\msoffice
+ignore_errors: yes
+when: hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office Professional Plus 2016’] is undefined</p>
+  </li>
+  <li>
+    <p>name: remove MS office dir
+win_file:
+  path: C:\msoffice
+  state: absent
+when: hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office Professional Plus 2016’] is defined
 ```</p>
-
-<p>Create a WSGI file in the application directory that will be called by the apache2 service.</p>
-
-<p>```
-import os,sys,site</p>
-
-<p>os.environ[‘PYTHON_EGG_CACHE’] = ‘/var/www/archive/temp_py’</p>
-
-<p>from pyramid.paster import get_app, setup_logging
-ini_path = ‘/var/www/archive/production.ini’
-#setup_logging(ini_path)
-application = get_app(ini_path, ‘main’)
-```</p>
-
+  </li>
+</ul>
 
             </div>
             
@@ -142,10 +150,8 @@ application = get_app(ini_path, ‘main’)
           </div>
           <div class="pagination">
               
-                <a class="btn btn-default" href="/2017/02/SMTPtoSMSrelay" class="next">Newer Post</a>
               
-              
-                <a class="btn btn-default" href="/2016/12/Google-Analytics" class="previous">Older Post</a>
+                <a class="btn btn-default" href="/2017/11/addition-ansible-windows-facts" class="previous">Older Post</a>
               
 </div>
 

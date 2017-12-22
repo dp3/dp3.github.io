@@ -72,7 +72,7 @@ $returnpackages
 For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a ```facts/templates/dumpall.j2``` and add the following.
 ```
 {% raw %}
-`  {{ vars_hack | to_json }}
+  {{ vars_hack | to_json }}
 {% endraw %}
 ```
 

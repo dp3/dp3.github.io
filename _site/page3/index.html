@@ -54,6 +54,8 @@
     <h1>Recent Posts</h1>
     <ul>
         
+          <li><a href="/2017/12/using-additional-ansible-facts">Using Additional Ansible Facts</a></li>
+        
           <li><a href="/2017/11/addition-ansible-windows-facts">Additional Ansible Windows Facts</a></li>
         
           <li><a href="/2017/02/SMTPtoSMSrelay">SMTP to SMS relay</a></li>
@@ -61,8 +63,6 @@
           <li><a href="/2017/01/Python-WSGI">Python WSGI</a></li>
         
           <li><a href="/2016/12/Google-Analytics">Google Analytics</a></li>
-        
-          <li><a href="/2016/05/ChoreApp">Chore App</a></li>
         
     </ul>
 </div>
@@ -80,6 +80,35 @@
         </div>
         <div class="col-md-9">
             
+<div class="article">
+    <div class="well">
+        <h1><a href="/2016/05/chocolatey">May 11, 2016 - Chocolatey "The Windows" Package Manager</a></h1>
+        
+        <div class="content">
+            <p>Install Chocolatey via PowerShell</p>
+
+<p><code class="highlighter-rouge">
+iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1')) 
+</code></p>
+
+<p>Install via Command Prompt</p>
+
+<p><code class="highlighter-rouge">
+@powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((new-object net.webclient).DownloadString('https://chocolatey.org/install.ps1'))" &amp;&amp; SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
+</code></p>
+
+<p>Create a repo</p>
+
+<p><code class="highlighter-rouge">
+ choco new &lt;project name&gt;
+</code></p>
+
+<p>Edit the <project name="">.nuspect file, install, and uninstall files under the tools directory</project></p>
+
+        </div>
+    </div>
+</div>
+
 <div class="article">
     <div class="well">
         <h1><a href="/2016/05/irssi">May 10, 2016 - Irssi Setup</a></h1>
@@ -165,17 +194,6 @@ settings = {
 <div class="article">
     <div class="well">
         <h1><a href="/2016/05/template">May 10, 2016 - Oni 3D Printer</a></h1>
-        
-        <div class="content">
-            
-
-        </div>
-    </div>
-</div>
-
-<div class="article">
-    <div class="well">
-        <h1><a href="/2016/05/Oni">May 10, 2016 - Oni 3D Printer</a></h1>
         
         <div class="content">
             
