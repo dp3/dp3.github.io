@@ -7,8 +7,8 @@ comments: false
 I am not sure  of the Russian interest in this website. 
 
 These are some funny languages 
-![screenshotOne]({{ site.baseurl }}/images/Google_Analytics_language.png){:class="img-responsive"}
-![screenshotTwo]({{ site.baseurl }}/images/Google_Analytics_Country.png){:class="img-responsive"} 
-![screenshotThree]({{ site.baseurl }}/images/Google_Analytics_city.png){:class="img-responsive"}
-![screenshotFour]({{ site.baseurl }}/images/Google_Analytics_time.png){:class="img-responsive"}
-![screenshotFive]({{ site.baseurl }}/images/Google_Analytics_chart.png){:class="img-responsive"}
+![screenshotOne]({{ "/images/Google_Analytics_language.png"| absolute_url }})
+![screenshotTwo]({{ "/images/Google_Analytics_Country.png"| absolute_url }}) 
+![screenshotThree]({{ "/images/Google_Analytics_city.png "| absolute_url }})
+![screenshotFour]({{ "/images/Google_Analytics_time.png "| absolute_url }})
+![screenshotFive]({  "/images/Google_Analytics_chart.png"| absolute_url }})
