@@ -79,110 +79,102 @@
 
         </div>
         <div class="col-md-9">
-            <div class="well">
+            
+<div class="article">
+    <div class="well">
+        <h1><a href="/2016/03/Oni-3d-printer">Mar 20, 2016 - Oni 3d Printer</a></h1>
+        
+        <div class="content">
+            
 
-    
-        <h1>2017</h1>
-        <ul>
-    
-    <li><a href="/2017/12/using-additional-ansible-facts">Dec 21 - Using Additional Ansible Facts</a></li>
+        </div>
+    </div>
+</div>
 
-    
+<div class="article">
+    <div class="well">
+        <h1><a href="/2016/03/Plex-media-server">Mar 19, 2016 - Plex Media Server</a></h1>
         
-        
-        
-    
-    <li><a href="/2017/11/addition-ansible-windows-facts">Nov 14 - Additional Ansible Windows Facts</a></li>
+        <div class="content">
+            <p>Plex with Samba
+Samba Install</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2017/02/SMTPtoSMSrelay">Feb 25 - SMTP to SMS relay</a></li>
+<p>Use apt-get to pull the samba packages:</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2017/01/Python-WSGI">Jan 17 - Python WSGI</a></li>
+<p><code class="highlighter-rouge">
+$ sudo apt-get update
+$ sudo apt-get install samba
+</code></p>
 
-    
-        
-        
-        
-            </ul>
-            <h1>2016</h1>
-            <ul>
-        
-    
-    <li><a href="/2016/12/Google-Analytics">Dec 12 - Google Analytics</a></li>
+<p>Lets create a samba user:</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/05/ChoreApp">May 12 - Chore App</a></li>
+<p><code class="highlighter-rouge">
+$ useradd USER
+$ passwd USER
+$ smbpasswd -a USER
+</code></p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/05/chocolatey">May 11 - Chocolatey "The Windows" Package Manager</a></li>
+<p>Now edit the config file:</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/05/irssi">May 10 - Irssi Setup</a></li>
+<p><code class="highlighter-rouge">
+$ sudo vim /etc/samba/smb.conf
+</code></p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/05/template">May 10 - Oni 3D Printer</a></li>
+<p>Insert the following lines:</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/05/Oni">May 10 - Oni 3D Printer</a></li>
+<p>```
+#this allows everyone to view the network share
+[SMABA UNSECURE]
+comment=PLEX-SAMBA
+path= /location/to/the/folder/you/want/to/share
+browsable=yes
+writable=yes
+guest ok=yes
+admin users= adminuser</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/04/Housing_Chore_Application">Apr 29 - Housing Chore Application</a></li>
+<h1 id="this-only-allows-the-smbuser-to-access-the-directory">this only allows the smbuser to access the directory</h1>
+<p>[SAMBA PASSWORD PROMPT]
+path = /location/to/the/folder/you/want/to/share
+valid users = smbuser
+browseable = yes
+writeable = yes
+read only = no
+guest ok = yes
+```</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/04/ffmpeg">Apr 12 - Tip and Trick for ffmpeg</a></li>
+<p>Run ‘testparm’ to verify the config works:</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/03/Oni-3d-printer">Mar 20 - Oni 3d Printer</a></li>
+<p><code class="highlighter-rouge">
+$ testparm
+</code></p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/03/Plex-media-server">Mar 19 - Plex Media Server</a></li>
+<p>Restart samba</p>
 
-</ul>
+<p><code class="highlighter-rouge">
+$ sudo service smbd restart
+</code></p>
+
+<p>Plex Install</p>
+
+<p><code class="highlighter-rouge">
+$ wget https://downloads.plex.tv/plex-media-server/0.9.14.6.1620-e0b7243/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
+$ sudo dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
+</code></p>
+
+
+        </div>
+    </div>
+</div>
+
+
+<div class="pagination">
+  
+      
+        <a class="btn btn-default" href="/page4" class="previous">Newer</a>
+      
+  
+  <span class="page_number ">Page: 5 of 5</span>
+  
 </div>
 
         </div>

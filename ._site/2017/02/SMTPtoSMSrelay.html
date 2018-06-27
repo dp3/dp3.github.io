@@ -79,115 +79,59 @@
 
         </div>
         <div class="col-md-9">
+          <div class="article">
             <div class="well">
+                <h1><a href="/2017/02/SMTPtoSMSrelay">Feb 25, 2017 - SMTP to SMS relay</a></h1>
+            
+            <div class="post-content">
+            <p>This script will send SMS via various smtp relays.</p>
 
-    
-        <h1>2017</h1>
-        <ul>
-    
-    <li><a href="/2017/12/using-additional-ansible-facts">Dec 21 - Using Additional Ansible Facts</a></li>
+<p>```
+import smtplib</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2017/11/addition-ansible-windows-facts">Nov 14 - Additional Ansible Windows Facts</a></li>
+<h1 id="use-sms-gateway-provided-by-mobile-carrier">Use sms gateway provided by mobile carrier:</h1>
+<p># alltel         number@message.Alltel.com 
+# at&amp;t:          number@mms.att.net
+# boost:         number@myboostmobile.com
+# google voice   number@@txt.voice.google.com (needs work)
+# metro pcs:     number@mymetropcs.com
+# sprint:        number@page.nextel.com
+# straight talk  number@mypixmessages.com
+# t-mobile:      number@tmomail.net
+# us cellular:   number@mms.uscc.net<br />
+# verizon:-       number@vtext.com
+# virgin:        number@vmpix.com</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2017/02/SMTPtoSMSrelay">Feb 25 - SMTP to SMS relay</a></li>
+<p>server = smtplib.SMTP( “smtp.gmail.com”, 587 )
+server.ehlo()
+server.starttls()
+server.ehlo()
+server.login( ‘Google username’, ‘<google app="" password="">' )</google></p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2017/01/Python-WSGI">Jan 17 - Python WSGI</a></li>
+<h1 id="serversendmail-from-numbertmomailnet-hello-">server.sendmail( ‘<from>', '<number>@tmomail.net', 'Hello!' )</number></from></h1>
 
-    
-        
-        
-        
-            </ul>
-            <h1>2016</h1>
-            <ul>
-        
-    
-    <li><a href="/2016/12/Google-Analytics">Dec 12 - Google Analytics</a></li>
+<p>server.sendmail( ‘<sending phone="" number="">', '<receiving phone="" numver="">@<domain.com>', 'Leory Jenkins!!!!' )
+```</domain.com></receiving></sending></p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/05/ChoreApp">May 12 - Chore App</a></li>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/05/chocolatey">May 11 - Chocolatey "The Windows" Package Manager</a></li>
-
-    
-        
-        
-        
-    
-    <li><a href="/2016/05/irssi">May 10 - Irssi Setup</a></li>
-
-    
-        
-        
-        
-    
-    <li><a href="/2016/05/template">May 10 - Oni 3D Printer</a></li>
-
-    
-        
-        
-        
-    
-    <li><a href="/2016/05/Oni">May 10 - Oni 3D Printer</a></li>
-
-    
-        
-        
-        
-    
-    <li><a href="/2016/04/Housing_Chore_Application">Apr 29 - Housing Chore Application</a></li>
-
-    
-        
-        
-        
-    
-    <li><a href="/2016/04/ffmpeg">Apr 12 - Tip and Trick for ffmpeg</a></li>
-
-    
-        
-        
-        
-    
-    <li><a href="/2016/03/Oni-3d-printer">Mar 20 - Oni 3d Printer</a></li>
-
-    
-        
-        
-        
-    
-    <li><a href="/2016/03/Plex-media-server">Mar 19 - Plex Media Server</a></li>
-
-</ul>
+            </div>
+            
+            </div>
+          </div>
+          <div class="pagination">
+              
+                <a class="btn btn-default" href="/2017/11/addition-ansible-windows-facts" class="next">Newer Post</a>
+              
+              
+                <a class="btn btn-default" href="/2017/01/Python-WSGI" class="previous">Older Post</a>
+              
 </div>
 
         </div>
     </div>
 </div>
+
+
 
 <div class="container-fluid">
     <div class="row-fluid">

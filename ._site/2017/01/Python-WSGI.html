@@ -79,115 +79,81 @@
 
         </div>
         <div class="col-md-9">
+          <div class="article">
             <div class="well">
+                <h1><a href="/2017/01/Python-WSGI">Jan 17, 2017 - Python WSGI</a></h1>
+            
+            <div class="post-content">
+            <p>How to run a python pyramid application under apache2(httpd) using the mod_wgsi.</p>
 
-    
-        <h1>2017</h1>
-        <ul>
-    
-    <li><a href="/2017/12/using-additional-ansible-facts">Dec 21 - Using Additional Ansible Facts</a></li>
+<p>Create application user</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2017/11/addition-ansible-windows-facts">Nov 14 - Additional Ansible Windows Facts</a></li>
+<p><code class="highlighter-rouge">
+  useradd appdeploy
+</code></p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2017/02/SMTPtoSMSrelay">Feb 25 - SMTP to SMS relay</a></li>
+<p>Edit /etc/passwd</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2017/01/Python-WSGI">Jan 17 - Python WSGI</a></li>
+<p><code class="highlighter-rouge">
+  appdeploy:x:&lt;uid&gt;:&lt;gid&gt;:appdeploy:/&lt;home&gt;/&lt;directory&gt;:/sbin/nologin
+</code></p>
 
-    
-        
-        
-        
-            </ul>
-            <h1>2016</h1>
-            <ul>
-        
-    
-    <li><a href="/2016/12/Google-Analytics">Dec 12 - Google Analytics</a></li>
+<p>Create an apache2 config file under /etc/httpd/conf.d/</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/05/ChoreApp">May 12 - Chore App</a></li>
+<p>```
+&lt;virtuallHost *:80&gt;
+  ServerName archive.math.ksu.edu</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/05/chocolatey">May 11 - Chocolatey "The Windows" Package Manager</a></li>
+<h1 id="use-only-1-python-sub-interpreter--multiple-sub-interpreters">Use only 1 Python sub-interpreter.  Multiple sub-interpreters</h1>
+<p># play badly with C extensions.  See
+# http://stackoverflow.com/a/10558360/209039
+WSGIApplicationGroup %{GLOBAL}
+WSGIPassAuthorization On
+WSGIDaemonProcess pyramid user=appdeploy    group=appdeploy  threads=4 \
+   python-path=/var/www/archive/temp_py/lib/python2.7/site-packages
+WSGIScriptAlias / /var/www/archive/pyramid.wsgi</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/05/irssi">May 10 - Irssi Setup</a></li>
+<p>&lt;Directory /var/www/archive&gt;
+  WSGIProcessGroup pyramid
+  Order allow,deny
+  Allow from all
+&lt;/Directory&gt;</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/05/template">May 10 - Oni 3D Printer</a></li>
+<p>&lt;/VirtualHost&gt;
+```</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/05/Oni">May 10 - Oni 3D Printer</a></li>
+<p>Create a WSGI file in the application directory that will be called by the apache2 service.</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/04/Housing_Chore_Application">Apr 29 - Housing Chore Application</a></li>
+<p>```
+import os,sys,site</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/04/ffmpeg">Apr 12 - Tip and Trick for ffmpeg</a></li>
+<p>os.environ[‘PYTHON_EGG_CACHE’] = ‘/var/www/archive/temp_py’</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/03/Oni-3d-printer">Mar 20 - Oni 3d Printer</a></li>
+<p>from pyramid.paster import get_app, setup_logging
+ini_path = ‘/var/www/archive/production.ini’
+#setup_logging(ini_path)
+application = get_app(ini_path, ‘main’)
+```</p>
 
-    
-        
-        
-        
-    
-    <li><a href="/2016/03/Plex-media-server">Mar 19 - Plex Media Server</a></li>
 
-</ul>
+            </div>
+            
+            </div>
+          </div>
+          <div class="pagination">
+              
+                <a class="btn btn-default" href="/2017/02/SMTPtoSMSrelay" class="next">Newer Post</a>
+              
+              
+                <a class="btn btn-default" href="/2016/12/Google-Analytics" class="previous">Older Post</a>
+              
 </div>
 
         </div>
     </div>
 </div>
+
+
 
 <div class="container-fluid">
     <div class="row-fluid">

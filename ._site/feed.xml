@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>DevonPeel.me</title>
+		<description> Personal  Website  for  Devon  Peel. Christ follower, Techie, Kansas State and KC Royals Fan</description>
+		<link>http://devonpeel.me</link>
+		<atom:link href="http://devonpeel.me/feed.xml" rel="self" type="application/rss+xml" />
+		
+	</channel>
+</rss>
