@@ -3,8 +3,8 @@
 	<channel>
 		<title>DevonPeel.me</title>
 		<description> Personal  Website  for  Devon  Peel. Christ follower, Techie, Kansas State and KC Royals Fan</description>
-		<link>https://devonpeel.medp3.github.io</link>
-		<atom:link href="https://devonpeel.medp3.github.io/feed.xml" rel="self" type="application/rss+xml" />
+		<link>http://devonpeel.me</link>
+		<atom:link href="http://devonpeel.me/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
 				<title>Using Additional Ansible Facts</title>
@@ -69,8 +69,8 @@ when: hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office P
 &lt;/ul&gt;
 </description>
 				<pubDate>Thu, 21 Dec 2017 18:09:06 -0600</pubDate>
-				<link>https://devonpeel.medp3.github.io/2017/12/using-additional-ansible-facts</link>
-				<guid isPermaLink="true">https://devonpeel.medp3.github.io/2017/12/using-additional-ansible-facts</guid>
+				<link>http://devonpeel.me/2017/12/using-additional-ansible-facts</link>
+				<guid isPermaLink="true">http://devonpeel.me/2017/12/using-additional-ansible-facts</guid>
 			</item>
 		
 			<item>
@@ -231,8 +231,8 @@ fact_caching_connection = &amp;lt;redis-ip&amp;gt;:6379:0:&amp;lt;redis-hash&amp
 &lt;/code&gt;&lt;/p&gt;
 </description>
 				<pubDate>Tue, 14 Nov 2017 12:37:06 -0600</pubDate>
-				<link>https://devonpeel.medp3.github.io/2017/11/addition-ansible-windows-facts</link>
-				<guid isPermaLink="true">https://devonpeel.medp3.github.io/2017/11/addition-ansible-windows-facts</guid>
+				<link>http://devonpeel.me/2017/11/addition-ansible-windows-facts</link>
+				<guid isPermaLink="true">http://devonpeel.me/2017/11/addition-ansible-windows-facts</guid>
 			</item>
 		
 			<item>
@@ -268,8 +268,8 @@ server.login( ‘Google username’, ‘&lt;google app=&quot;&quot; password=&qu
 
 </description>
 				<pubDate>Sat, 25 Feb 2017 12:12:06 -0600</pubDate>
-				<link>https://devonpeel.medp3.github.io/2017/02/SMTPtoSMSrelay</link>
-				<guid isPermaLink="true">https://devonpeel.medp3.github.io/2017/02/SMTPtoSMSrelay</guid>
+				<link>http://devonpeel.me/2017/02/SMTPtoSMSrelay</link>
+				<guid isPermaLink="true">http://devonpeel.me/2017/02/SMTPtoSMSrelay</guid>
 			</item>
 		
 			<item>
@@ -327,8 +327,8 @@ application = get_app(ini_path, ‘main’)
 
 </description>
 				<pubDate>Tue, 17 Jan 2017 10:09:06 -0600</pubDate>
-				<link>https://devonpeel.medp3.github.io/2017/01/Python-WSGI</link>
-				<guid isPermaLink="true">https://devonpeel.medp3.github.io/2017/01/Python-WSGI</guid>
+				<link>http://devonpeel.me/2017/01/Python-WSGI</link>
+				<guid isPermaLink="true">http://devonpeel.me/2017/01/Python-WSGI</guid>
 			</item>
 		
 			<item>
@@ -336,15 +336,15 @@ application = get_app(ini_path, ‘main’)
 				<description>&lt;p&gt;I am not sure  of the Russian interest in this website.&lt;/p&gt;
 
 &lt;p&gt;These are some funny languages 
-&lt;img src=&quot;dp3.github.io/images/Google_Analytics_language.png&quot; alt=&quot;screenshotOne&quot; class=&quot;img-responsive&quot; /&gt;
-&lt;img src=&quot;dp3.github.io/images/Google_Analytics_Country.png&quot; alt=&quot;screenshotTwo&quot; class=&quot;img-responsive&quot; /&gt; 
-&lt;img src=&quot;dp3.github.io/images/Google_Analytics_city.png&quot; alt=&quot;screenshotThree&quot; class=&quot;img-responsive&quot; /&gt;
-&lt;img src=&quot;dp3.github.io/images/Google_Analytics_time.png&quot; alt=&quot;screenshotFour&quot; class=&quot;img-responsive&quot; /&gt;
-&lt;img src=&quot;dp3.github.io/images/Google_Analytics_chart.png&quot; alt=&quot;screenshotFive&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;/images/Google_Analytics_language.png&quot; alt=&quot;screenshotOne&quot; class=&quot;img-responsive&quot; /&gt;
+&lt;img src=&quot;/images/Google_Analytics_Country.png&quot; alt=&quot;screenshotTwo&quot; class=&quot;img-responsive&quot; /&gt; 
+&lt;img src=&quot;/images/Google_Analytics_city.png&quot; alt=&quot;screenshotThree&quot; class=&quot;img-responsive&quot; /&gt;
+&lt;img src=&quot;/images/Google_Analytics_time.png&quot; alt=&quot;screenshotFour&quot; class=&quot;img-responsive&quot; /&gt;
+&lt;img src=&quot;/images/Google_Analytics_chart.png&quot; alt=&quot;screenshotFive&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 </description>
 				<pubDate>Mon, 12 Dec 2016 10:09:06 -0600</pubDate>
-				<link>https://devonpeel.medp3.github.io/2016/12/Google-Analytics</link>
-				<guid isPermaLink="true">https://devonpeel.medp3.github.io/2016/12/Google-Analytics</guid>
+				<link>http://devonpeel.me/2016/12/Google-Analytics</link>
+				<guid isPermaLink="true">http://devonpeel.me/2016/12/Google-Analytics</guid>
 			</item>
 		
 			<item>
@@ -523,8 +523,8 @@ python setup.py py2app
 &lt;p&gt;Place the ChoreApp file created in the above command with the chores.txt file and residents.txt file in the same directory. Then click on the ChoreApp to generate the output file assigning chores to residents.&lt;/p&gt;
 </description>
 				<pubDate>Thu, 12 May 2016 02:00:00 -0500</pubDate>
-				<link>https://devonpeel.medp3.github.io/2016/05/ChoreApp</link>
-				<guid isPermaLink="true">https://devonpeel.medp3.github.io/2016/05/ChoreApp</guid>
+				<link>http://devonpeel.me/2016/05/ChoreApp</link>
+				<guid isPermaLink="true">http://devonpeel.me/2016/05/ChoreApp</guid>
 			</item>
 		
 			<item>
@@ -550,8 +550,8 @@ iex ((new-object net.webclient).DownloadString(&#39;https://chocolatey.org/insta
 &lt;p&gt;Edit the &lt;project name=&quot;&quot;&gt;.nuspect file, install, and uninstall files under the tools directory&lt;/project&gt;&lt;/p&gt;
 </description>
 				<pubDate>Wed, 11 May 2016 12:10:06 -0500</pubDate>
-				<link>https://devonpeel.medp3.github.io/2016/05/chocolatey</link>
-				<guid isPermaLink="true">https://devonpeel.medp3.github.io/2016/05/chocolatey</guid>
+				<link>http://devonpeel.me/2016/05/chocolatey</link>
+				<guid isPermaLink="true">http://devonpeel.me/2016/05/chocolatey</guid>
 			</item>
 		
 			<item>
@@ -630,8 +630,8 @@ settings = {
 &lt;/code&gt;&lt;/p&gt;
 </description>
 				<pubDate>Tue, 10 May 2016 12:10:06 -0500</pubDate>
-				<link>https://devonpeel.medp3.github.io/2016/05/irssi</link>
-				<guid isPermaLink="true">https://devonpeel.medp3.github.io/2016/05/irssi</guid>
+				<link>http://devonpeel.me/2016/05/irssi</link>
+				<guid isPermaLink="true">http://devonpeel.me/2016/05/irssi</guid>
 			</item>
 		
 			<item>
@@ -639,8 +639,8 @@ settings = {
 				<description>
 </description>
 				<pubDate>Tue, 10 May 2016 11:09:06 -0500</pubDate>
-				<link>https://devonpeel.medp3.github.io/2016/05/template</link>
-				<guid isPermaLink="true">https://devonpeel.medp3.github.io/2016/05/template</guid>
+				<link>http://devonpeel.me/2016/05/template</link>
+				<guid isPermaLink="true">http://devonpeel.me/2016/05/template</guid>
 			</item>
 		
 			<item>
@@ -648,8 +648,8 @@ settings = {
 				<description>
 </description>
 				<pubDate>Tue, 10 May 2016 11:09:06 -0500</pubDate>
-				<link>https://devonpeel.medp3.github.io/2016/05/Oni</link>
-				<guid isPermaLink="true">https://devonpeel.medp3.github.io/2016/05/Oni</guid>
+				<link>http://devonpeel.me/2016/05/Oni</link>
+				<guid isPermaLink="true">http://devonpeel.me/2016/05/Oni</guid>
 			</item>
 		
 	</channel>
