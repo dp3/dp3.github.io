@@ -336,11 +336,11 @@ application = get_app(ini_path, ‘main’)
 				<description>&lt;p&gt;I am not sure  of the Russian interest in this website.&lt;/p&gt;
 
 &lt;p&gt;These are some funny languages 
-&lt;img src=&quot;/images/Google_Analytics_language.png&quot; alt=&quot;screenshotOne&quot; /&gt;
-&lt;img src=&quot;/images/Google_Analytics_Country.png&quot; alt=&quot;screenshotTwo&quot; /&gt; 
-&lt;img src=&quot;/images/Google_Analytics_city.png&quot; alt=&quot;screenshotThree&quot; /&gt;
-&lt;img src=&quot;/images/Google_Analytics_time.png&quot; alt=&quot;screenshotFour&quot; /&gt;
-![screenshotFive]({  “/images/Google_Analytics_chart.png”| absolute_url }})&lt;/p&gt;
+&lt;img src=&quot;../images/Google_Analytics_language.png&quot; alt=&quot;screenshotOne&quot; class=&quot;img-responsive&quot; /&gt;
+&lt;img src=&quot;../images/Google_Analytics_Country.png&quot; alt=&quot;screenshotTwo&quot; class=&quot;img-responsive&quot; /&gt; 
+&lt;img src=&quot;../images/Google_Analytics_city.png&quot; alt=&quot;screenshotThree&quot; class=&quot;img-responsive&quot; /&gt;
+&lt;img src=&quot;../images/Google_Analytics_time.png&quot; alt=&quot;screenshotFour&quot; class=&quot;img-responsive&quot; /&gt;
+&lt;img src=&quot;../images/Google_Analytics_chart.png&quot; alt=&quot;screenshotFive&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 </description>
 				<pubDate>Mon, 12 Dec 2016 10:09:06 -0600</pubDate>
 				<link>http://devonpeel.me/2016/12/Google-Analytics</link>
