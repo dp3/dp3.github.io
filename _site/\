@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <title>DevonPeel.me</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="/css/theme.css" rel="stylesheet" type="text/css">
-    <link href="/css/syntax.css" rel="stylesheet" type="text/css">
+    <script src="devonpeel.me/js/jquery.min.js"></script>
+    <script src="devonpeel.me/js/bootstrap.min.js"></script>
+    <link href="devonpeel.me/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="devonpeel.me/css/theme.css" rel="stylesheet" type="text/css">
+    <link href="devonpeel.me/css/syntax.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -24,15 +24,15 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">DevonPeel.me</a>
+                <a class="navbar-brand" href="devonpeel.me/">DevonPeel.me</a>
               </div>
               <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="/">Home</a></li>
-                    <li class="active visible-xs-block"><a href="/links.html">Links</a></li>
-                    <li class="active"><a href="/archive.html">Archive</a></li>
-                    <li class="active"><a href="/Resume/index.html">About</a></li>
-<!--                    <li class="active"><a href="/feed.xml">RSS</a></li>-->
+                    <li class="active"><a href="devonpeel.me/">Home</a></li>
+                    <li class="active visible-xs-block"><a href="devonpeel.me/links.html">Links</a></li>
+                    <li class="active"><a href="devonpeel.me/archive.html">Archive</a></li>
+                    <li class="active"><a href="devonpeel.me/Resume/index.html">About</a></li>
+<!--                    <li class="active"><a href="devonpeel.me/feed.xml">RSS</a></li>-->
                     
                       <li class="active"><a href="https://github.com/dp3">Github</a></li>
                     
@@ -54,15 +54,15 @@
     <h1>Recent Posts</h1>
     <ul>
         
-          <li><a href="/2017/12/using-additional-ansible-facts">Using Additional Ansible Facts</a></li>
+          <li><a href="devonpeel.me/2017/12/using-additional-ansible-facts">Using Additional Ansible Facts</a></li>
         
-          <li><a href="/2017/11/addition-ansible-windows-facts">Additional Ansible Windows Facts</a></li>
+          <li><a href="devonpeel.me/2017/11/addition-ansible-windows-facts">Additional Ansible Windows Facts</a></li>
         
-          <li><a href="/2017/02/SMTPtoSMSrelay">SMTP to SMS relay</a></li>
+          <li><a href="devonpeel.me/2017/02/SMTPtoSMSrelay">SMTP to SMS relay</a></li>
         
-          <li><a href="/2017/01/Python-WSGI">Python WSGI</a></li>
+          <li><a href="devonpeel.me/2017/01/Python-WSGI">Python WSGI</a></li>
         
-          <li><a href="/2016/12/Google-Analytics">Google Analytics</a></li>
+          <li><a href="devonpeel.me/2016/12/Google-Analytics">Google Analytics</a></li>
         
     </ul>
 </div>
@@ -81,7 +81,7 @@
         <div class="col-md-9">
           <div class="article">
             <div class="well">
-                <h1><a href="/%5C">Nov 14, 2017 - Additional Ansible Windows Facts</a></h1>
+                <h1><a href="devonpeel.me/%5C">Nov 14, 2017 - Additional Ansible Windows Facts</a></h1>
             
             <div class="post-content">
             Ansible is a great tool to manage anyhost Linux or Windows. However it is missing some key tools and features. Here is a playbook and instructions to gather all installed programs on a Windows host.
@@ -235,7 +235,7 @@ fact_caching_connection = <redis-ip>:6379:0:<redis-hash>
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12 footer navbar-inverse navbar-fixed-bottom">
-            <p class="copyright">&copy;  2017 DevonPeel.me</a>
+            <p class="copyright">&copy;  2018 DevonPeel.me</a>
         </div>
     </div>
 </div>

@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <title>DevonPeel.me</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="/css/theme.css" rel="stylesheet" type="text/css">
-    <link href="/css/syntax.css" rel="stylesheet" type="text/css">
+    <script src="devonpeel.me/js/jquery.min.js"></script>
+    <script src="devonpeel.me/js/bootstrap.min.js"></script>
+    <link href="devonpeel.me/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="devonpeel.me/css/theme.css" rel="stylesheet" type="text/css">
+    <link href="devonpeel.me/css/syntax.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
@@ -24,15 +24,15 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">DevonPeel.me</a>
+                <a class="navbar-brand" href="devonpeel.me/">DevonPeel.me</a>
               </div>
               <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="/">Home</a></li>
-                    <li class="active visible-xs-block"><a href="/links.html">Links</a></li>
-                    <li class="active"><a href="/archive.html">Archive</a></li>
-                    <li class="active"><a href="/Resume/index.html">About</a></li>
-<!--                    <li class="active"><a href="/feed.xml">RSS</a></li>-->
+                    <li class="active"><a href="devonpeel.me/">Home</a></li>
+                    <li class="active visible-xs-block"><a href="devonpeel.me/links.html">Links</a></li>
+                    <li class="active"><a href="devonpeel.me/archive.html">Archive</a></li>
+                    <li class="active"><a href="devonpeel.me/Resume/index.html">About</a></li>
+<!--                    <li class="active"><a href="devonpeel.me/feed.xml">RSS</a></li>-->
                     
                       <li class="active"><a href="https://github.com/dp3">Github</a></li>
                     
@@ -54,15 +54,15 @@
     <h1>Recent Posts</h1>
     <ul>
         
-          <li><a href="/2017/12/using-additional-ansible-facts">Using Additional Ansible Facts</a></li>
+          <li><a href="devonpeel.me/2017/12/using-additional-ansible-facts">Using Additional Ansible Facts</a></li>
         
-          <li><a href="/2017/11/addition-ansible-windows-facts">Additional Ansible Windows Facts</a></li>
+          <li><a href="devonpeel.me/2017/11/addition-ansible-windows-facts">Additional Ansible Windows Facts</a></li>
         
-          <li><a href="/2017/02/SMTPtoSMSrelay">SMTP to SMS relay</a></li>
+          <li><a href="devonpeel.me/2017/02/SMTPtoSMSrelay">SMTP to SMS relay</a></li>
         
-          <li><a href="/2017/01/Python-WSGI">Python WSGI</a></li>
+          <li><a href="devonpeel.me/2017/01/Python-WSGI">Python WSGI</a></li>
         
-          <li><a href="/2016/12/Google-Analytics">Google Analytics</a></li>
+          <li><a href="devonpeel.me/2016/12/Google-Analytics">Google Analytics</a></li>
         
     </ul>
 </div>
@@ -82,7 +82,7 @@
             
 <div class="article">
     <div class="well">
-        <h1><a href="/2016/05/Oni">May 10, 2016 - Oni 3D Printer</a></h1>
+        <h1><a href="devonpeel.me/2016/05/Oni">May 10, 2016 - Oni 3D Printer</a></h1>
         
         <div class="content">
             
@@ -93,7 +93,18 @@
 
 <div class="article">
     <div class="well">
-        <h1><a href="/2016/04/ffmpeg">Apr 12, 2016 - Tip and Trick for ffmpeg</a></h1>
+        <h1><a href="devonpeel.me/2016/04/Housing_Chore_Application">Apr 29, 2016 - Housing Chore Application</a></h1>
+        
+        <div class="content">
+            
+
+        </div>
+    </div>
+</div>
+
+<div class="article">
+    <div class="well">
+        <h1><a href="devonpeel.me/2016/04/ffmpeg">Apr 12, 2016 - Tip and Trick for ffmpeg</a></h1>
         
         <div class="content">
             <p>Creating a Time Lapse with Jpeg Photo</p>
@@ -142,89 +153,16 @@ ffmpeg -i "concat:00000.MTS|00001.MTS|00002.MTS|00003.MTS|00004.MTS|00005.MTS|00
     </div>
 </div>
 
-<div class="article">
-    <div class="well">
-        <h1><a href="/2016/03/Plex-media-server">Mar 19, 2016 - Plex Media Server</a></h1>
-        
-        <div class="content">
-            <p>Plex with Samba
-Samba Install</p>
-
-<p>Use apt-get to pull the samba packages:</p>
-
-<p><code class="highlighter-rouge">
-$ sudo apt-get update
-$ sudo apt-get install samba
-</code></p>
-
-<p>Lets create a samba user:</p>
-
-<p><code class="highlighter-rouge">
-$ useradd USER
-$ passwd USER
-$ smbpasswd -a USER
-</code></p>
-
-<p>Now edit the config file:</p>
-
-<p><code class="highlighter-rouge">
-$ sudo vim /etc/samba/smb.conf
-</code></p>
-
-<p>Insert the following lines:</p>
-
-<p>```
-#this allows everyone to view the network share
-[SMABA UNSECURE]
-comment=PLEX-SAMBA
-path= /location/to/the/folder/you/want/to/share
-browsable=yes
-writable=yes
-guest ok=yes
-admin users= adminuser</p>
-
-<h1 id="this-only-allows-the-smbuser-to-access-the-directory">this only allows the smbuser to access the directory</h1>
-<p>[SAMBA PASSWORD PROMPT]
-path = /location/to/the/folder/you/want/to/share
-valid users = smbuser
-browseable = yes
-writeable = yes
-read only = no
-guest ok = yes
-```</p>
-
-<p>Run ‘testparm’ to verify the config works:</p>
-
-<p><code class="highlighter-rouge">
-$ testparm
-</code></p>
-
-<p>Restart samba</p>
-
-<p><code class="highlighter-rouge">
-$ sudo service smbd restart
-</code></p>
-
-<p>Plex Install</p>
-
-<p><code class="highlighter-rouge">
-$ wget https://downloads.plex.tv/plex-media-server/0.9.14.6.1620-e0b7243/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
-$ sudo dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
-</code></p>
-
-
-        </div>
-    </div>
-</div>
-
 
 <div class="pagination">
   
       
-        <a class="btn btn-default" href="/page3" class="previous">Newer</a>
+        <a class="btn btn-default" href="devonpeel.me/page3" class="previous">Newer</a>
       
   
-  <span class="page_number ">Page: 4 of 4</span>
+  <span class="page_number ">Page: 4 of 5</span>
+  
+    <a class="btn btn-default" href="devonpeel.me/page5" class="next">Older</a>
   
 </div>
 
@@ -235,7 +173,7 @@ $ sudo dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12 footer navbar-inverse navbar-fixed-bottom">
-            <p class="copyright">&copy;  2017 DevonPeel.me</a>
+            <p class="copyright">&copy;  2018 DevonPeel.me</a>
         </div>
     </div>
 </div>

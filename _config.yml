@@ -10,7 +10,7 @@ url: https://devonpeel.me
 # be the project name.
 # *** IMPORTANT: If your local "jekyll serve" throws errors change this to '' or
 #     run it like so: jekyll serve --baseurl=''
-baseurl: ''
+baseurl: 'devonpeel.me'
 
 # This can be '' to hide the Github nav button
 github: 'dp3'
