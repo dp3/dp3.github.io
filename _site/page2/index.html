@@ -89,52 +89,52 @@
 
 <p>Create application user</p>
 
-<p><code class="highlighter-rouge">
-  useradd appdeploy
-</code></p>
+<div class="highlighter-rouge"><pre class="highlight"><code>  useradd appdeploy
+</code></pre>
+</div>
 
 <p>Edit /etc/passwd</p>
 
-<p><code class="highlighter-rouge">
-  appdeploy:x:&lt;uid&gt;:&lt;gid&gt;:appdeploy:/&lt;home&gt;/&lt;directory&gt;:/sbin/nologin
-</code></p>
+<div class="highlighter-rouge"><pre class="highlight"><code>  appdeploy:x:&lt;uid&gt;:&lt;gid&gt;:appdeploy:/&lt;home&gt;/&lt;directory&gt;:/sbin/nologin
+</code></pre>
+</div>
 
 <p>Create an apache2 config file under /etc/httpd/conf.d/</p>
 
-<p>```
-&lt;virtuallHost *:80&gt;
-  ServerName archive.math.ksu.edu</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>&lt;virtuallHost *:80&gt;
+  ServerName archive.math.ksu.edu
 
-<h1 id="use-only-1-python-sub-interpreter--multiple-sub-interpreters">Use only 1 Python sub-interpreter.  Multiple sub-interpreters</h1>
-<p># play badly with C extensions.  See
+# Use only 1 Python sub-interpreter.  Multiple sub-interpreters
+# play badly with C extensions.  See
 # http://stackoverflow.com/a/10558360/209039
 WSGIApplicationGroup %{GLOBAL}
 WSGIPassAuthorization On
 WSGIDaemonProcess pyramid user=appdeploy    group=appdeploy  threads=4 \
    python-path=/var/www/archive/temp_py/lib/python2.7/site-packages
-WSGIScriptAlias / /var/www/archive/pyramid.wsgi</p>
+WSGIScriptAlias / /var/www/archive/pyramid.wsgi
 
-<p>&lt;Directory /var/www/archive&gt;
+&lt;Directory /var/www/archive&gt;
   WSGIProcessGroup pyramid
   Order allow,deny
   Allow from all
-&lt;/Directory&gt;</p>
+&lt;/Directory&gt;
 
-<p>&lt;/VirtualHost&gt;
-```</p>
+&lt;/VirtualHost&gt;
+</code></pre>
+</div>
 
 <p>Create a WSGI file in the application directory that will be called by the apache2 service.</p>
 
-<p>```
-import os,sys,site</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>import os,sys,site
 
-<p>os.environ[‘PYTHON_EGG_CACHE’] = ‘/var/www/archive/temp_py’</p>
+os.environ['PYTHON_EGG_CACHE'] = '/var/www/archive/temp_py'
 
-<p>from pyramid.paster import get_app, setup_logging
-ini_path = ‘/var/www/archive/production.ini’
+from pyramid.paster import get_app, setup_logging
+ini_path = '/var/www/archive/production.ini'
 #setup_logging(ini_path)
-application = get_app(ini_path, ‘main’)
-```</p>
+application = get_app(ini_path, 'main')
+</code></pre>
+</div>
 
 
         </div>
@@ -149,11 +149,11 @@ application = get_app(ini_path, ‘main’)
             <p>I am not sure  of the Russian interest in this website.</p>
 
 <p>These are some funny languages 
-<img src="../images/Google_Analytics_language.png" alt="screenshotOne" class="img-responsive" />
-<img src="../images/Google_Analytics_Country.png" alt="screenshotTwo" class="img-responsive" /> 
-<img src="../images/Google_Analytics_city.png" alt="screenshotThree" class="img-responsive" />
-<img src="../images/Google_Analytics_time.png" alt="screenshotFour" class="img-responsive" />
-<img src="../images/Google_Analytics_chart.png" alt="screenshotFive" class="img-responsive" /></p>
+<img src="../../images/Google_Analytics_language.png" alt="screenshotOne" class="img-responsive" />
+<img src="../../images/Google_Analytics_Country.png" alt="screenshotTwo" class="img-responsive" /> 
+<img src="../../images/Google_Analytics_city.png" alt="screenshotThree" class="img-responsive" />
+<img src="../../images/Google_Analytics_time.png" alt="screenshotFour" class="img-responsive" />
+<img src="../../images/Google_Analytics_chart.png" alt="screenshotFive" class="img-responsive" /></p>
 
         </div>
     </div>
@@ -173,23 +173,23 @@ application = get_app(ini_path, ‘main’)
   <li>list of residents</li>
 </ul>
 
-<p><code class="highlighter-rouge">
-   gender firstname lastname
+<div class="highlighter-rouge"><pre class="highlight"><code>   gender firstname lastname
    m john smith
    f julie smith
    m tom appleseed
-</code></p>
+</code></pre>
+</div>
 
 <ul>
   <li>list of chores</li>
 </ul>
 
-<p><code class="highlighter-rouge">
-  gender chore
+<div class="highlighter-rouge"><pre class="highlight"><code>  gender chore
   f clean womens bathroom
   n mop hallway
   m clean mens showers
-</code></p>
+</code></pre>
+</div>
 
 <ul>
   <li>
@@ -204,135 +204,135 @@ application = get_app(ini_path, ‘main’)
 
 <h2 id="setup-python-virtaul-environment">Setup Python Virtaul Environment</h2>
 
-<p><code class="highlighter-rouge">
-pip install virtualenv
+<div class="highlighter-rouge"><pre class="highlight"><code>pip install virtualenv
 virtualenv venv
 source venv/bin/activate
 pip install xlwt py2app
-</code></p>
+</code></pre>
+</div>
 
 <h2 id="chore-app-code">Chore App Code</h2>
 <p>Please place chore app code in a seperate directory differnet to the python virtual environment.</p>
 
-<p>```
-import os, sys,random, xlwt, time, datetime
-from xlwt import *</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>import os, sys,random, xlwt, time, datetime
+from xlwt import *
 
-<h1 id="file-imports">file imports</h1>
-<p>chore_file=open(“../../../chores.txt”, “r”)
+#file imports
+chore_file=open("../../../chores.txt", "r")
 chores = chore_file.readlines()
-#print chores</p>
+#print chores
 
-<p>resident_file=open(“../../../residents.txt”, “r”)
+resident_file=open("../../../residents.txt", "r")
 residents = resident_file.readlines()
-#print residents</p>
+#print residents
 
-<h1 id="create-a-psueode-final-enum">create a psueode final enum</h1>
-<p># m equals male
+#create a psueode final enum
+# m equals male
 # f equals female
-# n equals neutral</p>
+# n equals neutral
 
-<h1 id="creates-excel-file">creates excel file</h1>
-<p>book = xlwt.Workbook(encoding=”utf-8”)
-sheet1 = book.add_sheet(“Sheet 1”)</p>
+#creates excel file
+book = xlwt.Workbook(encoding="utf-8")
+sheet1 = book.add_sheet("Sheet 1")
 
-<p>font0 = Font()
-font0.bold = True</p>
+font0 = Font()
+font0.bold = True
 
-<p>style0 = XFStyle()
-style0.font = font0</p>
+style0 = XFStyle()
+style0.font = font0
 
-<h1 id="error-check">error check</h1>
-<p>if len(chores) != len(residents):
-    print “Error:”
+
+#error check
+if len(chores) != len(residents):
+    print "Error:"
     if len(chores) &gt; len(residents):
-            sys.exit(“ Too many chores”)
+            sys.exit(" Too many chores")
     else:
-            sys.exit(“ Too many residents”)</p>
+            sys.exit(" Too many residents")
 
-<p>assignment = []
+assignment = []
 i = 0
 while(residents):
-    rand = random.randrange(0, len(residents))</p>
+    rand = random.randrange(0, len(residents))
 
-<div class="highlighter-rouge"><pre class="highlight"><code># retrieves the f or m before residents name
-resident = residents[rand]
-resident_gender = resident[0:1]
-chore_gender = chores[i][0:1]
+    # retrieves the f or m before residents name
+    resident = residents[rand]
+    resident_gender = resident[0:1]
+    chore_gender = chores[i][0:1]
 
-if(resident_gender == chore_gender) or (chore_gender == 'n'):
-    len_chore = len(chores[i])
-    len_resident = len(resident)
-    print resident[2:len_resident] + " "  + chores[i][2:len_chore]
-    tupl = [resident[2:len_resident].replace('\n',''), chores[i][2:len_chore].replace('\n','')]
-    assignment.append(tupl)
-    residents.pop(rand)
-    i=i+1
-</code></pre>
-</div>
+    if(resident_gender == chore_gender) or (chore_gender == 'n'):
+        len_chore = len(chores[i])
+        len_resident = len(resident)
+        print resident[2:len_resident] + " "  + chores[i][2:len_chore]
+        tupl = [resident[2:len_resident].replace('\n',''), chores[i][2:len_chore].replace('\n','')]
+        assignment.append(tupl)
+        residents.pop(rand)
+        i=i+1
 
-<h1 id="alphabetically-sort">alphabetically sort</h1>
-<p>assignment.sort()
+#alphabetically sort
+assignment.sort()
 #write out alphabetically sorted chore list
 j=1
 date = datetime.datetime.now()
 enddate = datetime.datetime.now() + datetime.timedelta(days=6)
-sheet1.write(0,0,”Chore List For Week Of “ + date.strftime(‘%m/%d’) +” - “+ enddate.strftime(‘%m/%d’), style0)
+sheet1.write(0,0,"Chore List For Week Of " + date.strftime('%m/%d') +" - "+ enddate.strftime('%m/%d'), style0)
 for i in assignment:
     sheet1.write(j,0,i[0])
     sheet1.write(j,1,i[1])
-    sheet1.write(j+1,0,’’)
-    j=j+2</p>
+    sheet1.write(j+1,0,'')
+    j=j+2
 
-<h1 id="saves-excell-file">saves excell file</h1>
-<p>book.save(“../../../chores”+ date.strftime(‘%Y_%m_%d’) + “.xls”)
-#book.save(“chores”+ date.strftime(‘%Y_%m_%d’) + “.xls”)</p>
+#saves excell file
+book.save("../../../chores"+ date.strftime('%Y_%m_%d') + ".xls")
+#book.save("chores"+ date.strftime('%Y_%m_%d') + ".xls")
 
-<p>```</p>
+
+</code></pre>
+</div>
 
 <h2 id="the-build">The Build</h2>
 <p>Change the the working direcotry to the chore_app and create a file called setup.py</p>
 
-<p>```
-cd chore_app
+<div class="highlighter-rouge"><pre class="highlight"><code>cd chore_app
 vim setup.py
-   “””
-   This is a setup.py script generated by py2applet</p>
+   """
+   This is a setup.py script generated by py2applet
 
-<p>Usage:
+   Usage:
    python setup.py py2app
-   “””
-   from setuptools import setup</p>
+   """
+   from setuptools import setup
 
-<p>APP = [‘ChoreApp.py’]
-   DATA_FILES = [‘chores.txt’,’residents.txt’]
+   APP = ['ChoreApp.py']
+   DATA_FILES = ['chores.txt','residents.txt']
    OPTIONS = {
-    ‘argv_emulation’: True,
-    ‘iconfile’: ‘clean.icns’,
-    ‘plist’: {
-        ‘CFBundleName’: “ChoreApp”,
-        ‘CFBundleDisplayName’: “ChoreApp”,
-        ‘CFBundleGetInfoString’: “App for assigning chore”,
-        ‘CFBundleVersion’: “0.2.0”,
-        ‘CFBundleShortVersionString’: “0.2.0”,
-        ‘NSHumanReadableCopyright’: u”Copyleft Devon Peel”
+    'argv_emulation': True,
+    'iconfile': 'clean.icns',
+    'plist': {
+        'CFBundleName': "ChoreApp",
+        'CFBundleDisplayName': "ChoreApp",
+        'CFBundleGetInfoString': "App for assigning chore",
+        'CFBundleVersion': "0.2.0",
+        'CFBundleShortVersionString': "0.2.0",
+        'NSHumanReadableCopyright': u"Copyleft Devon Peel"
     }
-}</p>
+}
 
-<p>setup(
+setup(
     app=APP,
     data_files=DATA_FILES,
-    options={‘py2app’: OPTIONS},
-    setup_requires=[‘py2app’],
-)</p>
+    options={'py2app': OPTIONS},
+    setup_requires=['py2app'],
+)
 
-<p>```</p>
+</code></pre>
+</div>
 
 <p>Time to build the App</p>
 
-<p><code class="highlighter-rouge">
-python setup.py py2app
-</code></p>
+<div class="highlighter-rouge"><pre class="highlight"><code>python setup.py py2app
+</code></pre>
+</div>
 
 <h2 id="run-choreapp">Run ChoreApp</h2>
 <p>Place the ChoreApp file created in the above command with the chores.txt file and residents.txt file in the same directory. Then click on the ChoreApp to generate the output file assigning chores to residents.</p>

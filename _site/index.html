@@ -89,9 +89,9 @@
 
 <p>To view the facts after running the role enter in the following in a terminal.</p>
 
-<p><code class="highlighter-rouge">
-ansible &lt;HOST or GROUP&gt;  -m debug -a "var=ansible_getFacts"
-</code></p>
+<div class="highlighter-rouge"><pre class="highlight"><code>ansible &lt;HOST or GROUP&gt;  -m debug -a "var=ansible_getFacts"
+</code></pre>
+</div>
 
 <p>To check if a program is installed
 1. Set the register variable 
@@ -160,61 +160,48 @@ when: hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office P
 
 <p>Create the <code class="highlighter-rouge">facts\tasks\main.yml</code> file and add the following</p>
 
-<h2 id="section">```</h2>
-<ul>
-  <li>
-    <p>name: create Scripts dir on remote host
-win_file:
-  path: C:\Scripts
-  state: directory</p>
-  </li>
-  <li>
-    <p>name: copy custom facts file
-win_copy:
-  src: getFacts.ps1
-  dest: C:\Scripts\</p>
-  </li>
-  <li>
-    <p>name: gather extra facts
-setup:
-  fact_path: C:\Scripts</p>
-  </li>
-  <li>
-    <p>name: Set intermediate fact
-set_fact:
-  vars_hack: “”</p>
-  </li>
-  <li>
-    <p>name: set program facts
-set_fact:
-  one_fact: ansible_getFacts
-  var_hack:  “”</p>
-  </li>
-</ul>
+<div class="highlighter-rouge"><pre class="highlight"><code>---
+- name: create Scripts dir on remote host
+  win_file:
+    path: C:\Scripts
+    state: directory
 
-<h1 id="dont-delete-the-entire-dir-delete-the-file-to-update-it">dont delete the entire dir, delete the file to update it.</h1>
-<ul>
-  <li>
-    <p>name: delete json file
-file:
-  path: “/.json”
-  state: absent
-failed_when: false
-delegate_to: localhost</p>
-  </li>
-  <li>
-    <p>name: Dump all vars for dedugging
-action: template src=templates/dumpall.j2 dest=”/.json”
-delegate_to: localhost</p>
-  </li>
-  <li>
-    <p>name: run app.py to clean sensitive data from the json file
-script: app.py
-delegate_to: localhost
-ignore_errors: true
-```</p>
-  </li>
-</ul>
+- name: copy custom facts file
+  win_copy:
+    src: getFacts.ps1
+    dest: C:\Scripts\
+
+- name: gather extra facts
+  setup:
+    fact_path: C:\Scripts
+
+- name: Set intermediate fact
+  set_fact:
+    vars_hack: ""
+
+- name: set program facts
+  set_fact:
+    one_fact: ansible_getFacts
+    var_hack:  ""
+
+#dont delete the entire dir, delete the file to update it.
+- name: delete json file
+  file:
+    path: "/.json"
+    state: absent
+  failed_when: false
+  delegate_to: localhost
+
+- name: Dump all vars for dedugging
+  action: template src=templates/dumpall.j2 dest="/.json"
+  delegate_to: localhost
+
+- name: run app.py to clean sensitive data from the json file
+  script: app.py
+  delegate_to: localhost
+  ignore_errors: true
+</code></pre>
+</div>
 
 <p>Now create the <code class="highlighter-rouge">facts/files/getFacts.ps1</code> file and add the follwoing below. This file will be copied to each Windows host and run return a dictionary of all installed programs.
 <code class="highlighter-rouge">
@@ -243,11 +230,11 @@ $returnpackages
   </tbody>
 </table>
 
-<p>```</p>
-
-<p>Create the <code class="highlighter-rouge">facts\files\app.py</code> and add the following below. This files erases passwords dumped in the the json files.
-```
-#!/usr/bin/env python
+<div class="highlighter-rouge"><pre class="highlight"><code>
+Create the ```facts\files\app.py``` and add the following below. This files erases passwords dumped in the the json files.
+</code></pre>
+</div>
+<p>#!/usr/bin/env python
 # orginal found at https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/</p>
 
 <p>import os
@@ -283,10 +270,10 @@ sys.setdefaultencoding(‘utf-8’)</p>
 
 <p>Create one last file the vars file for the role. Create <code class="highlighter-rouge">vars/main.yml</code> and add the following.</p>
 
-<p><code class="highlighter-rouge">
-json_files: '../roles/facts/files/data/json/'
+<div class="highlighter-rouge"><pre class="highlight"><code>json_files: '../roles/facts/files/data/json/'
 host_program_csv: '../roles/facts/files/data/programs'
-</code></p>
+</code></pre>
+</div>
 
 <p>Now install the redis service.
 For Centos 7
@@ -305,9 +292,9 @@ echo "redis-password-string" | sha256sum
 
 <p>Edit your base ansible.cfg usualy in the first directory of your ansible setup and add the line</p>
 
-<p><code class="highlighter-rouge">
-fact_caching_connection = &lt;redis-ip&gt;:6379:0:&lt;redis-hash&gt;
-</code></p>
+<div class="highlighter-rouge"><pre class="highlight"><code>fact_caching_connection = &lt;redis-ip&gt;:6379:0:&lt;redis-hash&gt;
+</code></pre>
+</div>
 
         </div>
     </div>
@@ -320,11 +307,10 @@ fact_caching_connection = &lt;redis-ip&gt;:6379:0:&lt;redis-hash&gt;
         <div class="content">
             <p>This script will send SMS via various smtp relays.</p>
 
-<p>```
-import smtplib</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>import smtplib
 
-<h1 id="use-sms-gateway-provided-by-mobile-carrier">Use sms gateway provided by mobile carrier:</h1>
-<p># alltel         number@message.Alltel.com 
+# Use sms gateway provided by mobile carrier:
+# alltel         number@message.Alltel.com 
 # at&amp;t:          number@mms.att.net
 # boost:         number@myboostmobile.com
 # google voice   number@@txt.voice.google.com (needs work)
@@ -332,20 +318,22 @@ import smtplib</p>
 # sprint:        number@page.nextel.com
 # straight talk  number@mypixmessages.com
 # t-mobile:      number@tmomail.net
-# us cellular:   number@mms.uscc.net<br />
+# us cellular:   number@mms.uscc.net  
 # verizon:-       number@vtext.com
-# virgin:        number@vmpix.com</p>
+# virgin:        number@vmpix.com
 
-<p>server = smtplib.SMTP( “smtp.gmail.com”, 587 )
+server = smtplib.SMTP( "smtp.gmail.com", 587 )
 server.ehlo()
 server.starttls()
 server.ehlo()
-server.login( ‘Google username’, ‘<google app="" password="">' )</google></p>
+server.login( 'Google username', '&lt;Google app password &gt;' )
 
-<h1 id="serversendmail-from-numbertmomailnet-hello-">server.sendmail( ‘<from>', '<number>@tmomail.net', 'Hello!' )</number></from></h1>
 
-<p>server.sendmail( ‘<sending phone="" number="">', '<receiving phone="" numver="">@<domain.com>', 'Leory Jenkins!!!!' )
-```</domain.com></receiving></sending></p>
+#server.sendmail( '&lt;from&gt;', '&lt;number&gt;@tmomail.net', 'Hello!' )
+
+server.sendmail( '&lt;sending phone number&gt;', '&lt;receiving phone numver&gt;@&lt;domain.com&gt;', 'Leory Jenkins!!!!' )
+</code></pre>
+</div>
 
 
         </div>
