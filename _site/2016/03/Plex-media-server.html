@@ -89,65 +89,65 @@ Samba Install</p>
 
 <p>Use apt-get to pull the samba packages:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ sudo apt-get update
+<p><code class="highlighter-rouge">
+$ sudo apt-get update
 $ sudo apt-get install samba
-</code></pre>
-</div>
+</code></p>
 
 <p>Lets create a samba user:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ useradd USER
+<p><code class="highlighter-rouge">
+$ useradd USER
 $ passwd USER
 $ smbpasswd -a USER
-</code></pre>
-</div>
+</code></p>
 
 <p>Now edit the config file:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ sudo vim /etc/samba/smb.conf
-</code></pre>
-</div>
+<p><code class="highlighter-rouge">
+$ sudo vim /etc/samba/smb.conf
+</code></p>
 
 <p>Insert the following lines:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>#this allows everyone to view the network share
+<p>```
+#this allows everyone to view the network share
 [SMABA UNSECURE]
 comment=PLEX-SAMBA
 path= /location/to/the/folder/you/want/to/share
 browsable=yes
 writable=yes
 guest ok=yes
-admin users= adminuser
+admin users= adminuser</p>
 
-#this only allows the smbuser to access the directory
-[SAMBA PASSWORD PROMPT]
+<h1 id="this-only-allows-the-smbuser-to-access-the-directory">this only allows the smbuser to access the directory</h1>
+<p>[SAMBA PASSWORD PROMPT]
 path = /location/to/the/folder/you/want/to/share
 valid users = smbuser
 browseable = yes
 writeable = yes
 read only = no
 guest ok = yes
-</code></pre>
-</div>
+```</p>
 
 <p>Run ‘testparm’ to verify the config works:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ testparm
-</code></pre>
-</div>
+<p><code class="highlighter-rouge">
+$ testparm
+</code></p>
 
 <p>Restart samba</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ sudo service smbd restart
-</code></pre>
-</div>
+<p><code class="highlighter-rouge">
+$ sudo service smbd restart
+</code></p>
 
 <p>Plex Install</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ wget https://downloads.plex.tv/plex-media-server/0.9.14.6.1620-e0b7243/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
+<p><code class="highlighter-rouge">
+$ wget https://downloads.plex.tv/plex-media-server/0.9.14.6.1620-e0b7243/plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
 $ sudo dpkg -i plexmediaserver_0.9.14.6.1620-e0b7243_amd64.deb
-</code></pre>
-</div>
+</code></p>
 
 
             </div>

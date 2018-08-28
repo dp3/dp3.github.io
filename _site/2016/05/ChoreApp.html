@@ -93,23 +93,23 @@
   <li>list of residents</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>   gender firstname lastname
+<p><code class="highlighter-rouge">
+   gender firstname lastname
    m john smith
    f julie smith
    m tom appleseed
-</code></pre>
-</div>
+</code></p>
 
 <ul>
   <li>list of chores</li>
 </ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>  gender chore
+<p><code class="highlighter-rouge">
+  gender chore
   f clean womens bathroom
   n mop hallway
   m clean mens showers
-</code></pre>
-</div>
+</code></p>
 
 <ul>
   <li>
@@ -124,135 +124,135 @@
 
 <h2 id="setup-python-virtaul-environment">Setup Python Virtaul Environment</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>pip install virtualenv
+<p><code class="highlighter-rouge">
+pip install virtualenv
 virtualenv venv
 source venv/bin/activate
 pip install xlwt py2app
-</code></pre>
-</div>
+</code></p>
 
 <h2 id="chore-app-code">Chore App Code</h2>
 <p>Please place chore app code in a seperate directory differnet to the python virtual environment.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>import os, sys,random, xlwt, time, datetime
-from xlwt import *
+<p>```
+import os, sys,random, xlwt, time, datetime
+from xlwt import *</p>
 
-#file imports
-chore_file=open("../../../chores.txt", "r")
+<h1 id="file-imports">file imports</h1>
+<p>chore_file=open(“../../../chores.txt”, “r”)
 chores = chore_file.readlines()
-#print chores
+#print chores</p>
 
-resident_file=open("../../../residents.txt", "r")
+<p>resident_file=open(“../../../residents.txt”, “r”)
 residents = resident_file.readlines()
-#print residents
+#print residents</p>
 
-#create a psueode final enum
-# m equals male
+<h1 id="create-a-psueode-final-enum">create a psueode final enum</h1>
+<p># m equals male
 # f equals female
-# n equals neutral
+# n equals neutral</p>
 
-#creates excel file
-book = xlwt.Workbook(encoding="utf-8")
-sheet1 = book.add_sheet("Sheet 1")
+<h1 id="creates-excel-file">creates excel file</h1>
+<p>book = xlwt.Workbook(encoding=”utf-8”)
+sheet1 = book.add_sheet(“Sheet 1”)</p>
 
-font0 = Font()
-font0.bold = True
+<p>font0 = Font()
+font0.bold = True</p>
 
-style0 = XFStyle()
-style0.font = font0
+<p>style0 = XFStyle()
+style0.font = font0</p>
 
-
-#error check
-if len(chores) != len(residents):
-    print "Error:"
+<h1 id="error-check">error check</h1>
+<p>if len(chores) != len(residents):
+    print “Error:”
     if len(chores) &gt; len(residents):
-            sys.exit(" Too many chores")
+            sys.exit(“ Too many chores”)
     else:
-            sys.exit(" Too many residents")
+            sys.exit(“ Too many residents”)</p>
 
-assignment = []
+<p>assignment = []
 i = 0
 while(residents):
-    rand = random.randrange(0, len(residents))
+    rand = random.randrange(0, len(residents))</p>
 
-    # retrieves the f or m before residents name
-    resident = residents[rand]
-    resident_gender = resident[0:1]
-    chore_gender = chores[i][0:1]
+<div class="highlighter-rouge"><pre class="highlight"><code># retrieves the f or m before residents name
+resident = residents[rand]
+resident_gender = resident[0:1]
+chore_gender = chores[i][0:1]
 
-    if(resident_gender == chore_gender) or (chore_gender == 'n'):
-        len_chore = len(chores[i])
-        len_resident = len(resident)
-        print resident[2:len_resident] + " "  + chores[i][2:len_chore]
-        tupl = [resident[2:len_resident].replace('\n',''), chores[i][2:len_chore].replace('\n','')]
-        assignment.append(tupl)
-        residents.pop(rand)
-        i=i+1
+if(resident_gender == chore_gender) or (chore_gender == 'n'):
+    len_chore = len(chores[i])
+    len_resident = len(resident)
+    print resident[2:len_resident] + " "  + chores[i][2:len_chore]
+    tupl = [resident[2:len_resident].replace('\n',''), chores[i][2:len_chore].replace('\n','')]
+    assignment.append(tupl)
+    residents.pop(rand)
+    i=i+1
+</code></pre>
+</div>
 
-#alphabetically sort
-assignment.sort()
+<h1 id="alphabetically-sort">alphabetically sort</h1>
+<p>assignment.sort()
 #write out alphabetically sorted chore list
 j=1
 date = datetime.datetime.now()
 enddate = datetime.datetime.now() + datetime.timedelta(days=6)
-sheet1.write(0,0,"Chore List For Week Of " + date.strftime('%m/%d') +" - "+ enddate.strftime('%m/%d'), style0)
+sheet1.write(0,0,”Chore List For Week Of “ + date.strftime(‘%m/%d’) +” - “+ enddate.strftime(‘%m/%d’), style0)
 for i in assignment:
     sheet1.write(j,0,i[0])
     sheet1.write(j,1,i[1])
-    sheet1.write(j+1,0,'')
-    j=j+2
+    sheet1.write(j+1,0,’’)
+    j=j+2</p>
 
-#saves excell file
-book.save("../../../chores"+ date.strftime('%Y_%m_%d') + ".xls")
-#book.save("chores"+ date.strftime('%Y_%m_%d') + ".xls")
+<h1 id="saves-excell-file">saves excell file</h1>
+<p>book.save(“../../../chores”+ date.strftime(‘%Y_%m_%d’) + “.xls”)
+#book.save(“chores”+ date.strftime(‘%Y_%m_%d’) + “.xls”)</p>
 
-
-</code></pre>
-</div>
+<p>```</p>
 
 <h2 id="the-build">The Build</h2>
 <p>Change the the working direcotry to the chore_app and create a file called setup.py</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>cd chore_app
+<p>```
+cd chore_app
 vim setup.py
-   """
-   This is a setup.py script generated by py2applet
+   “””
+   This is a setup.py script generated by py2applet</p>
 
-   Usage:
+<p>Usage:
    python setup.py py2app
-   """
-   from setuptools import setup
+   “””
+   from setuptools import setup</p>
 
-   APP = ['ChoreApp.py']
-   DATA_FILES = ['chores.txt','residents.txt']
+<p>APP = [‘ChoreApp.py’]
+   DATA_FILES = [‘chores.txt’,’residents.txt’]
    OPTIONS = {
-    'argv_emulation': True,
-    'iconfile': 'clean.icns',
-    'plist': {
-        'CFBundleName': "ChoreApp",
-        'CFBundleDisplayName': "ChoreApp",
-        'CFBundleGetInfoString': "App for assigning chore",
-        'CFBundleVersion': "0.2.0",
-        'CFBundleShortVersionString': "0.2.0",
-        'NSHumanReadableCopyright': u"Copyleft Devon Peel"
+    ‘argv_emulation’: True,
+    ‘iconfile’: ‘clean.icns’,
+    ‘plist’: {
+        ‘CFBundleName’: “ChoreApp”,
+        ‘CFBundleDisplayName’: “ChoreApp”,
+        ‘CFBundleGetInfoString’: “App for assigning chore”,
+        ‘CFBundleVersion’: “0.2.0”,
+        ‘CFBundleShortVersionString’: “0.2.0”,
+        ‘NSHumanReadableCopyright’: u”Copyleft Devon Peel”
     }
-}
+}</p>
 
-setup(
+<p>setup(
     app=APP,
     data_files=DATA_FILES,
-    options={'py2app': OPTIONS},
-    setup_requires=['py2app'],
-)
+    options={‘py2app’: OPTIONS},
+    setup_requires=[‘py2app’],
+)</p>
 
-</code></pre>
-</div>
+<p>```</p>
 
 <p>Time to build the App</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>python setup.py py2app
-</code></pre>
-</div>
+<p><code class="highlighter-rouge">
+python setup.py py2app
+</code></p>
 
 <h2 id="run-choreapp">Run ChoreApp</h2>
 <p>Place the ChoreApp file created in the above command with the chores.txt file and residents.txt file in the same directory. Then click on the ChoreApp to generate the output file assigning chores to residents.</p>

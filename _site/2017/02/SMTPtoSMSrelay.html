@@ -86,10 +86,11 @@
             <div class="post-content">
             <p>This script will send SMS via various smtp relays.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>import smtplib
+<p>```
+import smtplib</p>
 
-# Use sms gateway provided by mobile carrier:
-# alltel         number@message.Alltel.com 
+<h1 id="use-sms-gateway-provided-by-mobile-carrier">Use sms gateway provided by mobile carrier:</h1>
+<p># alltel         number@message.Alltel.com 
 # at&amp;t:          number@mms.att.net
 # boost:         number@myboostmobile.com
 # google voice   number@@txt.voice.google.com (needs work)
@@ -97,22 +98,20 @@
 # sprint:        number@page.nextel.com
 # straight talk  number@mypixmessages.com
 # t-mobile:      number@tmomail.net
-# us cellular:   number@mms.uscc.net  
+# us cellular:   number@mms.uscc.net<br />
 # verizon:-       number@vtext.com
-# virgin:        number@vmpix.com
+# virgin:        number@vmpix.com</p>
 
-server = smtplib.SMTP( "smtp.gmail.com", 587 )
+<p>server = smtplib.SMTP( “smtp.gmail.com”, 587 )
 server.ehlo()
 server.starttls()
 server.ehlo()
-server.login( 'Google username', '&lt;Google app password &gt;' )
+server.login( ‘Google username’, ‘<google app="" password="">' )</google></p>
 
+<h1 id="serversendmail-from-numbertmomailnet-hello-">server.sendmail( ‘<from>', '<number>@tmomail.net', 'Hello!' )</number></from></h1>
 
-#server.sendmail( '&lt;from&gt;', '&lt;number&gt;@tmomail.net', 'Hello!' )
-
-server.sendmail( '&lt;sending phone number&gt;', '&lt;receiving phone numver&gt;@&lt;domain.com&gt;', 'Leory Jenkins!!!!' )
-</code></pre>
-</div>
+<p>server.sendmail( ‘<sending phone="" number="">', '<receiving phone="" numver="">@<domain.com>', 'Leory Jenkins!!!!' )
+```</domain.com></receiving></sending></p>
 
 
             </div>

@@ -86,39 +86,39 @@
             <div class="post-content">
             <p>Creating a Time Lapse with Jpeg Photo</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>ffmpeg -i '%*.JPG' -r 30 -q:v 2 timelapse.mp4
-</code></pre>
-</div>
+<p><code class="highlighter-rouge">
+ffmpeg -i '%*.JPG' -r 30 -q:v 2 timelapse.mp4
+</code></p>
 
 <p>For iMovie</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>ffmpeg -i '%*.JPG' -r 30 -q:v 2 -pix_fmt yuv420p  timelapse.mp4
-</code></pre>
-</div>
+<p><code class="highlighter-rouge">
+ffmpeg -i '%*.JPG' -r 30 -q:v 2 -pix_fmt yuv420p  timelapse.mp4
+</code></p>
 
 <p>Merge videos into one</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>cat list.txt
+<p>```
+cat list.txt</p>
 
-file 'GOPR4922.MP4'
-file 'GP014922.MP4'
-file 'GP024922.MP4'
+<p>file ‘GOPR4922.MP4’
+file ‘GP014922.MP4’
+file ‘GP024922.MP4’</p>
 
-ffmpeg -f concat -i list.txt -c copy merged.mp4
-</code></pre>
-</div>
+<p>ffmpeg -f concat -i list.txt -c copy merged.mp4
+```</p>
 
 <p>Speedup video by X4</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>ffmpeg -i input.mp4 -strict -2 -vf "setpts=0.25*PTS" outputX4.mp4
-</code></pre>
-</div>
+<p><code class="highlighter-rouge">
+ffmpeg -i input.mp4 -strict -2 -vf "setpts=0.25*PTS" outputX4.mp4
+</code></p>
 
 <p>Select a section from a video (minutes 26-32:10)</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>ffmpeg -i merged.mp4 -ss 00:26:00 -to 00:32:10 -c:v copy -c:a copy part2.mp4
-</code></pre>
-</div>
+<p><code class="highlighter-rouge">
+ffmpeg -i merged.mp4 -ss 00:26:00 -to 00:32:10 -c:v copy -c:a copy part2.mp4
+</code></p>
 
 <p>Merge MTS files from a video camera 
 <code class="highlighter-rouge">

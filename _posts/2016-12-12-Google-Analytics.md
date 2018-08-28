@@ -7,6 +7,13 @@ comments: false
 I am not sure  of the Russian interest in this website. 
 
 These are some funny languages 
+![useful image]({{ site.url }}/assets/Google_Analytics_language.png)
+![useful image]({{ site.url }}/assets/Google_Analytics_Country.png)
+![useful image]({{ site.url }}/assets/Google_Analytics_city.png)
+![useful image]({{ site.url }}/assets/Google_Analytics_time.png)
+![useful image]({{ site.url }}/assets/Google_Analytics_chart.png)
+
+
 ![screenshotOne](../../images/Google_Analytics_language.png){:class="img-responsive"}
 ![screenshotTwo](../../images/Google_Analytics_Country.png){:class="img-responsive"} 
 ![screenshotThree](../../images/Google_Analytics_city.png){:class="img-responsive"}
