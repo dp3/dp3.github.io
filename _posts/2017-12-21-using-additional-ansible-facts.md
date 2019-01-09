@@ -12,6 +12,12 @@ To view the facts after running the role enter in the following in a terminal.
 ansible <HOST or GROUP>  -m debug -a "var=ansible_getFacts"
 ```
 
+To search for host for a signal program:
+
+```
+ansible <HOST or GROUP>  -m debug -a "var=hostvars[inventory_hostname]['ansible_getFacts']['<PROGRAM NAME>']"
+```
+
 To check if a program is installed
 1. Set the register variable 
 ```
