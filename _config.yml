@@ -5,7 +5,7 @@ description: " Personal  Website  for  Devon  Peel.
 Christ follower, Techie, Kansas State and KC Royals Fan"
 
 # url is currently only used only for the RSS feed in feed.xml
-url: http://devonpeel.me
+url: https://devonpeel.me
 # baseurl will often be '', but for a project page on gh-pages, it needs to
 # be the project name.
 # *** IMPORTANT: If your local "jekyll serve" throws errors change this to '' or
