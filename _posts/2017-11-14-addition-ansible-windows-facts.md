@@ -13,10 +13,15 @@ Create the ```facts\tasks\main.yml``` file and add the following
 
 ```
 ---
-- name: create Scripts dir on remote host
+- name: create Scripts dir
   win_file:
     path: C:\Scripts
-    state: directory
+    state: directory 
+
+- name: create Scripts facts dir
+  win_file:
+    path: C:\Scripts\facts
+    state: absent        
 
 - name: copy custom facts file
   win_copy:
@@ -34,24 +39,26 @@ Create the ```facts\tasks\main.yml``` file and add the following
 - name: set program facts
   set_fact:
     one_fact: ansible_getFacts
-    var_hack:  "{{ hostvars[inventory_hostname] }}"
-
-#dont delete the entire dir, delete the file to update it.
-- name: delete json file
+    var_hack:  "{{ hostvars[inventory_hostname] }}" 
+            
+- name: delete json file 
   file:
     path: "{{ json_files  }}/{{ inventory_hostname }}.json"
     state: absent
   failed_when: false
   delegate_to: localhost
 
-- name: Dump all vars for dedugging
+- name: Dump all vars
   action: template src=templates/dumpall.j2 dest="{{json_files}}/{{ inventory_hostname }}.json"
   delegate_to: localhost
 
-- name: run app.py to clean sensitive data from the json file
+- name: add to db
   script: app.py
   delegate_to: localhost
   ignore_errors: true
+
+
+
 ```
 
 Now create the ```facts/files/getFacts.ps1``` file and add the follwoing below. This file will be copied to each Windows host and run return a dictionary of all installed programs.
@@ -82,16 +89,10 @@ Create the ```facts\files\app.py``` and add the following below. This files eras
 # orginal found at https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/
 
 import os
-import rethinkdb
 import json
-import rethinkdb as r
 
 from os import listdir
 from os.path import isfile, join
-
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 tempfolder = '../roles/facts/files/data/json/'
 
@@ -139,3 +140,5 @@ Edit your base ansible.cfg usualy in the first directory of your ansible setup a
 ```
 fact_caching_connection = <redis-ip>:6379:0:<redis-hash>
 ```
+
+Updated: 2/7/2019
