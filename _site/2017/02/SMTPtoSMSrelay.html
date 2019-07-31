@@ -54,15 +54,15 @@
     <h1>Recent Posts</h1>
     <ul>
         
+          <li><a href="/2019/07/icinga2-ssl-check">Icinga2 SSL Check</a></li>
+        
+          <li><a href="/2019/01/flash-cisco-ap-from-mac">Flash Cisco AP from a Mac</a></li>
+        
+          <li><a href="/2018/08/icinga2-snmp-tempcheck">Icinga2 SNMP Temperature Check</a></li>
+        
           <li><a href="/2017/12/using-additional-ansible-facts">Using Additional Ansible Facts</a></li>
         
           <li><a href="/2017/11/addition-ansible-windows-facts">Additional Ansible Windows Facts</a></li>
-        
-          <li><a href="/2017/02/SMTPtoSMSrelay">SMTP to SMS relay</a></li>
-        
-          <li><a href="/2017/01/Python-WSGI">Python WSGI</a></li>
-        
-          <li><a href="/2016/12/Google-Analytics">Google Analytics</a></li>
         
     </ul>
 </div>
@@ -86,11 +86,10 @@
             <div class="post-content">
             <p>This script will send SMS via various smtp relays.</p>
 
-<p>```
-import smtplib</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import smtplib
 
-<h1 id="use-sms-gateway-provided-by-mobile-carrier">Use sms gateway provided by mobile carrier:</h1>
-<p># alltel         number@message.Alltel.com 
+# Use sms gateway provided by mobile carrier:
+# alltel         number@message.Alltel.com 
 # at&amp;t:          number@mms.att.net
 # boost:         number@myboostmobile.com
 # google voice   number@@txt.voice.google.com (needs work)
@@ -98,20 +97,21 @@ import smtplib</p>
 # sprint:        number@page.nextel.com
 # straight talk  number@mypixmessages.com
 # t-mobile:      number@tmomail.net
-# us cellular:   number@mms.uscc.net<br />
+# us cellular:   number@mms.uscc.net  
 # verizon:-       number@vtext.com
-# virgin:        number@vmpix.com</p>
+# virgin:        number@vmpix.com
 
-<p>server = smtplib.SMTP( “smtp.gmail.com”, 587 )
+server = smtplib.SMTP( "smtp.gmail.com", 587 )
 server.ehlo()
 server.starttls()
 server.ehlo()
-server.login( ‘Google username’, ‘<google app="" password="">' )</google></p>
+server.login( 'Google username', '&lt;Google app password &gt;' )
 
-<h1 id="serversendmail-from-numbertmomailnet-hello-">server.sendmail( ‘<from>', '<number>@tmomail.net', 'Hello!' )</number></from></h1>
 
-<p>server.sendmail( ‘<sending phone="" number="">', '<receiving phone="" numver="">@<domain.com>', 'Leory Jenkins!!!!' )
-```</domain.com></receiving></sending></p>
+#server.sendmail( '&lt;from&gt;', '&lt;number&gt;@tmomail.net', 'Hello!' )
+
+server.sendmail( '&lt;sending phone number&gt;', '&lt;receiving phone numver&gt;@&lt;domain.com&gt;', 'Leory Jenkins!!!!' )
+</code></pre></div></div>
 
 
             </div>
@@ -136,7 +136,7 @@ server.login( ‘Google username’, ‘<google app="" password="">' )</google><
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12 footer navbar-inverse navbar-fixed-bottom">
-            <p class="copyright">&copy;  2018 DevonPeel.me</a>
+            <p class="copyright">&copy;  2019 DevonPeel.me</a>
         </div>
     </div>
 </div>

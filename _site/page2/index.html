@@ -54,15 +54,15 @@
     <h1>Recent Posts</h1>
     <ul>
         
+          <li><a href="/2019/07/icinga2-ssl-check">Icinga2 SSL Check</a></li>
+        
+          <li><a href="/2019/01/flash-cisco-ap-from-mac">Flash Cisco AP from a Mac</a></li>
+        
+          <li><a href="/2018/08/icinga2-snmp-tempcheck">Icinga2 SNMP Temperature Check</a></li>
+        
           <li><a href="/2017/12/using-additional-ansible-facts">Using Additional Ansible Facts</a></li>
         
           <li><a href="/2017/11/addition-ansible-windows-facts">Additional Ansible Windows Facts</a></li>
-        
-          <li><a href="/2017/02/SMTPtoSMSrelay">SMTP to SMS relay</a></li>
-        
-          <li><a href="/2017/01/Python-WSGI">Python WSGI</a></li>
-        
-          <li><a href="/2016/12/Google-Analytics">Google Analytics</a></li>
         
     </ul>
 </div>
@@ -82,60 +82,66 @@
             
 <div class="article">
     <div class="well">
-        <h1><a href="/2017/01/Python-WSGI">Jan 17, 2017 - Python WSGI</a></h1>
+        <h1><a href="/2017/12/using-additional-ansible-facts">Dec 21, 2017 - Using Additional Ansible Facts</a></h1>
         
         <div class="content">
-            <p>How to run a python pyramid application under apache2(httpd) using the mod_wgsi.</p>
+            <p>This article is an addition to Additional Ansible Windows Facts.</p>
 
-<p>Create application user</p>
+<p>To view the facts after running the role enter in the following in a terminal.</p>
 
-<p><code class="highlighter-rouge">
-  useradd appdeploy
-</code></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ansible &lt;HOST or GROUP&gt;  -m debug -a "var=ansible_getFacts"
+</code></pre></div></div>
 
-<p>Edit /etc/passwd</p>
+<p>To search for host for a signal program:</p>
 
-<p><code class="highlighter-rouge">
-  appdeploy:x:&lt;uid&gt;:&lt;gid&gt;:appdeploy:/&lt;home&gt;/&lt;directory&gt;:/sbin/nologin
-</code></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ansible &lt;HOST or GROUP&gt; -m debug -a "var=hostvars[inventory_hostname]['ansible_getFacts']['&lt;PROGRAM NAME&gt;']"
+</code></pre></div></div>
 
-<p>Create an apache2 config file under /etc/httpd/conf.d/</p>
+<p>To check if a program is installed</p>
+<ol>
+  <li>Set the register variable
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- name: get variables
+  debug: var=hostvars[inventory_hostname]['ansible_getFacts']['&lt;PROGRAM NAME&gt;']
+ register: &lt;PROGRAM NAME&gt;
+</code></pre></div>    </div>
+  </li>
+  <li>Next use the register with the ansible ‘when’ command. Below is an exaple that will run in cases of the program missing.
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  when: hostvars[inventory_hostname]['ansible_getFacts']['&lt;PROGRAM NAME&gt;'] is undefined
+</code></pre></div>    </div>
+  </li>
+</ol>
 
-<p>```
-&lt;virtuallHost *:80&gt;
-  ServerName archive.math.ksu.edu</p>
+<p>Complete Example</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- name: get variables
+  debug: var=hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016']
+  register: msoffice_check
 
-<h1 id="use-only-1-python-sub-interpreter--multiple-sub-interpreters">Use only 1 Python sub-interpreter.  Multiple sub-interpreters</h1>
-<p># play badly with C extensions.  See
-# http://stackoverflow.com/a/10558360/209039
-WSGIApplicationGroup %{GLOBAL}
-WSGIPassAuthorization On
-WSGIDaemonProcess pyramid user=appdeploy    group=appdeploy  threads=4 \
-   python-path=/var/www/archive/temp_py/lib/python2.7/site-packages
-WSGIScriptAlias / /var/www/archive/pyramid.wsgi</p>
+- name: create  ms office dir 
+  win_file:
+    path: C:\msoffice
+    state: directory 
+  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is undefined
+ 
+- name: copy ms office dir to c drive
+  win_copy:
+    src:  /misc/software/msoffice2016/
+    dest: C:\msoffice
+  ignore_errors: yes
+  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is undefined
 
-<p>&lt;Directory /var/www/archive&gt;
-  WSGIProcessGroup pyramid
-  Order allow,deny
-  Allow from all
-&lt;/Directory&gt;</p>
+- name:  Install msoffice
+  win_command: choco install msoffice.20.16.1.nupkg -y
+  args: 
+    chdir: C:\msoffice
+  ignore_errors: yes
+  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is undefined
 
-<p>&lt;/VirtualHost&gt;
-```</p>
-
-<p>Create a WSGI file in the application directory that will be called by the apache2 service.</p>
-
-<p>```
-import os,sys,site</p>
-
-<p>os.environ[‘PYTHON_EGG_CACHE’] = ‘/var/www/archive/temp_py’</p>
-
-<p>from pyramid.paster import get_app, setup_logging
-ini_path = ‘/var/www/archive/production.ini’
-#setup_logging(ini_path)
-application = get_app(ini_path, ‘main’)
-```</p>
-
+- name: remove MS office dir
+  win_file:
+    path: C:\msoffice
+    state: absent
+  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is defined
+</code></pre></div></div>
 
         </div>
     </div>
@@ -143,24 +149,138 @@ application = get_app(ini_path, ‘main’)
 
 <div class="article">
     <div class="well">
-        <h1><a href="/2016/12/Google-Analytics">Dec 12, 2016 - Google Analytics</a></h1>
+        <h1><a href="/2017/11/addition-ansible-windows-facts">Nov 14, 2017 - Additional Ansible Windows Facts</a></h1>
         
         <div class="content">
-            <p>I am not sure  of the Russian interest in this website.</p>
+            <p>Ansible is a great tool to manage any Linux or Windows host. However it is missing some key tools and features. Here is a playbook and instructions to gather all installed programs on a Windows host.</p>
 
-<p>These are some funny languages 
-<img src="http://devonpeel.me/assets/Google_Analytics_language.png" alt="useful image" />
-<img src="http://devonpeel.me/assets/Google_Analytics_Country.png" alt="useful image" />
-<img src="http://devonpeel.me/assets/Google_Analytics_city.png" alt="useful image" />
-<img src="http://devonpeel.me/assets/Google_Analytics_time.png" alt="useful image" />
-<img src="http://devonpeel.me/assets/Google_Analytics_chart.png" alt="useful image" /></p>
+<p>Start with creating a new role, I named mine facts.</p>
 
-<p><img src="http://devonpeel.me/images/Google_Analytics_language.png" alt="screenshotOne" class="img-responsive" />
-<img src="http://devonpeel.me/images/Google_Analytics_Country.png" alt="screenshotTwo" class="img-responsive" /> 
-<img src="http://devonpeel.me/images/Google_Analytics_city.png" alt="screenshotThree" class="img-responsive" />
-<img src="http://devonpeel.me/images/Google_Analytics_time.png" alt="screenshotFour" class="img-responsive" />
-<img src="http://devonpeel.me/images/Google_Analytics_chart.png" alt="screenshotFive" class="img-responsive" /></p>
+<p>Create the <code class="highlighter-rouge">facts\tasks\main.yml</code> file and add the following</p>
 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+- name: create Scripts dir
+  win_file:
+    path: C:\Scripts
+    state: directory 
+
+- name: create Scripts facts dir
+  win_file:
+    path: C:\Scripts\facts
+    state: absent        
+
+- name: copy custom facts file
+  win_copy:
+    src: getFacts.ps1
+    dest: C:\Scripts\
+
+- name: gather extra facts
+  setup:
+    fact_path: C:\Scripts
+
+- name: Set intermediate fact
+  set_fact:
+    vars_hack: ""
+
+- name: set program facts
+  set_fact:
+    one_fact: ansible_getFacts
+    var_hack:  "" 
+            
+- name: delete json file 
+  file:
+    path: "/.json"
+    state: absent
+  failed_when: false
+  delegate_to: localhost
+
+- name: Dump all vars
+  action: template src=templates/dumpall.j2 dest="/.json"
+  delegate_to: localhost
+
+- name: add to db
+  script: app.py
+  delegate_to: localhost
+  ignore_errors: true
+
+
+
+</code></pre></div></div>
+
+<p>Now create the <code class="highlighter-rouge">facts/files/getFacts.ps1</code> file and add the follwoing below. This file will be copied to each Windows host and run return a dictionary of all installed programs.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#sourced from https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/
+$packages = Get-WmiObject -Class Win32_Product
+$returnpackages = @{}
+foreach ($package in $packages)
+{
+   $subpackagedictionary = @{"Name" = $Package.Name; "Version" = $Package.Version; "Caption" = $Package.Caption;}
+   $returnpackages.Add($Package.Name, $subpackagedictionary)
+}
+#Write-Host $returnpackages."Google Chrome".Name
+#Write-Host $returnpackages."Google Chrome".Version
+$returnpackages
+</code></pre></div></div>
+
+<p>For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a <code class="highlighter-rouge">facts/templates/dumpall.j2</code> and add the following.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+  {{ vars_hack | to_json }}
+
+</code></pre></div></div>
+
+<p>Create the <code class="highlighter-rouge">facts\files\app.py</code> and add the following below. This files erases passwords dumped in the the json files.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/usr/bin/env python</span>
+<span class="c"># orginal found at https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">listdir</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">isfile</span><span class="p">,</span> <span class="n">join</span>
+
+<span class="n">tempfolder</span> <span class="o">=</span> <span class="s">'../roles/facts/files/data/json/'</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">):</span>
+  <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">)</span>
+
+<span class="n">onlyfiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">listdir</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">)</span> <span class="k">if</span> <span class="n">isfile</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">,</span> <span class="n">f</span><span class="p">))]</span>
+
+<span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">onlyfiles</span><span class="p">:</span>
+  <span class="n">host_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">'.json'</span><span class="p">,</span><span class="s">''</span><span class="p">)</span>  <span class="c">##I am using host ips, to use hostnames use str(file).split(".")[3]</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">,</span> <span class="nb">file</span><span class="p">),</span><span class="s">'r+'</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
+      <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
+      <span class="n">data</span><span class="p">[</span><span class="s">'ansible_password'</span><span class="p">]</span> <span class="o">=</span> <span class="s">''</span>
+      <span class="n">data</span><span class="p">[</span><span class="s">'ansible_password_ad'</span><span class="p">]</span> <span class="o">=</span> <span class="s">''</span>
+      <span class="n">data_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tempfolder</span><span class="o">+</span><span class="s">'/'</span><span class="o">+</span><span class="nb">file</span><span class="p">,</span> <span class="s">'w+'</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s">','</span><span class="p">,</span> <span class="s">': '</span><span class="p">))</span>
+  <span class="n">outfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Create one last file the vars file for the role. Create <code class="highlighter-rouge">vars/main.yml</code> and add the following.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>json_files: '../roles/facts/files/data/json/'
+host_program_csv: '../roles/facts/files/data/programs'
+</code></pre></div></div>
+
+<p>Now install the redis service.
+For Centos 7</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum install redis
+systemctl enable redis
+systemctl start redis
+</code></pre></div></div>
+
+<p>Generate a hash for redis</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo "redis-password-string" | sha256sum 
+</code></pre></div></div>
+
+<p>Edit the redis config file in <code class="highlighter-rouge">/etc/redis.conf</code>and find the line <em>requirepass</em> and insert the generated hash</p>
+
+<p>Edit your base ansible.cfg usualy in the first directory of your ansible setup and add the line</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fact_caching_connection = &lt;redis-ip&gt;:6379:0:&lt;redis-hash&gt;
+</code></pre></div></div>
+
+<p>Updated: 2/7/2019</p>
 
         </div>
     </div>
@@ -168,181 +288,38 @@ application = get_app(ini_path, ‘main’)
 
 <div class="article">
     <div class="well">
-        <h1><a href="/2016/05/ChoreApp">May 12, 2016 - Chore App</a></h1>
+        <h1><a href="/2017/02/SMTPtoSMSrelay">Feb 25, 2017 - SMTP to SMS relay</a></h1>
         
         <div class="content">
-            <h2 id="chore-app">Chore App</h2>
-<p>I made this chore asigning application for a small college dorm. Its purpose is to randomly assign chores to residents with respect to gender. A male (m) will get a male chore or gender neutral chore (n) and female (f) will get a female chore or gender neutral chore. Note random is not fair. Good Luck</p>
+            <p>This script will send SMS via various smtp relays.</p>
 
-<p>The files needed</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import smtplib
 
-<ul>
-  <li>list of residents</li>
-</ul>
+# Use sms gateway provided by mobile carrier:
+# alltel         number@message.Alltel.com 
+# at&amp;t:          number@mms.att.net
+# boost:         number@myboostmobile.com
+# google voice   number@@txt.voice.google.com (needs work)
+# metro pcs:     number@mymetropcs.com
+# sprint:        number@page.nextel.com
+# straight talk  number@mypixmessages.com
+# t-mobile:      number@tmomail.net
+# us cellular:   number@mms.uscc.net  
+# verizon:-       number@vtext.com
+# virgin:        number@vmpix.com
 
-<p><code class="highlighter-rouge">
-   gender firstname lastname
-   m john smith
-   f julie smith
-   m tom appleseed
-</code></p>
+server = smtplib.SMTP( "smtp.gmail.com", 587 )
+server.ehlo()
+server.starttls()
+server.ehlo()
+server.login( 'Google username', '&lt;Google app password &gt;' )
 
-<ul>
-  <li>list of chores</li>
-</ul>
 
-<p><code class="highlighter-rouge">
-  gender chore
-  f clean womens bathroom
-  n mop hallway
-  m clean mens showers
-</code></p>
+#server.sendmail( '&lt;from&gt;', '&lt;number&gt;@tmomail.net', 'Hello!' )
 
-<ul>
-  <li>
-    <p>ChoreApp.py</p>
-  </li>
-  <li>
-    <p>clean.icns - an icon file</p>
-  </li>
-</ul>
+server.sendmail( '&lt;sending phone number&gt;', '&lt;receiving phone numver&gt;@&lt;domain.com&gt;', 'Leory Jenkins!!!!' )
+</code></pre></div></div>
 
-<h2 id="build-the-app">Build the App</h2>
-
-<h2 id="setup-python-virtaul-environment">Setup Python Virtaul Environment</h2>
-
-<p><code class="highlighter-rouge">
-pip install virtualenv
-virtualenv venv
-source venv/bin/activate
-pip install xlwt py2app
-</code></p>
-
-<h2 id="chore-app-code">Chore App Code</h2>
-<p>Please place chore app code in a seperate directory differnet to the python virtual environment.</p>
-
-<p>```
-import os, sys,random, xlwt, time, datetime
-from xlwt import *</p>
-
-<h1 id="file-imports">file imports</h1>
-<p>chore_file=open(“../../../chores.txt”, “r”)
-chores = chore_file.readlines()
-#print chores</p>
-
-<p>resident_file=open(“../../../residents.txt”, “r”)
-residents = resident_file.readlines()
-#print residents</p>
-
-<h1 id="create-a-psueode-final-enum">create a psueode final enum</h1>
-<p># m equals male
-# f equals female
-# n equals neutral</p>
-
-<h1 id="creates-excel-file">creates excel file</h1>
-<p>book = xlwt.Workbook(encoding=”utf-8”)
-sheet1 = book.add_sheet(“Sheet 1”)</p>
-
-<p>font0 = Font()
-font0.bold = True</p>
-
-<p>style0 = XFStyle()
-style0.font = font0</p>
-
-<h1 id="error-check">error check</h1>
-<p>if len(chores) != len(residents):
-    print “Error:”
-    if len(chores) &gt; len(residents):
-            sys.exit(“ Too many chores”)
-    else:
-            sys.exit(“ Too many residents”)</p>
-
-<p>assignment = []
-i = 0
-while(residents):
-    rand = random.randrange(0, len(residents))</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code># retrieves the f or m before residents name
-resident = residents[rand]
-resident_gender = resident[0:1]
-chore_gender = chores[i][0:1]
-
-if(resident_gender == chore_gender) or (chore_gender == 'n'):
-    len_chore = len(chores[i])
-    len_resident = len(resident)
-    print resident[2:len_resident] + " "  + chores[i][2:len_chore]
-    tupl = [resident[2:len_resident].replace('\n',''), chores[i][2:len_chore].replace('\n','')]
-    assignment.append(tupl)
-    residents.pop(rand)
-    i=i+1
-</code></pre>
-</div>
-
-<h1 id="alphabetically-sort">alphabetically sort</h1>
-<p>assignment.sort()
-#write out alphabetically sorted chore list
-j=1
-date = datetime.datetime.now()
-enddate = datetime.datetime.now() + datetime.timedelta(days=6)
-sheet1.write(0,0,”Chore List For Week Of “ + date.strftime(‘%m/%d’) +” - “+ enddate.strftime(‘%m/%d’), style0)
-for i in assignment:
-    sheet1.write(j,0,i[0])
-    sheet1.write(j,1,i[1])
-    sheet1.write(j+1,0,’’)
-    j=j+2</p>
-
-<h1 id="saves-excell-file">saves excell file</h1>
-<p>book.save(“../../../chores”+ date.strftime(‘%Y_%m_%d’) + “.xls”)
-#book.save(“chores”+ date.strftime(‘%Y_%m_%d’) + “.xls”)</p>
-
-<p>```</p>
-
-<h2 id="the-build">The Build</h2>
-<p>Change the the working direcotry to the chore_app and create a file called setup.py</p>
-
-<p>```
-cd chore_app
-vim setup.py
-   “””
-   This is a setup.py script generated by py2applet</p>
-
-<p>Usage:
-   python setup.py py2app
-   “””
-   from setuptools import setup</p>
-
-<p>APP = [‘ChoreApp.py’]
-   DATA_FILES = [‘chores.txt’,’residents.txt’]
-   OPTIONS = {
-    ‘argv_emulation’: True,
-    ‘iconfile’: ‘clean.icns’,
-    ‘plist’: {
-        ‘CFBundleName’: “ChoreApp”,
-        ‘CFBundleDisplayName’: “ChoreApp”,
-        ‘CFBundleGetInfoString’: “App for assigning chore”,
-        ‘CFBundleVersion’: “0.2.0”,
-        ‘CFBundleShortVersionString’: “0.2.0”,
-        ‘NSHumanReadableCopyright’: u”Copyleft Devon Peel”
-    }
-}</p>
-
-<p>setup(
-    app=APP,
-    data_files=DATA_FILES,
-    options={‘py2app’: OPTIONS},
-    setup_requires=[‘py2app’],
-)</p>
-
-<p>```</p>
-
-<p>Time to build the App</p>
-
-<p><code class="highlighter-rouge">
-python setup.py py2app
-</code></p>
-
-<h2 id="run-choreapp">Run ChoreApp</h2>
-<p>Place the ChoreApp file created in the above command with the chores.txt file and residents.txt file in the same directory. Then click on the ChoreApp to generate the output file assigning chores to residents.</p>
 
         </div>
     </div>
@@ -368,7 +345,7 @@ python setup.py py2app
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12 footer navbar-inverse navbar-fixed-bottom">
-            <p class="copyright">&copy;  2018 DevonPeel.me</a>
+            <p class="copyright">&copy;  2019 DevonPeel.me</a>
         </div>
     </div>
 </div>

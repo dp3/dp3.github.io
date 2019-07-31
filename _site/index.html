@@ -54,15 +54,15 @@
     <h1>Recent Posts</h1>
     <ul>
         
+          <li><a href="/2019/07/icinga2-ssl-check">Icinga2 SSL Check</a></li>
+        
+          <li><a href="/2019/01/flash-cisco-ap-from-mac">Flash Cisco AP from a Mac</a></li>
+        
+          <li><a href="/2018/08/icinga2-snmp-tempcheck">Icinga2 SNMP Temperature Check</a></li>
+        
           <li><a href="/2017/12/using-additional-ansible-facts">Using Additional Ansible Facts</a></li>
         
           <li><a href="/2017/11/addition-ansible-windows-facts">Additional Ansible Windows Facts</a></li>
-        
-          <li><a href="/2017/02/SMTPtoSMSrelay">SMTP to SMS relay</a></li>
-        
-          <li><a href="/2017/01/Python-WSGI">Python WSGI</a></li>
-        
-          <li><a href="/2016/12/Google-Analytics">Google Analytics</a></li>
         
     </ul>
 </div>
@@ -82,232 +82,55 @@
             
 <div class="article">
     <div class="well">
-        <h1><a href="/2017/12/using-additional-ansible-facts">Dec 21, 2017 - Using Additional Ansible Facts</a></h1>
+        <h1><a href="/2019/07/icinga2-ssl-check">Jul 28, 2019 - Icinga2 SSL Check</a></h1>
         
         <div class="content">
-            <p>This article is an addition to Additional Ansible Windows Facts.</p>
-
-<p>To view the facts after running the role enter in the following in a terminal.</p>
-
-<p><code class="highlighter-rouge">
-ansible &lt;HOST or GROUP&gt;  -m debug -a "var=ansible_getFacts"
-</code></p>
-
-<p>To check if a program is installed
-1. Set the register variable 
-<code class="highlighter-rouge">
-- name: get variables
-  debug: var=hostvars[inventory_hostname]['ansible_getFacts']['&lt;PROGRAM NAME&gt;']
-    register: &lt;PROGRAM NAME&gt;
-</code>
-2. Next use the register with the ansible ‘when’ command. Below is an exaple that will run in cases of the program missing. 
-<code class="highlighter-rouge">
-  when: hostvars[inventory_hostname]['ansible_getFacts']['&lt;PROGRAM NAME&gt;'] is undefined
-</code></p>
-
-<p>Complete Example 
-```
-- name: get variables
-  debug: var=hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office Professional Plus 2016’]
-  register: msoffice_check</p>
-
-<ul>
-  <li>
-    <p>name: create  ms office dir 
-win_file:
-  path: C:\msoffice
-  state: directory 
-when: hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office Professional Plus 2016’] is undefined</p>
+            <ol>
+  <li>Install nagios via yum or apt get
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  apt-get install
+</code></pre></div>    </div>
+    <p>or</p>
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  yum install
+</code></pre></div>    </div>
   </li>
-  <li>
-    <p>name: copy ms office dir to c drive
-win_copy:
-  src:  /misc/software/msoffice2016/
-  dest: C:\msoffice
-ignore_errors: yes
-when: hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office Professional Plus 2016’] is undefined</p>
+  <li>Add the following <code class="highlighter-rouge">/etc/icinga2/conf.d/services.conf</code>
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  apply Service "Check SSL certificate for " for (config in host.vars.ssl_domains) {
+ check_command = "check_ssl"
+ vars.hostname = config
+ vars.critical = "15"
+ vars.warning = "30" 
+ assign where host.vars.ssl_domains
+  }
+</code></pre></div>    </div>
   </li>
-  <li>
-    <p>name:  Install msoffice
-win_command: choco install msoffice.20.16.1.nupkg -y
-args: 
-  chdir: C:\msoffice
-ignore_errors: yes
-when: hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office Professional Plus 2016’] is undefined</p>
+  <li>Add the following to <code class="highlighter-rouge">/etc/icinga2/conf.d/commands.conf</code>
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  object CheckCommand "check_ssl" {
+ import "plugin-check-command"
+ command = [PluginDir + "/check_http"]
+ arguments = {
+   "-H" = "$hostname$"
+   "-C" = "$critical$"
+ }
+  }
+</code></pre></div>    </div>
   </li>
-  <li>
-    <p>name: remove MS office dir
-win_file:
-  path: C:\msoffice
-  state: absent
-when: hostvars[inventory_hostname][‘ansible_getFacts’][‘Microsoft Office Professional Plus 2016’] is defined
-```</p>
-  </li>
-</ul>
-
-        </div>
-    </div>
-</div>
-
-<div class="article">
-    <div class="well">
-        <h1><a href="/2017/11/addition-ansible-windows-facts">Nov 14, 2017 - Additional Ansible Windows Facts</a></h1>
-        
-        <div class="content">
-            <p>Ansible is a great tool to manage any Linux or Windows host. However it is missing some key tools and features. Here is a playbook and instructions to gather all installed programs on a Windows host.</p>
-
-<p>Start with creating a new role, I named mine facts.</p>
-
-<p>Create the <code class="highlighter-rouge">facts\tasks\main.yml</code> file and add the following</p>
-
-<h2 id="section">```</h2>
-<ul>
-  <li>
-    <p>name: create Scripts dir on remote host
-win_file:
-  path: C:\Scripts
-  state: directory</p>
-  </li>
-  <li>
-    <p>name: copy custom facts file
-win_copy:
-  src: getFacts.ps1
-  dest: C:\Scripts\</p>
-  </li>
-  <li>
-    <p>name: gather extra facts
-setup:
-  fact_path: C:\Scripts</p>
-  </li>
-  <li>
-    <p>name: Set intermediate fact
-set_fact:
-  vars_hack: “”</p>
-  </li>
-  <li>
-    <p>name: set program facts
-set_fact:
-  one_fact: ansible_getFacts
-  var_hack:  “”</p>
-  </li>
-</ul>
-
-<h1 id="dont-delete-the-entire-dir-delete-the-file-to-update-it">dont delete the entire dir, delete the file to update it.</h1>
-<ul>
-  <li>
-    <p>name: delete json file
-file:
-  path: “/.json”
-  state: absent
-failed_when: false
-delegate_to: localhost</p>
-  </li>
-  <li>
-    <p>name: Dump all vars for dedugging
-action: template src=templates/dumpall.j2 dest=”/.json”
-delegate_to: localhost</p>
-  </li>
-  <li>
-    <p>name: run app.py to clean sensitive data from the json file
-script: app.py
-delegate_to: localhost
-ignore_errors: true
-```</p>
-  </li>
-</ul>
-
-<p>Now create the <code class="highlighter-rouge">facts/files/getFacts.ps1</code> file and add the follwoing below. This file will be copied to each Windows host and run return a dictionary of all installed programs.
-<code class="highlighter-rouge">
-#sourced from https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/
-$packages = Get-WmiObject -Class Win32_Product
-$returnpackages = @{}
-foreach ($package in $packages)
-{
-   $subpackagedictionary = @{"Name" = $Package.Name; "Version" = $Package.Version; "Caption" = $Package.Caption;}
-   $returnpackages.Add($Package.Name, $subpackagedictionary)
+  <li>Edit the <code class="highlighter-rouge">/etc/icinga2/conf.d/hosts.conf</code>
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>object Host "webhost.fqdn.com" {
+ import "generic-host"
+ address = "10.0.2.1" 
+ vars.disks["disk /"] = { disk_partitions = "/" }
+ vars.os = "Linux"
+ vars.remote_client = "webhost.fqgn.com" 
+ vars.users_wgreater = 10
+ vars.users_cgreater = 20 
+ vars.ssl_domains = ["website.fqdn.com","websitetwo.fqdn.com"] 
+ vars.notification["mail"] = {
+ groups = [ "icingaadmins" ] 
+ } 
 }
-#Write-Host $returnpackages."Google Chrome".Name
-#Write-Host $returnpackages."Google Chrome".Version
-$returnpackages
-</code></p>
-
-<p>For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a <code class="highlighter-rouge">facts/templates/dumpall.j2</code> and add the following.
-```</p>
-
-<table>
-  <tbody>
-    <tr>
-      <td>{{ vars_hack</td>
-      <td>to_json }}</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>```</p>
-
-<p>Create the <code class="highlighter-rouge">facts\files\app.py</code> and add the following below. This files erases passwords dumped in the the json files.
-```
-#!/usr/bin/env python
-# orginal found at https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/</p>
-
-<p>import os
-import rethinkdb
-import json
-import rethinkdb as r</p>
-
-<p>from os import listdir
-from os.path import isfile, join</p>
-
-<p>import sys
-reload(sys)
-sys.setdefaultencoding(‘utf-8’)</p>
-
-<p>tempfolder = ‘../roles/facts/files/data/json/’</p>
-
-<p>if not os.path.isdir(tempfolder):
-  os.makedirs(tempfolder)</p>
-
-<p>onlyfiles = [f for f in listdir(tempfolder) if isfile(join(tempfolder, f))]</p>
-
-<p>for file in onlyfiles:
-  host_name = str(file).replace(‘.json’,’’)  ##I am using host ips, to use hostnames use str(file).split(“.”)[3]
-  with open(os.path.join(tempfolder, file),’r+’) as data_file:
-      data = json.load(data_file)
-      data[‘ansible_password’] = ‘’
-      data[‘ansible_password_ad’] = ‘’
-      data_file.close()
-  with open(tempfolder+’/’+file, ‘w+’) as outfile:
-    json.dump(data, outfile, sort_keys=True, indent=2, separators=(‘,’, ‘: ‘))
-  outfile.close()
-```</p>
-
-<p>Create one last file the vars file for the role. Create <code class="highlighter-rouge">vars/main.yml</code> and add the following.</p>
-
-<p><code class="highlighter-rouge">
-json_files: '../roles/facts/files/data/json/'
-host_program_csv: '../roles/facts/files/data/programs'
-</code></p>
-
-<p>Now install the redis service.
-For Centos 7
-<code class="highlighter-rouge">
-yum install redis
-systemctl enable redis
-systemctl start redis
-</code></p>
-
-<p>Generate a hash for redis
-<code class="highlighter-rouge">
-echo "redis-password-string" | sha256sum 
-</code></p>
-
-<p>Edit the redis config file in <code class="highlighter-rouge">/etc/redis.conf</code>and find the line <em>requirepass</em> and insert the generated hash</p>
-
-<p>Edit your base ansible.cfg usualy in the first directory of your ansible setup and add the line</p>
-
-<p><code class="highlighter-rouge">
-fact_caching_connection = &lt;redis-ip&gt;:6379:0:&lt;redis-hash&gt;
-</code></p>
+</code></pre></div>    </div>
+  </li>
+</ol>
 
         </div>
     </div>
@@ -315,38 +138,93 @@ fact_caching_connection = &lt;redis-ip&gt;:6379:0:&lt;redis-hash&gt;
 
 <div class="article">
     <div class="well">
-        <h1><a href="/2017/02/SMTPtoSMSrelay">Feb 25, 2017 - SMTP to SMS relay</a></h1>
+        <h1><a href="/2019/01/flash-cisco-ap-from-mac">Jan 6, 2019 - Flash Cisco AP from a Mac</a></h1>
         
         <div class="content">
-            <p>This script will send SMS via various smtp relays.</p>
+            <p>This is for a Cisco AIR 3502.</p>
 
-<p>```
-import smtplib</p>
+<ol>
+  <li>Start off by installing the Tftp Server(http://ww2.unime.it/flr/tftpserver/oon your mac</li>
+  <li>Acquire the Cisco Firmware that will be flashed on the access point.</li>
+  <li>Place the firmware in the <code class="highlighter-rouge">/private/tftpboot/</code> and start the tftp service</li>
+  <li>Change the permission <code class="highlighter-rouge">chmod 744 /private/tftpboot/</code>and owner <code class="highlighter-rouge">chown root:wheel /private/tftpboot</code></li>
+  <li>Connect a usb serial adapter to the mac and test the device with <code class="highlighter-rouge">ls /dev/cu.usbserial</code>or <code class="highlighter-rouge">ls /dev/ttyUSB0</code></li>
+  <li>On the mac open terminal and open a console to the access points with <code class="highlighter-rouge">screen /dev/cu.usbserial 9600 cs8 -ixof</code></li>
+  <li>Enter the username and password (hint: defaults are Cisco Cisco)</li>
+  <li>If you need to reset the device password press and hold the the mode button while the power is connected to the access point wait until the ap: prompt is displayed</li>
+</ol>
 
-<h1 id="use-sms-gateway-provided-by-mobile-carrier">Use sms gateway provided by mobile carrier:</h1>
-<p># alltel         number@message.Alltel.com 
-# at&amp;t:          number@mms.att.net
-# boost:         number@myboostmobile.com
-# google voice   number@@txt.voice.google.com (needs work)
-# metro pcs:     number@mymetropcs.com
-# sprint:        number@page.nextel.com
-# straight talk  number@mypixmessages.com
-# t-mobile:      number@tmomail.net
-# us cellular:   number@mms.uscc.net<br />
-# verizon:-       number@vtext.com
-# virgin:        number@vmpix.com</p>
+<p>The following commands will be run in the access point console</p>
+<ol>
+  <li>Set IP of the access point <code class="highlighter-rouge">set IP_ADDR 10.0.0.20</code> and netmask <code class="highlighter-rouge">set NETMASK 255.255.255.0
+</code></li>
+  <li>Tell the AP the router’s ip <code class="highlighter-rouge">set DEFAULT_ROUTER 10.0.0.1</code></li>
+  <li>Configure the AP to accept new firmware over tftp <code class="highlighter-rouge">tftp_init</code></li>
+  <li>Start an ethernet connection to accept fireware<code class="highlighter-rouge">ether_init</code></li>
+  <li>Allow for flash memory to be accessed <code class="highlighter-rouge">flash_init</code></li>
+  <li>Flash the <code class="highlighter-rouge">tar -xtract tftp://&lt;TFTP SERVER IP&gt;/&lt;FIRMWARE&gt;.tar flash:</code> an example <code class="highlighter-rouge">tar -xtract tftp://&lt;TFTP SERVER IP&gt;/ap3g1-k9w7-tar.153-3.JF4.tar flash:</code></li>
+  <li>Wait about 20 minutes, grab a coffee</li>
+  <li>Set the newly added firmware to boot<code class="highlighter-rouge">set BOOT flash:/ap3g1-k9w7-mx.153-3.JF4/ap3g1-k9w7-mx.153-3.JF4</code></li>
+  <li><code class="highlighter-rouge">set MANUAL_BOOT no</code></li>
+  <li><code class="highlighter-rouge">set boot</code></li>
+  <li>Reboot the access point and see if the newly added firmware boots</li>
+  <li>Log back into the access point and delete the old firmware to free up space <code class="highlighter-rouge">delete /force /recursive flash:&lt;FIRMWARE&gt;</code></li>
+</ol>
 
-<p>server = smtplib.SMTP( “smtp.gmail.com”, 587 )
-server.ehlo()
-server.starttls()
-server.ehlo()
-server.login( ‘Google username’, ‘<google app="" password="">' )</google></p>
+        </div>
+    </div>
+</div>
 
-<h1 id="serversendmail-from-numbertmomailnet-hello-">server.sendmail( ‘<from>', '<number>@tmomail.net', 'Hello!' )</number></from></h1>
-
-<p>server.sendmail( ‘<sending phone="" number="">', '<receiving phone="" numver="">@<domain.com>', 'Leory Jenkins!!!!' )
-```</domain.com></receiving></sending></p>
-
+<div class="article">
+    <div class="well">
+        <h1><a href="/2018/08/icinga2-snmp-tempcheck">Aug 29, 2018 - Icinga2 SNMP Temperature Check</a></h1>
+        
+        <div class="content">
+            <ol>
+  <li></li>
+  <li>Add the following <code class="highlighter-rouge">/etc/icinga2/conf.d/services.conf</code>
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apply Service "Check temperature " for (config in host.vars.temperature) {
+ import "generic-temperature-check"      
+ check_command = "check_temp"
+ vars.hostname = config
+ assign where host.vars.temperature
+}
+</code></pre></div>    </div>
+  </li>
+  <li>Add the following to <code class="highlighter-rouge">/etc/icinga2/conf.d/commands.conf</code>
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>object CheckCommand "check_temp" {
+ import "plugin-check-command"
+ command = [PluginDir + "/check_snmp"]
+ arguments = {
+ "-H" = "$hostname$"
+ "-o" = "$temp_oid$"
+ "-c" = "$temp_critical$"
+ "-w" = "$temp_warning$"
+ "-P" = "$temp_version$"
+ "-C" = "$temp_community$"  
+ }
+ }
+</code></pre></div>    </div>
+  </li>
+  <li>Edit the <code class="highlighter-rouge">/etc/icinga2/conf.d/hosts.conf</code> file to include the new host to monitor.
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>object Host "environment.fqdn.com" {
+ import "generic-temperature-check"
+ address="10.0.2.2"
+ vars.hostname="environment.fqdn.com"
+ vars.temperature = "environment.fqdn.com"
+ vars.temp_critical= ["90","90"]
+ vars.temp_warning= ["80","80"]
+ /* APC temp oid codes, these may need to be changed  */
+ vars.temp_oid = ["1.3.6.1.4.1.318.1.1.10.3.13.1.1.3.1", "1.3.6.1.4.1.318.1.1.10.3.13.1.1.3.2"]
+ vars.temp_version="1"
+ vars.temp_community="communityName"
+ vars.notification["mail"] = {
+ groups = [ "icingaadmins" ] 
+ }
+}
+</code></pre></div>    </div>
+  </li>
+</ol>
 
         </div>
     </div>
@@ -368,7 +246,7 @@ server.login( ‘Google username’, ‘<google app="" password="">' )</google><
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12 footer navbar-inverse navbar-fixed-bottom">
-            <p class="copyright">&copy;  2018 DevonPeel.me</a>
+            <p class="copyright">&copy;  2019 DevonPeel.me</a>
         </div>
     </div>
 </div>

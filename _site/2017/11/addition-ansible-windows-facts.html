@@ -54,15 +54,15 @@
     <h1>Recent Posts</h1>
     <ul>
         
+          <li><a href="/2019/07/icinga2-ssl-check">Icinga2 SSL Check</a></li>
+        
+          <li><a href="/2019/01/flash-cisco-ap-from-mac">Flash Cisco AP from a Mac</a></li>
+        
+          <li><a href="/2018/08/icinga2-snmp-tempcheck">Icinga2 SNMP Temperature Check</a></li>
+        
           <li><a href="/2017/12/using-additional-ansible-facts">Using Additional Ansible Facts</a></li>
         
           <li><a href="/2017/11/addition-ansible-windows-facts">Additional Ansible Windows Facts</a></li>
-        
-          <li><a href="/2017/02/SMTPtoSMSrelay">SMTP to SMS relay</a></li>
-        
-          <li><a href="/2017/01/Python-WSGI">Python WSGI</a></li>
-        
-          <li><a href="/2016/12/Google-Analytics">Google Analytics</a></li>
         
     </ul>
 </div>
@@ -90,65 +90,57 @@
 
 <p>Create the <code class="highlighter-rouge">facts\tasks\main.yml</code> file and add the following</p>
 
-<h2 id="section">```</h2>
-<ul>
-  <li>
-    <p>name: create Scripts dir on remote host
-win_file:
-  path: C:\Scripts
-  state: directory</p>
-  </li>
-  <li>
-    <p>name: copy custom facts file
-win_copy:
-  src: getFacts.ps1
-  dest: C:\Scripts\</p>
-  </li>
-  <li>
-    <p>name: gather extra facts
-setup:
-  fact_path: C:\Scripts</p>
-  </li>
-  <li>
-    <p>name: Set intermediate fact
-set_fact:
-  vars_hack: “”</p>
-  </li>
-  <li>
-    <p>name: set program facts
-set_fact:
-  one_fact: ansible_getFacts
-  var_hack:  “”</p>
-  </li>
-</ul>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+- name: create Scripts dir
+  win_file:
+    path: C:\Scripts
+    state: directory 
 
-<h1 id="dont-delete-the-entire-dir-delete-the-file-to-update-it">dont delete the entire dir, delete the file to update it.</h1>
-<ul>
-  <li>
-    <p>name: delete json file
-file:
-  path: “/.json”
-  state: absent
-failed_when: false
-delegate_to: localhost</p>
-  </li>
-  <li>
-    <p>name: Dump all vars for dedugging
-action: template src=templates/dumpall.j2 dest=”/.json”
-delegate_to: localhost</p>
-  </li>
-  <li>
-    <p>name: run app.py to clean sensitive data from the json file
-script: app.py
-delegate_to: localhost
-ignore_errors: true
-```</p>
-  </li>
-</ul>
+- name: create Scripts facts dir
+  win_file:
+    path: C:\Scripts\facts
+    state: absent        
 
-<p>Now create the <code class="highlighter-rouge">facts/files/getFacts.ps1</code> file and add the follwoing below. This file will be copied to each Windows host and run return a dictionary of all installed programs.
-<code class="highlighter-rouge">
-#sourced from https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/
+- name: copy custom facts file
+  win_copy:
+    src: getFacts.ps1
+    dest: C:\Scripts\
+
+- name: gather extra facts
+  setup:
+    fact_path: C:\Scripts
+
+- name: Set intermediate fact
+  set_fact:
+    vars_hack: ""
+
+- name: set program facts
+  set_fact:
+    one_fact: ansible_getFacts
+    var_hack:  "" 
+            
+- name: delete json file 
+  file:
+    path: "/.json"
+    state: absent
+  failed_when: false
+  delegate_to: localhost
+
+- name: Dump all vars
+  action: template src=templates/dumpall.j2 dest="/.json"
+  delegate_to: localhost
+
+- name: add to db
+  script: app.py
+  delegate_to: localhost
+  ignore_errors: true
+
+
+
+</code></pre></div></div>
+
+<p>Now create the <code class="highlighter-rouge">facts/files/getFacts.ps1</code> file and add the follwoing below. This file will be copied to each Windows host and run return a dictionary of all installed programs.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#sourced from https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/
 $packages = Get-WmiObject -Class Win32_Product
 $returnpackages = @{}
 foreach ($package in $packages)
@@ -159,85 +151,68 @@ foreach ($package in $packages)
 #Write-Host $returnpackages."Google Chrome".Name
 #Write-Host $returnpackages."Google Chrome".Version
 $returnpackages
-</code></p>
+</code></pre></div></div>
 
-<p>For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a <code class="highlighter-rouge">facts/templates/dumpall.j2</code> and add the following.
-```</p>
+<p>For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a <code class="highlighter-rouge">facts/templates/dumpall.j2</code> and add the following.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+  {{ vars_hack | to_json }}
 
-<table>
-  <tbody>
-    <tr>
-      <td>{{ vars_hack</td>
-      <td>to_json }}</td>
-    </tr>
-  </tbody>
-</table>
+</code></pre></div></div>
 
-<p>```</p>
+<p>Create the <code class="highlighter-rouge">facts\files\app.py</code> and add the following below. This files erases passwords dumped in the the json files.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/usr/bin/env python</span>
+<span class="c"># orginal found at https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/</span>
 
-<p>Create the <code class="highlighter-rouge">facts\files\app.py</code> and add the following below. This files erases passwords dumped in the the json files.
-```
-#!/usr/bin/env python
-# orginal found at https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/</p>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
 
-<p>import os
-import rethinkdb
-import json
-import rethinkdb as r</p>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">listdir</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">isfile</span><span class="p">,</span> <span class="n">join</span>
 
-<p>from os import listdir
-from os.path import isfile, join</p>
+<span class="n">tempfolder</span> <span class="o">=</span> <span class="s">'../roles/facts/files/data/json/'</span>
 
-<p>import sys
-reload(sys)
-sys.setdefaultencoding(‘utf-8’)</p>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">):</span>
+  <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">)</span>
 
-<p>tempfolder = ‘../roles/facts/files/data/json/’</p>
+<span class="n">onlyfiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">listdir</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">)</span> <span class="k">if</span> <span class="n">isfile</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">,</span> <span class="n">f</span><span class="p">))]</span>
 
-<p>if not os.path.isdir(tempfolder):
-  os.makedirs(tempfolder)</p>
-
-<p>onlyfiles = [f for f in listdir(tempfolder) if isfile(join(tempfolder, f))]</p>
-
-<p>for file in onlyfiles:
-  host_name = str(file).replace(‘.json’,’’)  ##I am using host ips, to use hostnames use str(file).split(“.”)[3]
-  with open(os.path.join(tempfolder, file),’r+’) as data_file:
-      data = json.load(data_file)
-      data[‘ansible_password’] = ‘’
-      data[‘ansible_password_ad’] = ‘’
-      data_file.close()
-  with open(tempfolder+’/’+file, ‘w+’) as outfile:
-    json.dump(data, outfile, sort_keys=True, indent=2, separators=(‘,’, ‘: ‘))
-  outfile.close()
-```</p>
+<span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">onlyfiles</span><span class="p">:</span>
+  <span class="n">host_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">'.json'</span><span class="p">,</span><span class="s">''</span><span class="p">)</span>  <span class="c">##I am using host ips, to use hostnames use str(file).split(".")[3]</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempfolder</span><span class="p">,</span> <span class="nb">file</span><span class="p">),</span><span class="s">'r+'</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
+      <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
+      <span class="n">data</span><span class="p">[</span><span class="s">'ansible_password'</span><span class="p">]</span> <span class="o">=</span> <span class="s">''</span>
+      <span class="n">data</span><span class="p">[</span><span class="s">'ansible_password_ad'</span><span class="p">]</span> <span class="o">=</span> <span class="s">''</span>
+      <span class="n">data_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tempfolder</span><span class="o">+</span><span class="s">'/'</span><span class="o">+</span><span class="nb">file</span><span class="p">,</span> <span class="s">'w+'</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s">','</span><span class="p">,</span> <span class="s">': '</span><span class="p">))</span>
+  <span class="n">outfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></div>
 
 <p>Create one last file the vars file for the role. Create <code class="highlighter-rouge">vars/main.yml</code> and add the following.</p>
 
-<p><code class="highlighter-rouge">
-json_files: '../roles/facts/files/data/json/'
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>json_files: '../roles/facts/files/data/json/'
 host_program_csv: '../roles/facts/files/data/programs'
-</code></p>
+</code></pre></div></div>
 
 <p>Now install the redis service.
-For Centos 7
-<code class="highlighter-rouge">
-yum install redis
+For Centos 7</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum install redis
 systemctl enable redis
 systemctl start redis
-</code></p>
+</code></pre></div></div>
 
-<p>Generate a hash for redis
-<code class="highlighter-rouge">
-echo "redis-password-string" | sha256sum 
-</code></p>
+<p>Generate a hash for redis</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo "redis-password-string" | sha256sum 
+</code></pre></div></div>
 
 <p>Edit the redis config file in <code class="highlighter-rouge">/etc/redis.conf</code>and find the line <em>requirepass</em> and insert the generated hash</p>
 
 <p>Edit your base ansible.cfg usualy in the first directory of your ansible setup and add the line</p>
 
-<p><code class="highlighter-rouge">
-fact_caching_connection = &lt;redis-ip&gt;:6379:0:&lt;redis-hash&gt;
-</code></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fact_caching_connection = &lt;redis-ip&gt;:6379:0:&lt;redis-hash&gt;
+</code></pre></div></div>
+
+<p>Updated: 2/7/2019</p>
 
             </div>
             
@@ -261,7 +236,7 @@ fact_caching_connection = &lt;redis-ip&gt;:6379:0:&lt;redis-hash&gt;
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12 footer navbar-inverse navbar-fixed-bottom">
-            <p class="copyright">&copy;  2018 DevonPeel.me</a>
+            <p class="copyright">&copy;  2019 DevonPeel.me</a>
         </div>
     </div>
 </div>

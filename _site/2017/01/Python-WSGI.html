@@ -54,15 +54,15 @@
     <h1>Recent Posts</h1>
     <ul>
         
+          <li><a href="/2019/07/icinga2-ssl-check">Icinga2 SSL Check</a></li>
+        
+          <li><a href="/2019/01/flash-cisco-ap-from-mac">Flash Cisco AP from a Mac</a></li>
+        
+          <li><a href="/2018/08/icinga2-snmp-tempcheck">Icinga2 SNMP Temperature Check</a></li>
+        
           <li><a href="/2017/12/using-additional-ansible-facts">Using Additional Ansible Facts</a></li>
         
           <li><a href="/2017/11/addition-ansible-windows-facts">Additional Ansible Windows Facts</a></li>
-        
-          <li><a href="/2017/02/SMTPtoSMSrelay">SMTP to SMS relay</a></li>
-        
-          <li><a href="/2017/01/Python-WSGI">Python WSGI</a></li>
-        
-          <li><a href="/2016/12/Google-Analytics">Google Analytics</a></li>
         
     </ul>
 </div>
@@ -88,52 +88,48 @@
 
 <p>Create application user</p>
 
-<p><code class="highlighter-rouge">
-  useradd appdeploy
-</code></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  useradd appdeploy
+</code></pre></div></div>
 
 <p>Edit /etc/passwd</p>
 
-<p><code class="highlighter-rouge">
-  appdeploy:x:&lt;uid&gt;:&lt;gid&gt;:appdeploy:/&lt;home&gt;/&lt;directory&gt;:/sbin/nologin
-</code></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  appdeploy:x:&lt;uid&gt;:&lt;gid&gt;:appdeploy:/&lt;home&gt;/&lt;directory&gt;:/sbin/nologin
+</code></pre></div></div>
 
 <p>Create an apache2 config file under /etc/httpd/conf.d/</p>
 
-<p>```
-&lt;virtuallHost *:80&gt;
-  ServerName archive.math.ksu.edu</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;virtuallHost *:80&gt;
+  ServerName archive.math.ksu.edu
 
-<h1 id="use-only-1-python-sub-interpreter--multiple-sub-interpreters">Use only 1 Python sub-interpreter.  Multiple sub-interpreters</h1>
-<p># play badly with C extensions.  See
+# Use only 1 Python sub-interpreter.  Multiple sub-interpreters
+# play badly with C extensions.  See
 # http://stackoverflow.com/a/10558360/209039
 WSGIApplicationGroup %{GLOBAL}
 WSGIPassAuthorization On
 WSGIDaemonProcess pyramid user=appdeploy    group=appdeploy  threads=4 \
    python-path=/var/www/archive/temp_py/lib/python2.7/site-packages
-WSGIScriptAlias / /var/www/archive/pyramid.wsgi</p>
+WSGIScriptAlias / /var/www/archive/pyramid.wsgi
 
-<p>&lt;Directory /var/www/archive&gt;
+&lt;Directory /var/www/archive&gt;
   WSGIProcessGroup pyramid
   Order allow,deny
   Allow from all
-&lt;/Directory&gt;</p>
+&lt;/Directory&gt;
 
-<p>&lt;/VirtualHost&gt;
-```</p>
+&lt;/VirtualHost&gt;
+</code></pre></div></div>
 
 <p>Create a WSGI file in the application directory that will be called by the apache2 service.</p>
 
-<p>```
-import os,sys,site</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import os,sys,site
 
-<p>os.environ[‘PYTHON_EGG_CACHE’] = ‘/var/www/archive/temp_py’</p>
+os.environ['PYTHON_EGG_CACHE'] = '/var/www/archive/temp_py'
 
-<p>from pyramid.paster import get_app, setup_logging
-ini_path = ‘/var/www/archive/production.ini’
+from pyramid.paster import get_app, setup_logging
+ini_path = '/var/www/archive/production.ini'
 #setup_logging(ini_path)
-application = get_app(ini_path, ‘main’)
-```</p>
+application = get_app(ini_path, 'main')
+</code></pre></div></div>
 
 
             </div>
@@ -158,7 +154,7 @@ application = get_app(ini_path, ‘main’)
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12 footer navbar-inverse navbar-fixed-bottom">
-            <p class="copyright">&copy;  2018 DevonPeel.me</a>
+            <p class="copyright">&copy;  2019 DevonPeel.me</a>
         </div>
     </div>
 </div>
