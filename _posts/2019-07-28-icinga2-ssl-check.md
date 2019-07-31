@@ -4,13 +4,16 @@ title: "Icinga2 SSL Check"
 date: 2019-07-28 09:09:06 -0700
 comments: false
 ---
+
+After Icinga2 is all setup.
+
 1. Install nagios via yum or apt get 
 ```
-  apt-get install
+  apt-get install nagios-plugins
 ```
 or 
 ```
-  yum install
+  yum install nagios-plugins-http.x86_64
 ```
 
 2. Add the following ``` /etc/icinga2/conf.d/services.conf```

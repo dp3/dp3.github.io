@@ -1,11 +1,19 @@
 ---
 layout: post
 title: "Icinga2 SNMP Temperature Check"
-date: 2018-08-29 09:09:06 -0700
+date: 2018-07-29 09:09:06 -0700
 comments: false
 ---
+After Icinga2 is all setup. 
 
-1. 
+1. Install nagios via yum or apt get 
+```
+  apt-get install nagios-plugins
+```
+or 
+```
+  yum install nagios-plugins-http.x86_64
+```
 
 2. Add the following ``` /etc/icinga2/conf.d/services.conf```
 ```
