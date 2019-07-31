@@ -7,13 +7,76 @@
 		<atom:link href="https://devonpeel.me/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
-				<title>Icinga2 SSL Check</title>
-				<description>&lt;ol&gt;
+				<title>Icinga2 SNMP Temperature Check</title>
+				<description>&lt;p&gt;After Icinga2 is all setup.&lt;/p&gt;
+
+&lt;ol&gt;
   &lt;li&gt;Install nagios via yum or apt get
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  apt-get install
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  apt-get install nagios-plugins
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
     &lt;p&gt;or&lt;/p&gt;
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  yum install
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  yum install nagios-plugins-snmp.x86_64
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Add the following &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/services.conf&lt;/code&gt;
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apply Service &quot;Check temperature &quot; for (config in host.vars.temperature) {
+ import &quot;generic-temperature-check&quot;      
+ check_command = &quot;check_temp&quot;
+ vars.hostname = config
+ assign where host.vars.temperature
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Add the following to &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/commands.conf&lt;/code&gt;
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;object CheckCommand &quot;check_temp&quot; {
+ import &quot;plugin-check-command&quot;
+ command = [PluginDir + &quot;/check_snmp&quot;]
+ arguments = {
+ &quot;-H&quot; = &quot;$hostname$&quot;
+ &quot;-o&quot; = &quot;$temp_oid$&quot;
+ &quot;-c&quot; = &quot;$temp_critical$&quot;
+ &quot;-w&quot; = &quot;$temp_warning$&quot;
+ &quot;-P&quot; = &quot;$temp_version$&quot;
+ &quot;-C&quot; = &quot;$temp_community$&quot;  
+ }
+ }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Edit the &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/hosts.conf&lt;/code&gt; file to include the new host to monitor.
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;object Host &quot;environment.fqdn.com&quot; {
+ import &quot;generic-temperature-check&quot;
+ address=&quot;10.0.2.2&quot;
+ vars.hostname=&quot;environment.fqdn.com&quot;
+ vars.temperature = &quot;environment.fqdn.com&quot;
+ vars.temp_critical= [&quot;90&quot;,&quot;90&quot;]
+ vars.temp_warning= [&quot;80&quot;,&quot;80&quot;]
+ /* APC temp oid codes, these may need to be changed  */
+ vars.temp_oid = [&quot;1.3.6.1.4.1.318.1.1.10.3.13.1.1.3.1&quot;, &quot;1.3.6.1.4.1.318.1.1.10.3.13.1.1.3.2&quot;]
+ vars.temp_version=&quot;1&quot;
+ vars.temp_community=&quot;communityName&quot;
+ vars.notification[&quot;mail&quot;] = {
+ groups = [ &quot;icingaadmins&quot; ] 
+ }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+</description>
+				<pubDate>Mon, 29 Jul 2019 09:09:06 -0700</pubDate>
+				<link>https://devonpeel.me/2019/07/icinga2-snmp-tempcheck</link>
+				<guid isPermaLink="true">https://devonpeel.me/2019/07/icinga2-snmp-tempcheck</guid>
+			</item>
+		
+			<item>
+				<title>Icinga2 SSL Check</title>
+				<description>&lt;p&gt;After Icinga2 is all setup.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Install nagios via yum or apt get
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  apt-get install nagios-plugins
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+    &lt;p&gt;or&lt;/p&gt;
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  yum install nagios-plugins-http.x86_64
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
   &lt;/li&gt;
   &lt;li&gt;Add the following &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/services.conf&lt;/code&gt;
@@ -95,59 +158,6 @@
 				<pubDate>Sun, 06 Jan 2019 16:25:06 -0700</pubDate>
 				<link>https://devonpeel.me/2019/01/flash-cisco-ap-from-mac</link>
 				<guid isPermaLink="true">https://devonpeel.me/2019/01/flash-cisco-ap-from-mac</guid>
-			</item>
-		
-			<item>
-				<title>Icinga2 SNMP Temperature Check</title>
-				<description>&lt;ol&gt;
-  &lt;li&gt;&lt;/li&gt;
-  &lt;li&gt;Add the following &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/services.conf&lt;/code&gt;
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apply Service &quot;Check temperature &quot; for (config in host.vars.temperature) {
- import &quot;generic-temperature-check&quot;      
- check_command = &quot;check_temp&quot;
- vars.hostname = config
- assign where host.vars.temperature
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Add the following to &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/commands.conf&lt;/code&gt;
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;object CheckCommand &quot;check_temp&quot; {
- import &quot;plugin-check-command&quot;
- command = [PluginDir + &quot;/check_snmp&quot;]
- arguments = {
- &quot;-H&quot; = &quot;$hostname$&quot;
- &quot;-o&quot; = &quot;$temp_oid$&quot;
- &quot;-c&quot; = &quot;$temp_critical$&quot;
- &quot;-w&quot; = &quot;$temp_warning$&quot;
- &quot;-P&quot; = &quot;$temp_version$&quot;
- &quot;-C&quot; = &quot;$temp_community$&quot;  
- }
- }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Edit the &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/hosts.conf&lt;/code&gt; file to include the new host to monitor.
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;object Host &quot;environment.fqdn.com&quot; {
- import &quot;generic-temperature-check&quot;
- address=&quot;10.0.2.2&quot;
- vars.hostname=&quot;environment.fqdn.com&quot;
- vars.temperature = &quot;environment.fqdn.com&quot;
- vars.temp_critical= [&quot;90&quot;,&quot;90&quot;]
- vars.temp_warning= [&quot;80&quot;,&quot;80&quot;]
- /* APC temp oid codes, these may need to be changed  */
- vars.temp_oid = [&quot;1.3.6.1.4.1.318.1.1.10.3.13.1.1.3.1&quot;, &quot;1.3.6.1.4.1.318.1.1.10.3.13.1.1.3.2&quot;]
- vars.temp_version=&quot;1&quot;
- vars.temp_community=&quot;communityName&quot;
- vars.notification[&quot;mail&quot;] = {
- groups = [ &quot;icingaadmins&quot; ] 
- }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-</description>
-				<pubDate>Wed, 29 Aug 2018 09:09:06 -0700</pubDate>
-				<link>https://devonpeel.me/2018/08/icinga2-snmp-tempcheck</link>
-				<guid isPermaLink="true">https://devonpeel.me/2018/08/icinga2-snmp-tempcheck</guid>
 			</item>
 		
 			<item>
