@@ -22,7 +22,7 @@ Create an apache2 config file under /etc/httpd/conf.d/
 
 ```
 <virtuallHost *:80>
-  ServerName archive.math.ksu.edu
+  ServerName archive.fqdn.com
 
 # Use only 1 Python sub-interpreter.  Multiple sub-interpreters
 # play badly with C extensions.  See

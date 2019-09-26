@@ -23,7 +23,7 @@ The new solution along with mounting a network share.
 - name: Transfer of msoffice2016
   win_command: '{{ item }}'
   with_items:
-    -  'net use  s: \\files.math.ksu.edu\software /P:yes /user:{{ ansible_user_ad }}  {{ ansible_password_ad }}'
+    -  'net use  s: \\nfs.fqdn.com\software /P:yes /user:{{ ansible_user_ad }}  {{ ansible_password_ad }}'
     -  'robocopy s:\msoffice2016 \msoffice2016 /E'
   ignore_errors: yes
   no_log: True 

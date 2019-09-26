@@ -46,7 +46,7 @@ object Host "webhost.fqdn.com" {
     address = "10.0.2.1" 
     vars.disks["disk /"] = { disk_partitions = "/" }
     vars.os = "Linux"
-    vars.remote_client = "webhost.fqgn.com" 
+    vars.remote_client = "webhost.fqdn.com" 
     vars.users_wgreater = 10
     vars.users_cgreater = 20 
     vars.ssl_domains = ["website.fqdn.com","websitetwo.fqdn.com"] 
