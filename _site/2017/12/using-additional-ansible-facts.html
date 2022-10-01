@@ -31,7 +31,7 @@
                     <li class="active"><a href="/">Home</a></li>
                     <li class="active visible-xs-block"><a href="/links.html">Links</a></li>
                     <li class="active"><a href="/archive.html">Archive</a></li>
-                    <li class="active"><a href="/Resume/index.html">About</a></li>
+                    <li class="active"><a href="/Resume/index.html">Resume</a></li>
 <!--                    <li class="active"><a href="/feed.xml">RSS</a></li>-->
                     
                       <li class="active"><a href="https://github.com/dp3">Github</a></li>
@@ -47,22 +47,22 @@
     <div class="row">
         <div class="col-md-3 hidden-xs">
             <div class="sidebar well">
- Personal  Website  for  Devon  Peel. Christ follower, Techie, Kansas State and KC Royals Fan
+ Personal  Website  for  Devon  Peel. Kansas State and KC Royals Fan
 </div>
 
 <div class="sidebar well">
     <h1>Recent Posts</h1>
     <ul>
         
+          <li><a href="/2022/10/superset">Installing Apache SuperSet</a></li>
+        
+          <li><a href="/2019/08/win-ansible-win-copy">Ansible Windows win_copy is slow</a></li>
+        
           <li><a href="/2019/07/icinga2-snmp-tempcheck">Icinga2 SNMP Temperature Check</a></li>
         
           <li><a href="/2019/07/icinga2-ssl-check">Icinga2 SSL Check</a></li>
         
           <li><a href="/2019/01/flash-cisco-ap-from-mac">Flash Cisco AP from a Mac</a></li>
-        
-          <li><a href="/2017/12/using-additional-ansible-facts">Using Additional Ansible Facts</a></li>
-        
-          <li><a href="/2017/11/addition-ansible-windows-facts">Additional Ansible Windows Facts</a></li>
         
     </ul>
 </div>
@@ -88,30 +88,30 @@
 
 <p>To view the facts after running the role enter in the following in a terminal.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ansible &lt;HOST or GROUP&gt;  -m debug -a "var=ansible_getFacts"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ansible &lt;HOST or GROUP&gt;  -m debug -a "var=ansible_getFacts"
 </code></pre></div></div>
 
 <p>To search for host for a signal program:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ansible &lt;HOST or GROUP&gt; -m debug -a "var=hostvars[inventory_hostname]['ansible_getFacts']['&lt;PROGRAM NAME&gt;']"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ansible &lt;HOST or GROUP&gt; -m debug -a "var=hostvars[inventory_hostname]['ansible_getFacts']['&lt;PROGRAM NAME&gt;']"
 </code></pre></div></div>
 
 <p>To check if a program is installed</p>
 <ol>
   <li>Set the register variable
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- name: get variables
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- name: get variables
   debug: var=hostvars[inventory_hostname]['ansible_getFacts']['&lt;PROGRAM NAME&gt;']
  register: &lt;PROGRAM NAME&gt;
 </code></pre></div>    </div>
   </li>
   <li>Next use the register with the ansible ‘when’ command. Below is an exaple that will run in cases of the program missing.
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  when: hostvars[inventory_hostname]['ansible_getFacts']['&lt;PROGRAM NAME&gt;'] is undefined
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  when: hostvars[inventory_hostname]['ansible_getFacts']['&lt;PROGRAM NAME&gt;'] is undefined
 </code></pre></div>    </div>
   </li>
 </ol>
 
 <p>Complete Example</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- name: get variables
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- name: get variables
   debug: var=hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016']
   register: msoffice_check
 
@@ -164,7 +164,7 @@
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12 footer navbar-inverse navbar-fixed-bottom">
-            <p class="copyright">&copy;  2019 DevonPeel.me</a>
+            <p class="copyright">&copy;  2022 DevonPeel.me</a>
         </div>
     </div>
 </div>

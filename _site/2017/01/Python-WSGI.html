@@ -31,7 +31,7 @@
                     <li class="active"><a href="/">Home</a></li>
                     <li class="active visible-xs-block"><a href="/links.html">Links</a></li>
                     <li class="active"><a href="/archive.html">Archive</a></li>
-                    <li class="active"><a href="/Resume/index.html">About</a></li>
+                    <li class="active"><a href="/Resume/index.html">Resume</a></li>
 <!--                    <li class="active"><a href="/feed.xml">RSS</a></li>-->
                     
                       <li class="active"><a href="https://github.com/dp3">Github</a></li>
@@ -47,22 +47,22 @@
     <div class="row">
         <div class="col-md-3 hidden-xs">
             <div class="sidebar well">
- Personal  Website  for  Devon  Peel. Christ follower, Techie, Kansas State and KC Royals Fan
+ Personal  Website  for  Devon  Peel. Kansas State and KC Royals Fan
 </div>
 
 <div class="sidebar well">
     <h1>Recent Posts</h1>
     <ul>
         
+          <li><a href="/2022/10/superset">Installing Apache SuperSet</a></li>
+        
+          <li><a href="/2019/08/win-ansible-win-copy">Ansible Windows win_copy is slow</a></li>
+        
           <li><a href="/2019/07/icinga2-snmp-tempcheck">Icinga2 SNMP Temperature Check</a></li>
         
           <li><a href="/2019/07/icinga2-ssl-check">Icinga2 SSL Check</a></li>
         
           <li><a href="/2019/01/flash-cisco-ap-from-mac">Flash Cisco AP from a Mac</a></li>
-        
-          <li><a href="/2017/12/using-additional-ansible-facts">Using Additional Ansible Facts</a></li>
-        
-          <li><a href="/2017/11/addition-ansible-windows-facts">Additional Ansible Windows Facts</a></li>
         
     </ul>
 </div>
@@ -88,18 +88,18 @@
 
 <p>Create application user</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  useradd appdeploy
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  useradd appdeploy
 </code></pre></div></div>
 
 <p>Edit /etc/passwd</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  appdeploy:x:&lt;uid&gt;:&lt;gid&gt;:appdeploy:/&lt;home&gt;/&lt;directory&gt;:/sbin/nologin
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  appdeploy:x:&lt;uid&gt;:&lt;gid&gt;:appdeploy:/&lt;home&gt;/&lt;directory&gt;:/sbin/nologin
 </code></pre></div></div>
 
 <p>Create an apache2 config file under /etc/httpd/conf.d/</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;virtuallHost *:80&gt;
-  ServerName archive.math.ksu.edu
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;virtuallHost *:80&gt;
+  ServerName archive.fqdn.com
 
 # Use only 1 Python sub-interpreter.  Multiple sub-interpreters
 # play badly with C extensions.  See
@@ -121,7 +121,7 @@ WSGIScriptAlias / /var/www/archive/pyramid.wsgi
 
 <p>Create a WSGI file in the application directory that will be called by the apache2 service.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import os,sys,site
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import os,sys,site
 
 os.environ['PYTHON_EGG_CACHE'] = '/var/www/archive/temp_py'
 
@@ -154,7 +154,7 @@ application = get_app(ini_path, 'main')
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12 footer navbar-inverse navbar-fixed-bottom">
-            <p class="copyright">&copy;  2019 DevonPeel.me</a>
+            <p class="copyright">&copy;  2022 DevonPeel.me</a>
         </div>
     </div>
 </div>

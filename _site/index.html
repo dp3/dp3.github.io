@@ -31,7 +31,7 @@
                     <li class="active"><a href="/">Home</a></li>
                     <li class="active visible-xs-block"><a href="/links.html">Links</a></li>
                     <li class="active"><a href="/archive.html">Archive</a></li>
-                    <li class="active"><a href="/Resume/index.html">About</a></li>
+                    <li class="active"><a href="/Resume/index.html">Resume</a></li>
 <!--                    <li class="active"><a href="/feed.xml">RSS</a></li>-->
                     
                       <li class="active"><a href="https://github.com/dp3">Github</a></li>
@@ -47,22 +47,22 @@
     <div class="row">
         <div class="col-md-3 hidden-xs">
             <div class="sidebar well">
- Personal  Website  for  Devon  Peel. Christ follower, Techie, Kansas State and KC Royals Fan
+ Personal  Website  for  Devon  Peel. Kansas State and KC Royals Fan
 </div>
 
 <div class="sidebar well">
     <h1>Recent Posts</h1>
     <ul>
         
+          <li><a href="/2022/10/superset">Installing Apache SuperSet</a></li>
+        
+          <li><a href="/2019/08/win-ansible-win-copy">Ansible Windows win_copy is slow</a></li>
+        
           <li><a href="/2019/07/icinga2-snmp-tempcheck">Icinga2 SNMP Temperature Check</a></li>
         
           <li><a href="/2019/07/icinga2-ssl-check">Icinga2 SSL Check</a></li>
         
           <li><a href="/2019/01/flash-cisco-ap-from-mac">Flash Cisco AP from a Mac</a></li>
-        
-          <li><a href="/2017/12/using-additional-ansible-facts">Using Additional Ansible Facts</a></li>
-        
-          <li><a href="/2017/11/addition-ansible-windows-facts">Additional Ansible Windows Facts</a></li>
         
     </ul>
 </div>
@@ -80,172 +80,10 @@
         </div>
         <div class="col-md-9">
             
-<div class="article">
-    <div class="well">
-        <h1><a href="/2019/07/icinga2-snmp-tempcheck">Jul 29, 2019 - Icinga2 SNMP Temperature Check</a></h1>
-        
-        <div class="content">
-            <p>After Icinga2 is all setup.</p>
-
-<ol>
-  <li>Install nagios via yum or apt get
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  apt-get install nagios-plugins
-</code></pre></div>    </div>
-    <p>or</p>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  yum install nagios-plugins-snmp.x86_64
-</code></pre></div>    </div>
-  </li>
-  <li>Add the following <code class="highlighter-rouge">/etc/icinga2/conf.d/services.conf</code>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apply Service "Check temperature " for (config in host.vars.temperature) {
- import "generic-temperature-check"      
- check_command = "check_temp"
- vars.hostname = config
- assign where host.vars.temperature
-}
-</code></pre></div>    </div>
-  </li>
-  <li>Add the following to <code class="highlighter-rouge">/etc/icinga2/conf.d/commands.conf</code>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>object CheckCommand "check_temp" {
- import "plugin-check-command"
- command = [PluginDir + "/check_snmp"]
- arguments = {
- "-H" = "$hostname$"
- "-o" = "$temp_oid$"
- "-c" = "$temp_critical$"
- "-w" = "$temp_warning$"
- "-P" = "$temp_version$"
- "-C" = "$temp_community$"  
- }
- }
-</code></pre></div>    </div>
-  </li>
-  <li>Edit the <code class="highlighter-rouge">/etc/icinga2/conf.d/hosts.conf</code> file to include the new host to monitor.
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>object Host "environment.fqdn.com" {
- import "generic-temperature-check"
- address="10.0.2.2"
- vars.hostname="environment.fqdn.com"
- vars.temperature = "environment.fqdn.com"
- vars.temp_critical= ["90","90"]
- vars.temp_warning= ["80","80"]
- /* APC temp oid codes, these may need to be changed  */
- vars.temp_oid = ["1.3.6.1.4.1.318.1.1.10.3.13.1.1.3.1", "1.3.6.1.4.1.318.1.1.10.3.13.1.1.3.2"]
- vars.temp_version="1"
- vars.temp_community="communityName"
- vars.notification["mail"] = {
- groups = [ "icingaadmins" ] 
- }
-}
-</code></pre></div>    </div>
-  </li>
-</ol>
-
-        </div>
-    </div>
-</div>
-
-<div class="article">
-    <div class="well">
-        <h1><a href="/2019/07/icinga2-ssl-check">Jul 28, 2019 - Icinga2 SSL Check</a></h1>
-        
-        <div class="content">
-            <p>After Icinga2 is all setup.</p>
-
-<ol>
-  <li>Install nagios via yum or apt get
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  apt-get install nagios-plugins
-</code></pre></div>    </div>
-    <p>or</p>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  yum install nagios-plugins-http.x86_64
-</code></pre></div>    </div>
-  </li>
-  <li>Add the following <code class="highlighter-rouge">/etc/icinga2/conf.d/services.conf</code>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  apply Service "Check SSL certificate for " for (config in host.vars.ssl_domains) {
- check_command = "check_ssl"
- vars.hostname = config
- vars.critical = "15"
- vars.warning = "30" 
- assign where host.vars.ssl_domains
-  }
-</code></pre></div>    </div>
-  </li>
-  <li>Add the following to <code class="highlighter-rouge">/etc/icinga2/conf.d/commands.conf</code>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  object CheckCommand "check_ssl" {
- import "plugin-check-command"
- command = [PluginDir + "/check_http"]
- arguments = {
-   "-H" = "$hostname$"
-   "-C" = "$critical$"
- }
-  }
-</code></pre></div>    </div>
-  </li>
-  <li>Edit the <code class="highlighter-rouge">/etc/icinga2/conf.d/hosts.conf</code>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>object Host "webhost.fqdn.com" {
- import "generic-host"
- address = "10.0.2.1" 
- vars.disks["disk /"] = { disk_partitions = "/" }
- vars.os = "Linux"
- vars.remote_client = "webhost.fqgn.com" 
- vars.users_wgreater = 10
- vars.users_cgreater = 20 
- vars.ssl_domains = ["website.fqdn.com","websitetwo.fqdn.com"] 
- vars.notification["mail"] = {
- groups = [ "icingaadmins" ] 
- } 
-}
-</code></pre></div>    </div>
-  </li>
-</ol>
-
-        </div>
-    </div>
-</div>
-
-<div class="article">
-    <div class="well">
-        <h1><a href="/2019/01/flash-cisco-ap-from-mac">Jan 6, 2019 - Flash Cisco AP from a Mac</a></h1>
-        
-        <div class="content">
-            <p>This is for a Cisco AIR 3502.</p>
-
-<ol>
-  <li>Start off by installing the Tftp Server(http://ww2.unime.it/flr/tftpserver/oon your mac</li>
-  <li>Acquire the Cisco Firmware that will be flashed on the access point.</li>
-  <li>Place the firmware in the <code class="highlighter-rouge">/private/tftpboot/</code> and start the tftp service</li>
-  <li>Change the permission <code class="highlighter-rouge">chmod 744 /private/tftpboot/</code>and owner <code class="highlighter-rouge">chown root:wheel /private/tftpboot</code></li>
-  <li>Connect a usb serial adapter to the mac and test the device with <code class="highlighter-rouge">ls /dev/cu.usbserial</code>or <code class="highlighter-rouge">ls /dev/ttyUSB0</code></li>
-  <li>On the mac open terminal and open a console to the access points with <code class="highlighter-rouge">screen /dev/cu.usbserial 9600 cs8 -ixof</code></li>
-  <li>Enter the username and password (hint: defaults are Cisco Cisco)</li>
-  <li>If you need to reset the device password press and hold the the mode button while the power is connected to the access point wait until the ap: prompt is displayed</li>
-</ol>
-
-<p>The following commands will be run in the access point console</p>
-<ol>
-  <li>Set IP of the access point <code class="highlighter-rouge">set IP_ADDR 10.0.0.20</code> and netmask <code class="highlighter-rouge">set NETMASK 255.255.255.0
-</code></li>
-  <li>Tell the AP the router’s ip <code class="highlighter-rouge">set DEFAULT_ROUTER 10.0.0.1</code></li>
-  <li>Configure the AP to accept new firmware over tftp <code class="highlighter-rouge">tftp_init</code></li>
-  <li>Start an ethernet connection to accept fireware<code class="highlighter-rouge">ether_init</code></li>
-  <li>Allow for flash memory to be accessed <code class="highlighter-rouge">flash_init</code></li>
-  <li>Flash the <code class="highlighter-rouge">tar -xtract tftp://&lt;TFTP SERVER IP&gt;/&lt;FIRMWARE&gt;.tar flash:</code> an example <code class="highlighter-rouge">tar -xtract tftp://&lt;TFTP SERVER IP&gt;/ap3g1-k9w7-tar.153-3.JF4.tar flash:</code></li>
-  <li>Wait about 20 minutes, grab a coffee</li>
-  <li>Set the newly added firmware to boot<code class="highlighter-rouge">set BOOT flash:/ap3g1-k9w7-mx.153-3.JF4/ap3g1-k9w7-mx.153-3.JF4</code></li>
-  <li><code class="highlighter-rouge">set MANUAL_BOOT no</code></li>
-  <li><code class="highlighter-rouge">set boot</code></li>
-  <li>Reboot the access point and see if the newly added firmware boots</li>
-  <li>Log back into the access point and delete the old firmware to free up space <code class="highlighter-rouge">delete /force /recursive flash:&lt;FIRMWARE&gt;</code></li>
-</ol>
-
-        </div>
-    </div>
-</div>
-
 
 <div class="pagination">
   
-  <span class="page_number ">Page: 1 of 5</span>
-  
-    <a class="btn btn-default" href="/page2" class="next">Older</a>
+  <span class="page_number ">Page:  of </span>
   
 </div>
 
@@ -256,7 +94,7 @@
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12 footer navbar-inverse navbar-fixed-bottom">
-            <p class="copyright">&copy;  2019 DevonPeel.me</a>
+            <p class="copyright">&copy;  2022 DevonPeel.me</a>
         </div>
     </div>
 </div>

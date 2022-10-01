@@ -2,9 +2,139 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
 		<title>DevonPeel.me</title>
-		<description> Personal  Website  for  Devon  Peel. Christ follower, Techie, Kansas State and KC Royals Fan</description>
+		<description> Personal  Website  for  Devon  Peel. Kansas State and KC Royals Fan</description>
 		<link>https://devonpeel.me</link>
 		<atom:link href="https://devonpeel.me/feed.xml" rel="self" type="application/rss+xml" />
+		
+			<item>
+				<title>Installing Apache SuperSet</title>
+				<description>&lt;p&gt;Update, Upgrade and install Dependancies&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apt-get update
+apt-get -y upgrade
+apt-get -y install build-essential libssl-dev libffi-dev python3-dev python3-pip libsasl2-dev libldap2-dev default-libmysqlclient-dev libpq-dev python-is-python3
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Install Superset set with pip on Ubuntu 20.04 while version locking a few packages&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pip install --upgrade pip
+pip install --upgrade pip --no-warn-script-location
+pip install werkzeug==2.0.3 --no-warn-script-location
+pip install flask==2.1.3 --no-warn-script-location
+pip install wtforms==2.3.0 --no-warn-script-location
+pip install --upgrade pyopenssl --no-warn-script-location
+pip install psycopg2-binary pillow gunicorn gevent --no-warn-script-location
+
+pip install apache-superset --no-warn-script-location
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Configuring Superset and create a Superset user&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo echo -e 'export FLASK_APP=superset' &amp;gt;&amp;gt; /etc/profile.d/superset.sh
+  
+export FLASK_APP=superset
+FLASK_APP=superset /home/ubuntu/.local/bin/superset db upgrade
+
+FLASK_APP=superset /home/ubuntu/.local/bin/superset fab create-admin --username admin --firstname Fname --lastname Sirname --email admin@domain.com --password &amp;lt;PASSWORD&amp;gt;
+
+FLASK_APP=superset /home/ubuntu/.local/bin/superset init
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Starting the application&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#enable the python venv
+source super/bin/active	 
+export FLASK_APP=superset
+superset init
+superset run -p 8088 --with-threads --reload --debugger --host 0.0.0.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Configuring Apache2 as Proxy with SSL&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo apt install apache2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Create the following sites in /etc/apache2/sites-available. Please change the 10.0.0.8 to the proper ip or domain.&lt;/p&gt;
+
+&lt;p&gt;/etc/apache2/sites-available/wesite.conf&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;VirtualHost *:80&amp;gt;
+    #ServerName server.domain.com
+    #ServerAlias server.doamin.com
+
+    #Redirect permanent / http://10.0.0.8:8088
+    Redirect permanent / https://10.0.0.8
+
+&amp;lt;/VirtualHost&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;/etc/apache2/sites-available/wesite-sll.conf&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;VirtualHost *:443&amp;gt;
+    #ServerAdmin root@domain.com
+    ServerName 10.0.0.8
+
+    #DocumentRoot /var/www
+    #ServerAlias fqdn.domain.com
+
+    SSLEngine on
+    SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt
+    SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
+ 
+    ProxyPass / http://10.0.0.8:8088/
+    ProxyPassReverse / http://10.0.0.8:8088/
+    ProxyRequests off
+    ProxyPreserveHost On
+    SSLProxyEngine On
+    &amp;lt;Proxy *&amp;gt;
+        Order deny,allow
+        Allow from all
+    &amp;lt;/Proxy&amp;gt;
+&amp;lt;/VirtualHost&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Create an SSL Certificate&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key -out /etc/ssl/certs/apache-selfsigned.crt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Enable the Apache sites, enable SSL and start the Apache2 service&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo a2ensite website.conf
+sudo a2ensite website-ssl.conf
+sudo a2enmod ssl
+sudo systemctl restart apache2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+				<pubDate>Sat, 01 Oct 2022 11:09:06 -0500</pubDate>
+				<link>https://devonpeel.me/2022/10/superset</link>
+				<guid isPermaLink="true">https://devonpeel.me/2022/10/superset</guid>
+			</item>
+		
+			<item>
+				<title>Ansible Windows win_copy is slow</title>
+				<description>&lt;p&gt;I have found a few problems with using the Ansible module win_copy. The module is slow and unreliable thus causing multiple timeouts. I have found a more reliable and quicker solution by using using win_command with robocopy.&lt;/p&gt;
+
+&lt;p&gt;Here is an example on how I used win_copy in the past.&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- name: copy ms office dir to c drive
+  win_copy:
+    src:  /misc/filessoftware/chocolatey/msoffice2016/
+    dest: C:\msoffice
+  ignore_errors: yes
+  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is undefined
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The new solution along with mounting a network share.&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- name: Transfer of msoffice2016
+  win_command: ''
+  with_items:
+    -  'net use  s: \\nfs.fqdn.com\software /P:yes /user:  '
+    -  'robocopy s:\msoffice2016 \msoffice2016 /E'
+  ignore_errors: yes
+  no_log: True 
+  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is undefined
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+				<pubDate>Sat, 10 Aug 2019 11:09:06 -0500</pubDate>
+				<link>https://devonpeel.me/2019/08/win-ansible-win-copy</link>
+				<guid isPermaLink="true">https://devonpeel.me/2019/08/win-ansible-win-copy</guid>
+			</item>
 		
 			<item>
 				<title>Icinga2 SNMP Temperature Check</title>
@@ -12,14 +142,14 @@
 
 &lt;ol&gt;
   &lt;li&gt;Install nagios via yum or apt get
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  apt-get install nagios-plugins
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  apt-get install nagios-plugins
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
     &lt;p&gt;or&lt;/p&gt;
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  yum install nagios-plugins-snmp.x86_64
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  yum install nagios-plugins-snmp.x86_64
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
   &lt;/li&gt;
-  &lt;li&gt;Add the following &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/services.conf&lt;/code&gt;
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apply Service &quot;Check temperature &quot; for (config in host.vars.temperature) {
+  &lt;li&gt;Add the following &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/services.conf&lt;/code&gt;
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;apply Service &quot;Check temperature &quot; for (config in host.vars.temperature) {
  import &quot;generic-temperature-check&quot;      
  check_command = &quot;check_temp&quot;
  vars.hostname = config
@@ -27,8 +157,8 @@
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
   &lt;/li&gt;
-  &lt;li&gt;Add the following to &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/commands.conf&lt;/code&gt;
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;object CheckCommand &quot;check_temp&quot; {
+  &lt;li&gt;Add the following to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/commands.conf&lt;/code&gt;
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;object CheckCommand &quot;check_temp&quot; {
  import &quot;plugin-check-command&quot;
  command = [PluginDir + &quot;/check_snmp&quot;]
  arguments = {
@@ -42,8 +172,8 @@
  }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
   &lt;/li&gt;
-  &lt;li&gt;Edit the &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/hosts.conf&lt;/code&gt; file to include the new host to monitor.
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;object Host &quot;environment.fqdn.com&quot; {
+  &lt;li&gt;Edit the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/hosts.conf&lt;/code&gt; file to include the new host to monitor.
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;object Host &quot;environment.fqdn.com&quot; {
  import &quot;generic-temperature-check&quot;
  address=&quot;10.0.2.2&quot;
  vars.hostname=&quot;environment.fqdn.com&quot;
@@ -62,7 +192,7 @@
   &lt;/li&gt;
 &lt;/ol&gt;
 </description>
-				<pubDate>Mon, 29 Jul 2019 09:09:06 -0700</pubDate>
+				<pubDate>Mon, 29 Jul 2019 11:09:06 -0500</pubDate>
 				<link>https://devonpeel.me/2019/07/icinga2-snmp-tempcheck</link>
 				<guid isPermaLink="true">https://devonpeel.me/2019/07/icinga2-snmp-tempcheck</guid>
 			</item>
@@ -73,14 +203,14 @@
 
 &lt;ol&gt;
   &lt;li&gt;Install nagios via yum or apt get
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  apt-get install nagios-plugins
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  apt-get install nagios-plugins
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
     &lt;p&gt;or&lt;/p&gt;
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  yum install nagios-plugins-http.x86_64
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  yum install nagios-plugins-http.x86_64
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
   &lt;/li&gt;
-  &lt;li&gt;Add the following &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/services.conf&lt;/code&gt;
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  apply Service &quot;Check SSL certificate for &quot; for (config in host.vars.ssl_domains) {
+  &lt;li&gt;Add the following &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/services.conf&lt;/code&gt;
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  apply Service &quot;Check SSL certificate for &quot; for (config in host.vars.ssl_domains) {
  check_command = &quot;check_ssl&quot;
  vars.hostname = config
  vars.critical = &quot;15&quot;
@@ -89,8 +219,8 @@
   }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
   &lt;/li&gt;
-  &lt;li&gt;Add the following to &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/commands.conf&lt;/code&gt;
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  object CheckCommand &quot;check_ssl&quot; {
+  &lt;li&gt;Add the following to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/commands.conf&lt;/code&gt;
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  object CheckCommand &quot;check_ssl&quot; {
  import &quot;plugin-check-command&quot;
  command = [PluginDir + &quot;/check_http&quot;]
  arguments = {
@@ -100,13 +230,13 @@
   }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
   &lt;/li&gt;
-  &lt;li&gt;Edit the &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/hosts.conf&lt;/code&gt;
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;object Host &quot;webhost.fqdn.com&quot; {
+  &lt;li&gt;Edit the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/icinga2/conf.d/hosts.conf&lt;/code&gt;
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;object Host &quot;webhost.fqdn.com&quot; {
  import &quot;generic-host&quot;
  address = &quot;10.0.2.1&quot; 
  vars.disks[&quot;disk /&quot;] = { disk_partitions = &quot;/&quot; }
  vars.os = &quot;Linux&quot;
- vars.remote_client = &quot;webhost.fqgn.com&quot; 
+ vars.remote_client = &quot;webhost.fqdn.com&quot; 
  vars.users_wgreater = 10
  vars.users_cgreater = 20 
  vars.ssl_domains = [&quot;website.fqdn.com&quot;,&quot;websitetwo.fqdn.com&quot;] 
@@ -118,7 +248,7 @@
   &lt;/li&gt;
 &lt;/ol&gt;
 </description>
-				<pubDate>Sun, 28 Jul 2019 09:09:06 -0700</pubDate>
+				<pubDate>Sun, 28 Jul 2019 11:09:06 -0500</pubDate>
 				<link>https://devonpeel.me/2019/07/icinga2-ssl-check</link>
 				<guid isPermaLink="true">https://devonpeel.me/2019/07/icinga2-ssl-check</guid>
 			</item>
@@ -130,32 +260,32 @@
 &lt;ol&gt;
   &lt;li&gt;Start off by installing the Tftp Server(http://ww2.unime.it/flr/tftpserver/oon your mac&lt;/li&gt;
   &lt;li&gt;Acquire the Cisco Firmware that will be flashed on the access point.&lt;/li&gt;
-  &lt;li&gt;Place the firmware in the &lt;code class=&quot;highlighter-rouge&quot;&gt;/private/tftpboot/&lt;/code&gt; and start the tftp service&lt;/li&gt;
-  &lt;li&gt;Change the permission &lt;code class=&quot;highlighter-rouge&quot;&gt;chmod 744 /private/tftpboot/&lt;/code&gt;and owner &lt;code class=&quot;highlighter-rouge&quot;&gt;chown root:wheel /private/tftpboot&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Connect a usb serial adapter to the mac and test the device with &lt;code class=&quot;highlighter-rouge&quot;&gt;ls /dev/cu.usbserial&lt;/code&gt;or &lt;code class=&quot;highlighter-rouge&quot;&gt;ls /dev/ttyUSB0&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;On the mac open terminal and open a console to the access points with &lt;code class=&quot;highlighter-rouge&quot;&gt;screen /dev/cu.usbserial 9600 cs8 -ixof&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Place the firmware in the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/private/tftpboot/&lt;/code&gt; and start the tftp service&lt;/li&gt;
+  &lt;li&gt;Change the permission &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chmod 744 /private/tftpboot/&lt;/code&gt;and owner &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chown root:wheel /private/tftpboot&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Connect a usb serial adapter to the mac and test the device with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ls /dev/cu.usbserial&lt;/code&gt;or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ls /dev/ttyUSB0&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;On the mac open terminal and open a console to the access points with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;screen /dev/cu.usbserial 9600 cs8 -ixof&lt;/code&gt;&lt;/li&gt;
   &lt;li&gt;Enter the username and password (hint: defaults are Cisco Cisco)&lt;/li&gt;
   &lt;li&gt;If you need to reset the device password press and hold the the mode button while the power is connected to the access point wait until the ap: prompt is displayed&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;The following commands will be run in the access point console&lt;/p&gt;
 &lt;ol&gt;
-  &lt;li&gt;Set IP of the access point &lt;code class=&quot;highlighter-rouge&quot;&gt;set IP_ADDR 10.0.0.20&lt;/code&gt; and netmask &lt;code class=&quot;highlighter-rouge&quot;&gt;set NETMASK 255.255.255.0
+  &lt;li&gt;Set IP of the access point &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;set IP_ADDR 10.0.0.20&lt;/code&gt; and netmask &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;set NETMASK 255.255.255.0
 &lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Tell the AP the router’s ip &lt;code class=&quot;highlighter-rouge&quot;&gt;set DEFAULT_ROUTER 10.0.0.1&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Configure the AP to accept new firmware over tftp &lt;code class=&quot;highlighter-rouge&quot;&gt;tftp_init&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Start an ethernet connection to accept fireware&lt;code class=&quot;highlighter-rouge&quot;&gt;ether_init&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Allow for flash memory to be accessed &lt;code class=&quot;highlighter-rouge&quot;&gt;flash_init&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Flash the &lt;code class=&quot;highlighter-rouge&quot;&gt;tar -xtract tftp://&amp;lt;TFTP SERVER IP&amp;gt;/&amp;lt;FIRMWARE&amp;gt;.tar flash:&lt;/code&gt; an example &lt;code class=&quot;highlighter-rouge&quot;&gt;tar -xtract tftp://&amp;lt;TFTP SERVER IP&amp;gt;/ap3g1-k9w7-tar.153-3.JF4.tar flash:&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Tell the AP the router’s ip &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;set DEFAULT_ROUTER 10.0.0.1&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Configure the AP to accept new firmware over tftp &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tftp_init&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Start an ethernet connection to accept fireware&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ether_init&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Allow for flash memory to be accessed &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;flash_init&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Flash the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tar -xtract tftp://&amp;lt;TFTP SERVER IP&amp;gt;/&amp;lt;FIRMWARE&amp;gt;.tar flash:&lt;/code&gt; an example &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tar -xtract tftp://&amp;lt;TFTP SERVER IP&amp;gt;/ap3g1-k9w7-tar.153-3.JF4.tar flash:&lt;/code&gt;&lt;/li&gt;
   &lt;li&gt;Wait about 20 minutes, grab a coffee&lt;/li&gt;
-  &lt;li&gt;Set the newly added firmware to boot&lt;code class=&quot;highlighter-rouge&quot;&gt;set BOOT flash:/ap3g1-k9w7-mx.153-3.JF4/ap3g1-k9w7-mx.153-3.JF4&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;set MANUAL_BOOT no&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;set boot&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Set the newly added firmware to boot&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;set BOOT flash:/ap3g1-k9w7-mx.153-3.JF4/ap3g1-k9w7-mx.153-3.JF4&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;set MANUAL_BOOT no&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;set boot&lt;/code&gt;&lt;/li&gt;
   &lt;li&gt;Reboot the access point and see if the newly added firmware boots&lt;/li&gt;
-  &lt;li&gt;Log back into the access point and delete the old firmware to free up space &lt;code class=&quot;highlighter-rouge&quot;&gt;delete /force /recursive flash:&amp;lt;FIRMWARE&amp;gt;&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Log back into the access point and delete the old firmware to free up space &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;delete /force /recursive flash:&amp;lt;FIRMWARE&amp;gt;&lt;/code&gt;&lt;/li&gt;
 &lt;/ol&gt;
 </description>
-				<pubDate>Sun, 06 Jan 2019 16:25:06 -0700</pubDate>
+				<pubDate>Sun, 06 Jan 2019 17:25:06 -0600</pubDate>
 				<link>https://devonpeel.me/2019/01/flash-cisco-ap-from-mac</link>
 				<guid isPermaLink="true">https://devonpeel.me/2019/01/flash-cisco-ap-from-mac</guid>
 			</item>
@@ -166,61 +296,61 @@
 
 &lt;p&gt;To view the facts after running the role enter in the following in a terminal.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ansible &amp;lt;HOST or GROUP&amp;gt;  -m debug -a &quot;var=ansible_getFacts&quot;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ansible &amp;lt;HOST or GROUP&amp;gt;  -m debug -a &quot;var=ansible_getFacts&quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;To search for host for a signal program:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ansible &amp;lt;HOST or GROUP&amp;gt; -m debug -a &quot;var=hostvars[inventory_hostname][&#39;ansible_getFacts&#39;][&#39;&amp;lt;PROGRAM NAME&amp;gt;&#39;]&quot;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ansible &amp;lt;HOST or GROUP&amp;gt; -m debug -a &quot;var=hostvars[inventory_hostname]['ansible_getFacts']['&amp;lt;PROGRAM NAME&amp;gt;']&quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;To check if a program is installed&lt;/p&gt;
 &lt;ol&gt;
   &lt;li&gt;Set the register variable
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- name: get variables
-  debug: var=hostvars[inventory_hostname][&#39;ansible_getFacts&#39;][&#39;&amp;lt;PROGRAM NAME&amp;gt;&#39;]
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- name: get variables
+  debug: var=hostvars[inventory_hostname]['ansible_getFacts']['&amp;lt;PROGRAM NAME&amp;gt;']
  register: &amp;lt;PROGRAM NAME&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
   &lt;/li&gt;
   &lt;li&gt;Next use the register with the ansible ‘when’ command. Below is an exaple that will run in cases of the program missing.
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  when: hostvars[inventory_hostname][&#39;ansible_getFacts&#39;][&#39;&amp;lt;PROGRAM NAME&amp;gt;&#39;] is undefined
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  when: hostvars[inventory_hostname]['ansible_getFacts']['&amp;lt;PROGRAM NAME&amp;gt;'] is undefined
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
   &lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;Complete Example&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- name: get variables
-  debug: var=hostvars[inventory_hostname][&#39;ansible_getFacts&#39;][&#39;Microsoft Office Professional Plus 2016&#39;]
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- name: get variables
+  debug: var=hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016']
   register: msoffice_check
 
 - name: create  ms office dir 
   win_file:
     path: C:\msoffice
     state: directory 
-  when: hostvars[inventory_hostname][&#39;ansible_getFacts&#39;][&#39;Microsoft Office Professional Plus 2016&#39;] is undefined
+  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is undefined
  
 - name: copy ms office dir to c drive
   win_copy:
     src:  /misc/software/msoffice2016/
     dest: C:\msoffice
   ignore_errors: yes
-  when: hostvars[inventory_hostname][&#39;ansible_getFacts&#39;][&#39;Microsoft Office Professional Plus 2016&#39;] is undefined
+  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is undefined
 
 - name:  Install msoffice
   win_command: choco install msoffice.20.16.1.nupkg -y
   args: 
     chdir: C:\msoffice
   ignore_errors: yes
-  when: hostvars[inventory_hostname][&#39;ansible_getFacts&#39;][&#39;Microsoft Office Professional Plus 2016&#39;] is undefined
+  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is undefined
 
 - name: remove MS office dir
   win_file:
     path: C:\msoffice
     state: absent
-  when: hostvars[inventory_hostname][&#39;ansible_getFacts&#39;][&#39;Microsoft Office Professional Plus 2016&#39;] is defined
+  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is defined
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </description>
-				<pubDate>Thu, 21 Dec 2017 17:09:06 -0700</pubDate>
+				<pubDate>Thu, 21 Dec 2017 18:09:06 -0600</pubDate>
 				<link>https://devonpeel.me/2017/12/using-additional-ansible-facts</link>
 				<guid isPermaLink="true">https://devonpeel.me/2017/12/using-additional-ansible-facts</guid>
 			</item>
@@ -231,9 +361,9 @@
 
 &lt;p&gt;Start with creating a new role, I named mine facts.&lt;/p&gt;
 
-&lt;p&gt;Create the &lt;code class=&quot;highlighter-rouge&quot;&gt;facts\tasks\main.yml&lt;/code&gt; file and add the following&lt;/p&gt;
+&lt;p&gt;Create the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;facts\tasks\main.yml&lt;/code&gt; file and add the following&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;---
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;---
 - name: create Scripts dir
   win_file:
     path: C:\Scripts
@@ -282,8 +412,8 @@
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Now create the &lt;code class=&quot;highlighter-rouge&quot;&gt;facts/files/getFacts.ps1&lt;/code&gt; file and add the follwoing below. This file will be copied to each Windows host and run return a dictionary of all installed programs.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#sourced from https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/
+&lt;p&gt;Now create the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;facts/files/getFacts.ps1&lt;/code&gt; file and add the follwoing below. This file will be copied to each Windows host and run return a dictionary of all installed programs.&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#sourced from https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/
 $packages = Get-WmiObject -Class Win32_Product
 $returnpackages = @{}
 foreach ($package in $packages)
@@ -296,68 +426,68 @@ foreach ($package in $packages)
 $returnpackages
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a &lt;code class=&quot;highlighter-rouge&quot;&gt;facts/templates/dumpall.j2&lt;/code&gt; and add the following.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;p&gt;For debugging purposes you may want to create JSON files from the returned dictionary. To do so create a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;facts/templates/dumpall.j2&lt;/code&gt; and add the following.&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
   {{ vars_hack | to_json }}
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Create the &lt;code class=&quot;highlighter-rouge&quot;&gt;facts\files\app.py&lt;/code&gt; and add the following below. This files erases passwords dumped in the the json files.&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env python&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# orginal found at https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/&lt;/span&gt;
+&lt;p&gt;Create the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;facts\files\app.py&lt;/code&gt; and add the following below. This files erases passwords dumped in the the json files.&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#!/usr/bin/env python
+# orginal found at https://hindenes.com/trondsworking/2016/11/05/using-ansible-as-a-software-inventory-db-for-your-windows-nodes/
 
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;json&lt;/span&gt;
+import os
+import json
 
-&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;listdir&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os.path&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isfile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;
+from os import listdir
+from os.path import isfile, join
 
-&lt;span class=&quot;n&quot;&gt;tempfolder&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;../roles/facts/files/data/json/&#39;&lt;/span&gt;
+tempfolder = '../roles/facts/files/data/json/'
 
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isdir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tempfolder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;makedirs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tempfolder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+if not os.path.isdir(tempfolder):
+  os.makedirs(tempfolder)
 
-&lt;span class=&quot;n&quot;&gt;onlyfiles&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;listdir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tempfolder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isfile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tempfolder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))]&lt;/span&gt;
+onlyfiles = [f for f in listdir(tempfolder) if isfile(join(tempfolder, f))]
 
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;onlyfiles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;host_name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;replace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;.json&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;##I am using host ips, to use hostnames use str(file).split(&quot;.&quot;)[3]&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tempfolder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;r+&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;load&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;ansible_password&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;&#39;&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;ansible_password_ad&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;&#39;&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;data_file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tempfolder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;/&#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;w+&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outfile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outfile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sort_keys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;indent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;separators&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&#39;,&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;: &#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;outfile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+for file in onlyfiles:
+  host_name = str(file).replace('.json','')  ##I am using host ips, to use hostnames use str(file).split(&quot;.&quot;)[3]
+  with open(os.path.join(tempfolder, file),'r+') as data_file:
+      data = json.load(data_file)
+      data['ansible_password'] = ''
+      data['ansible_password_ad'] = ''
+      data_file.close()
+  with open(tempfolder+'/'+file, 'w+') as outfile:
+    json.dump(data, outfile, sort_keys=True, indent=2, separators=(',', ': '))
+  outfile.close()
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Create one last file the vars file for the role. Create &lt;code class=&quot;highlighter-rouge&quot;&gt;vars/main.yml&lt;/code&gt; and add the following.&lt;/p&gt;
+&lt;p&gt;Create one last file the vars file for the role. Create &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vars/main.yml&lt;/code&gt; and add the following.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;json_files: &#39;../roles/facts/files/data/json/&#39;
-host_program_csv: &#39;../roles/facts/files/data/programs&#39;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;json_files: '../roles/facts/files/data/json/'
+host_program_csv: '../roles/facts/files/data/programs'
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Now install the redis service.
 For Centos 7&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install redis
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;yum install redis
 systemctl enable redis
 systemctl start redis
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Generate a hash for redis&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;echo &quot;redis-password-string&quot; | sha256sum 
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;echo &quot;redis-password-string&quot; | sha256sum 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Edit the redis config file in &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/redis.conf&lt;/code&gt;and find the line &lt;em&gt;requirepass&lt;/em&gt; and insert the generated hash&lt;/p&gt;
+&lt;p&gt;Edit the redis config file in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/redis.conf&lt;/code&gt;and find the line &lt;em&gt;requirepass&lt;/em&gt; and insert the generated hash&lt;/p&gt;
 
 &lt;p&gt;Edit your base ansible.cfg usualy in the first directory of your ansible setup and add the line&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;fact_caching_connection = &amp;lt;redis-ip&amp;gt;:6379:0:&amp;lt;redis-hash&amp;gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;fact_caching_connection = &amp;lt;redis-ip&amp;gt;:6379:0:&amp;lt;redis-hash&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Updated: 2/7/2019&lt;/p&gt;
 </description>
-				<pubDate>Tue, 14 Nov 2017 11:37:06 -0700</pubDate>
+				<pubDate>Tue, 14 Nov 2017 12:37:06 -0600</pubDate>
 				<link>https://devonpeel.me/2017/11/addition-ansible-windows-facts</link>
 				<guid isPermaLink="true">https://devonpeel.me/2017/11/addition-ansible-windows-facts</guid>
 			</item>
@@ -366,7 +496,7 @@ systemctl start redis
 				<title>SMTP to SMS relay</title>
 				<description>&lt;p&gt;This script will send SMS via various smtp relays.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import smtplib
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import smtplib
 
 # Use sms gateway provided by mobile carrier:
 # alltel         number@message.Alltel.com 
@@ -385,16 +515,16 @@ server = smtplib.SMTP( &quot;smtp.gmail.com&quot;, 587 )
 server.ehlo()
 server.starttls()
 server.ehlo()
-server.login( &#39;Google username&#39;, &#39;&amp;lt;Google app password &amp;gt;&#39; )
+server.login( 'Google username', '&amp;lt;Google app password &amp;gt;' )
 
 
-#server.sendmail( &#39;&amp;lt;from&amp;gt;&#39;, &#39;&amp;lt;number&amp;gt;@tmomail.net&#39;, &#39;Hello!&#39; )
+#server.sendmail( '&amp;lt;from&amp;gt;', '&amp;lt;number&amp;gt;@tmomail.net', 'Hello!' )
 
-server.sendmail( &#39;&amp;lt;sending phone number&amp;gt;&#39;, &#39;&amp;lt;receiving phone numver&amp;gt;@&amp;lt;domain.com&amp;gt;&#39;, &#39;Leory Jenkins!!!!&#39; )
+server.sendmail( '&amp;lt;sending phone number&amp;gt;', '&amp;lt;receiving phone numver&amp;gt;@&amp;lt;domain.com&amp;gt;', 'Leory Jenkins!!!!' )
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 </description>
-				<pubDate>Sat, 25 Feb 2017 11:12:06 -0700</pubDate>
+				<pubDate>Sat, 25 Feb 2017 12:12:06 -0600</pubDate>
 				<link>https://devonpeel.me/2017/02/SMTPtoSMSrelay</link>
 				<guid isPermaLink="true">https://devonpeel.me/2017/02/SMTPtoSMSrelay</guid>
 			</item>
@@ -405,18 +535,18 @@ server.sendmail( &#39;&amp;lt;sending phone number&amp;gt;&#39;, &#39;&amp;lt;re
 
 &lt;p&gt;Create application user&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  useradd appdeploy
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  useradd appdeploy
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Edit /etc/passwd&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  appdeploy:x:&amp;lt;uid&amp;gt;:&amp;lt;gid&amp;gt;:appdeploy:/&amp;lt;home&amp;gt;/&amp;lt;directory&amp;gt;:/sbin/nologin
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  appdeploy:x:&amp;lt;uid&amp;gt;:&amp;lt;gid&amp;gt;:appdeploy:/&amp;lt;home&amp;gt;/&amp;lt;directory&amp;gt;:/sbin/nologin
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Create an apache2 config file under /etc/httpd/conf.d/&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;virtuallHost *:80&amp;gt;
-  ServerName archive.math.ksu.edu
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;virtuallHost *:80&amp;gt;
+  ServerName archive.fqdn.com
 
 # Use only 1 Python sub-interpreter.  Multiple sub-interpreters
 # play badly with C extensions.  See
@@ -438,18 +568,18 @@ WSGIScriptAlias / /var/www/archive/pyramid.wsgi
 
 &lt;p&gt;Create a WSGI file in the application directory that will be called by the apache2 service.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import os,sys,site
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import os,sys,site
 
-os.environ[&#39;PYTHON_EGG_CACHE&#39;] = &#39;/var/www/archive/temp_py&#39;
+os.environ['PYTHON_EGG_CACHE'] = '/var/www/archive/temp_py'
 
 from pyramid.paster import get_app, setup_logging
-ini_path = &#39;/var/www/archive/production.ini&#39;
+ini_path = '/var/www/archive/production.ini'
 #setup_logging(ini_path)
-application = get_app(ini_path, &#39;main&#39;)
+application = get_app(ini_path, 'main')
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 </description>
-				<pubDate>Tue, 17 Jan 2017 09:09:06 -0700</pubDate>
+				<pubDate>Tue, 17 Jan 2017 10:09:06 -0600</pubDate>
 				<link>https://devonpeel.me/2017/01/Python-WSGI</link>
 				<guid isPermaLink="true">https://devonpeel.me/2017/01/Python-WSGI</guid>
 			</item>
@@ -472,207 +602,9 @@ application = get_app(ini_path, &#39;main&#39;)
 &lt;img src=&quot;https://devonpeel.me/images/Google_Analytics_chart.png&quot; alt=&quot;screenshotFive&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 
 </description>
-				<pubDate>Mon, 12 Dec 2016 09:09:06 -0700</pubDate>
+				<pubDate>Mon, 12 Dec 2016 10:09:06 -0600</pubDate>
 				<link>https://devonpeel.me/2016/12/Google-Analytics</link>
 				<guid isPermaLink="true">https://devonpeel.me/2016/12/Google-Analytics</guid>
-			</item>
-		
-			<item>
-				<title>Chore App</title>
-				<description>&lt;h2 id=&quot;chore-app&quot;&gt;Chore App&lt;/h2&gt;
-&lt;p&gt;I made this chore asigning application for a small college dorm. Its purpose is to randomly assign chores to residents with respect to gender. A male (m) will get a male chore or gender neutral chore (n) and female (f) will get a female chore or gender neutral chore. Note random is not fair. Good Luck&lt;/p&gt;
-
-&lt;p&gt;The files needed&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;list of residents&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;   gender firstname lastname
-   m john smith
-   f julie smith
-   m tom appleseed
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;list of chores&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  gender chore
-  f clean womens bathroom
-  n mop hallway
-  m clean mens showers
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;ChoreApp.py&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;clean.icns - an icon file&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;build-the-app&quot;&gt;Build the App&lt;/h2&gt;
-
-&lt;h2 id=&quot;setup-python-virtaul-environment&quot;&gt;Setup Python Virtaul Environment&lt;/h2&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pip install virtualenv
-virtualenv venv
-source venv/bin/activate
-pip install xlwt py2app
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;chore-app-code&quot;&gt;Chore App Code&lt;/h2&gt;
-&lt;p&gt;Please place chore app code in a seperate directory differnet to the python virtual environment.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import os, sys,random, xlwt, time, datetime
-from xlwt import *
-
-#file imports
-chore_file=open(&quot;../../../chores.txt&quot;, &quot;r&quot;)
-chores = chore_file.readlines()
-#print chores
-
-resident_file=open(&quot;../../../residents.txt&quot;, &quot;r&quot;)
-residents = resident_file.readlines()
-#print residents
-
-#create a psueode final enum
-# m equals male
-# f equals female
-# n equals neutral
-
-#creates excel file
-book = xlwt.Workbook(encoding=&quot;utf-8&quot;)
-sheet1 = book.add_sheet(&quot;Sheet 1&quot;)
-
-font0 = Font()
-font0.bold = True
-
-style0 = XFStyle()
-style0.font = font0
-
-
-#error check
-if len(chores) != len(residents):
-    print &quot;Error:&quot;
-    if len(chores) &amp;gt; len(residents):
-            sys.exit(&quot; Too many chores&quot;)
-    else:
-            sys.exit(&quot; Too many residents&quot;)
-
-assignment = []
-i = 0
-while(residents):
-    rand = random.randrange(0, len(residents))
-
-    # retrieves the f or m before residents name
-    resident = residents[rand]
-    resident_gender = resident[0:1]
-    chore_gender = chores[i][0:1]
-
-    if(resident_gender == chore_gender) or (chore_gender == &#39;n&#39;):
-        len_chore = len(chores[i])
-        len_resident = len(resident)
-        print resident[2:len_resident] + &quot; &quot;  + chores[i][2:len_chore]
-        tupl = [resident[2:len_resident].replace(&#39;\n&#39;,&#39;&#39;), chores[i][2:len_chore].replace(&#39;\n&#39;,&#39;&#39;)]
-        assignment.append(tupl)
-        residents.pop(rand)
-        i=i+1
-
-#alphabetically sort
-assignment.sort()
-#write out alphabetically sorted chore list
-j=1
-date = datetime.datetime.now()
-enddate = datetime.datetime.now() + datetime.timedelta(days=6)
-sheet1.write(0,0,&quot;Chore List For Week Of &quot; + date.strftime(&#39;%m/%d&#39;) +&quot; - &quot;+ enddate.strftime(&#39;%m/%d&#39;), style0)
-for i in assignment:
-    sheet1.write(j,0,i[0])
-    sheet1.write(j,1,i[1])
-    sheet1.write(j+1,0,&#39;&#39;)
-    j=j+2
-
-#saves excell file
-book.save(&quot;../../../chores&quot;+ date.strftime(&#39;%Y_%m_%d&#39;) + &quot;.xls&quot;)
-#book.save(&quot;chores&quot;+ date.strftime(&#39;%Y_%m_%d&#39;) + &quot;.xls&quot;)
-
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;the-build&quot;&gt;The Build&lt;/h2&gt;
-&lt;p&gt;Change the the working direcotry to the chore_app and create a file called setup.py&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cd chore_app
-vim setup.py
-   &quot;&quot;&quot;
-   This is a setup.py script generated by py2applet
-
-   Usage:
-   python setup.py py2app
-   &quot;&quot;&quot;
-   from setuptools import setup
-
-   APP = [&#39;ChoreApp.py&#39;]
-   DATA_FILES = [&#39;chores.txt&#39;,&#39;residents.txt&#39;]
-   OPTIONS = {
-    &#39;argv_emulation&#39;: True,
-    &#39;iconfile&#39;: &#39;clean.icns&#39;,
-    &#39;plist&#39;: {
-        &#39;CFBundleName&#39;: &quot;ChoreApp&quot;,
-        &#39;CFBundleDisplayName&#39;: &quot;ChoreApp&quot;,
-        &#39;CFBundleGetInfoString&#39;: &quot;App for assigning chore&quot;,
-        &#39;CFBundleVersion&#39;: &quot;0.2.0&quot;,
-        &#39;CFBundleShortVersionString&#39;: &quot;0.2.0&quot;,
-        &#39;NSHumanReadableCopyright&#39;: u&quot;Copyleft Devon Peel&quot;
-    }
-}
-
-setup(
-    app=APP,
-    data_files=DATA_FILES,
-    options={&#39;py2app&#39;: OPTIONS},
-    setup_requires=[&#39;py2app&#39;],
-)
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Time to build the App&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;python setup.py py2app
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;run-choreapp&quot;&gt;Run ChoreApp&lt;/h2&gt;
-&lt;p&gt;Place the ChoreApp file created in the above command with the chores.txt file and residents.txt file in the same directory. Then click on the ChoreApp to generate the output file assigning chores to residents.&lt;/p&gt;
-</description>
-				<pubDate>Thu, 12 May 2016 00:00:00 -0700</pubDate>
-				<link>https://devonpeel.me/2016/05/ChoreApp</link>
-				<guid isPermaLink="true">https://devonpeel.me/2016/05/ChoreApp</guid>
-			</item>
-		
-			<item>
-				<title>Chocolatey "The Windows" Package Manager</title>
-				<description>&lt;p&gt;Install Chocolatey via PowerShell&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;iex ((new-object net.webclient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;)) 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Install via Command Prompt&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;@powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;iex ((new-object net.webclient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;))&quot; &amp;amp;&amp;amp; SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Create a repo&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; choco new &amp;lt;project name&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Edit the &lt;project name=&quot;&quot;&gt;.nuspect file, install, and uninstall files under the tools directory&lt;/project&gt;&lt;/p&gt;
-</description>
-				<pubDate>Wed, 11 May 2016 10:10:06 -0700</pubDate>
-				<link>https://devonpeel.me/2016/05/chocolatey</link>
-				<guid isPermaLink="true">https://devonpeel.me/2016/05/chocolatey</guid>
 			</item>
 		
 	</channel>
