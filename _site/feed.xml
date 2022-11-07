@@ -7,6 +7,15 @@
 		<atom:link href="https://devonpeel.me/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>Apache redirects for Docker</title>
+				<description>
+</description>
+				<pubDate>Tue, 01 Nov 2022 11:09:06 -0500</pubDate>
+				<link>https://devonpeel.me/2022/11/apache-redirect-docker</link>
+				<guid isPermaLink="true">https://devonpeel.me/2022/11/apache-redirect-docker</guid>
+			</item>
+		
+			<item>
 				<title>Installing Apache SuperSet</title>
 				<description>&lt;p&gt;Update, Upgrade and install Dependancies&lt;/p&gt;
 
@@ -42,7 +51,7 @@ FLASK_APP=superset /home/ubuntu/.local/bin/superset init
 
 &lt;p&gt;Starting the application&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#enable the python venv
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#enable the python virtual environment
 source super/bin/active	 
 export FLASK_APP=superset
 superset init
@@ -582,29 +591,6 @@ application = get_app(ini_path, 'main')
 				<pubDate>Tue, 17 Jan 2017 10:09:06 -0600</pubDate>
 				<link>https://devonpeel.me/2017/01/Python-WSGI</link>
 				<guid isPermaLink="true">https://devonpeel.me/2017/01/Python-WSGI</guid>
-			</item>
-		
-			<item>
-				<title>Google Analytics</title>
-				<description>&lt;p&gt;I am not sure  of the Russian interest in this website.&lt;/p&gt;
-
-&lt;p&gt;These are some funny languages 
-&lt;img src=&quot;https://devonpeel.me/assets/Google_Analytics_language.png&quot; alt=&quot;useful image&quot; /&gt;
-&lt;img src=&quot;https://devonpeel.me/assets/Google_Analytics_Country.png&quot; alt=&quot;useful image&quot; /&gt;
-&lt;img src=&quot;https://devonpeel.me/assets/Google_Analytics_city.png&quot; alt=&quot;useful image&quot; /&gt;
-&lt;img src=&quot;https://devonpeel.me/assets/Google_Analytics_time.png&quot; alt=&quot;useful image&quot; /&gt;
-&lt;img src=&quot;https://devonpeel.me/assets/Google_Analytics_chart.png&quot; alt=&quot;useful image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://devonpeel.me/images/Google_Analytics_language.png&quot; alt=&quot;screenshotOne&quot; class=&quot;img-responsive&quot; /&gt;
-&lt;img src=&quot;https://devonpeel.me/images/Google_Analytics_Country.png&quot; alt=&quot;screenshotTwo&quot; class=&quot;img-responsive&quot; /&gt; 
-&lt;img src=&quot;https://devonpeel.me/images/Google_Analytics_city.png&quot; alt=&quot;screenshotThree&quot; class=&quot;img-responsive&quot; /&gt;
-&lt;img src=&quot;https://devonpeel.me/images/Google_Analytics_time.png&quot; alt=&quot;screenshotFour&quot; class=&quot;img-responsive&quot; /&gt;
-&lt;img src=&quot;https://devonpeel.me/images/Google_Analytics_chart.png&quot; alt=&quot;screenshotFive&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
-
-</description>
-				<pubDate>Mon, 12 Dec 2016 10:09:06 -0600</pubDate>
-				<link>https://devonpeel.me/2016/12/Google-Analytics</link>
-				<guid isPermaLink="true">https://devonpeel.me/2016/12/Google-Analytics</guid>
 			</item>
 		
 	</channel>
