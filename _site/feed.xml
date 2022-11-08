@@ -7,15 +7,6 @@
 		<atom:link href="https://devonpeel.me/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
-				<title>Apache redirects for Docker</title>
-				<description>
-</description>
-				<pubDate>Tue, 01 Nov 2022 11:09:06 -0500</pubDate>
-				<link>https://devonpeel.me/2022/11/apache-redirect-docker</link>
-				<guid isPermaLink="true">https://devonpeel.me/2022/11/apache-redirect-docker</guid>
-			</item>
-		
-			<item>
 				<title>Systemd Start Script for Superset</title>
 				<description>&lt;p&gt;Create the file superset.service at /lib/systemd/system/superset.service and insert the following. Note the user is sysadmin, the port is 8088 and superset is installed in the /opt/super python virtual environment&lt;/p&gt;
 
@@ -38,9 +29,18 @@ WantedBy=multi-user.target
 systemctl start superset
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </description>
-				<pubDate>Sun, 16 Oct 2022 11:09:06 -0500</pubDate>
-				<link>https://devonpeel.me/2022/10/superset_systemd</link>
-				<guid isPermaLink="true">https://devonpeel.me/2022/10/superset_systemd</guid>
+				<pubDate>Mon, 07 Nov 2022 10:09:06 -0600</pubDate>
+				<link>https://devonpeel.me/2022/11/superset_systemd</link>
+				<guid isPermaLink="true">https://devonpeel.me/2022/11/superset_systemd</guid>
+			</item>
+		
+			<item>
+				<title>Apache redirects for Docker</title>
+				<description>
+</description>
+				<pubDate>Tue, 01 Nov 2022 11:09:06 -0500</pubDate>
+				<link>https://devonpeel.me/2022/11/apache-redirect-docker</link>
+				<guid isPermaLink="true">https://devonpeel.me/2022/11/apache-redirect-docker</guid>
 			</item>
 		
 			<item>
