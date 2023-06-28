@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DevonPeel.me</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/theme.css" rel="stylesheet" type="text/css">
+    <link href="/css/syntax.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">DevonPeel.me</a>
+              </div>
+              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/">Home</a></li>
+                    <li class="active visible-xs-block"><a href="/links.html">Links</a></li>
+                    <li class="active"><a href="/archive.html">Archive</a></li>
+                    <li class="active"><a href="/Resume/index.html">Resume</a></li>
+<!--                    <li class="active"><a href="/feed.xml">RSS</a></li>-->
+                    
+                      <li class="active"><a href="https://github.com/dp3">Github</a></li>
+                    
+                </ul>
+              </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container container-left">
+    <div class="row">
+        <div class="col-md-3 hidden-xs">
+            <div class="sidebar well">
+ Personal  Website  for  Devon  Peel. Kansas State and KC Royals Fan
+</div>
+
+<div class="sidebar well">
+    <h1>Recent Posts</h1>
+    <ul>
+        
+          <li><a href="/2023/06/garage_door_sensor">Oni 3D Printer</a></li>
+        
+          <li><a href="/2023/06/Wifi-tally_lights">Wifi Talley Lights</a></li>
+        
+          <li><a href="/2022/11/superset_systemd">Systemd Start Script for Superset</a></li>
+        
+          <li><a href="/2022/10/superset">Installing Apache SuperSet</a></li>
+        
+          <li><a href="/2019/08/win-ansible-win-copy">Ansible Windows win_copy is slow</a></li>
+        
+    </ul>
+</div>
+
+<div class="sidebar well">
+<h1>Reading List</h1>
+<ul>
+  <li><a href="http://www.cyberciti.biz">nixCraft</a></li>
+  <li><a href="https://www.thingiverse.com">Thingiverse</a></li>
+  <li><a href="http://www.engadget.com">Engadget</a></li>
+</ul>
+
+</div>
+
+        </div>
+        <div class="col-md-9">
+          <div class="article">
+            <div class="well">
+                <h1><a href="/2023/06/garage_door_sensor">Jun 10, 2023 - Oni 3D Printer</a></h1>
+            
+            <div class="post-content">
+            <p>This is in adaptation of Jeff Geerling’s garage door sensor project. My adaptation adds two temperature sensors and a display.</p>
+
+<p><img src="https://devonpeel.me/images/GarageDoorSensor1.jpg" alt="screenshotOne" class="img-responsive" /></p>
+
+<p><strong>Code</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+esphome:
+  name: garage-door-temp-display-pico
+
+rp2040:
+  board: rpipicow
+  framework:
+    # Required until https://github.com/platformio/platform-raspberrypi/pull/36 is merged
+    platform_version: https://github.com/maxgerhardt/platform-raspberrypi.git
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+
+api:
+  encryption:
+   key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+logger:
+  level: DEBUG
+
+output:
+  # Built-in LED
+  - platform: gpio
+    pin:
+      number: 32  # 25 for Pico (non-W)
+      mode: output
+    id: LED
+
+binary_sensor:
+  # East Garage Door
+  - platform: gpio
+    pin:
+      number: 14
+      mode:
+        input: true
+        pullup: true
+        output: false
+        open_drain: false
+        pulldown: false
+      inverted: false
+    name: East Garage Door
+    id: east_garage_door
+    device_class: garage_door
+    filters:
+      - delayed_on: 10ms
+    disabled_by_default: false
+    publish_initial_state: true
+    on_state:
+      then:
+        - if:
+            condition:
+              or:
+                - binary_sensor.is_on: east_garage_door
+                - binary_sensor.is_on: west_garage_door
+            then:
+              - output.turn_on: LED
+            else:
+              - output.turn_off: LED
+
+  # West Garage Door
+  - platform: gpio
+    pin:
+      number: 15
+      mode:
+        input: true
+        pullup: true
+        output: false
+        open_drain: false
+        pulldown: false
+      inverted: false
+    name: West Garage Door
+    id: west_garage_door
+    device_class: garage_door
+    filters:
+      - delayed_on: 10ms
+    disabled_by_default: false
+    publish_initial_state: true
+    on_state:
+      then:
+        - if:
+            condition:
+              or:
+                - binary_sensor.is_on: east_garage_door
+                - binary_sensor.is_on: west_garage_door
+            then:
+              - output.turn_on: LED
+            else:
+              - output.turn_off: LED
+
+
+# temperature
+# Example configuration entry
+dallas:
+  - id: garage_temp_bus
+    pin: GPIO18
+  - id: outside_temp_bus
+    pin: GPIO26 
+
+# Individual sensors
+sensor:
+  - platform: dallas
+    address: 0x0000000000000000
+    name: "Garage Temperature"
+    dallas_id: garage_temp_bus
+    id: garage_temp
+  - platform: dallas
+    address: 0x1111111111111111
+    name: "Outside Temperature"
+    dallas_id: outside_temp_bus
+    id: outside_temp
+
+color:
+  - id: my_red
+    red: 100%
+    green: 0%
+    blue: 0%
+  - id: my_yellow
+    red: 100%
+    green: 100%
+    blue: 0%
+  - id: my_green
+    red: 0%
+    green: 100%
+    blue: 0%
+  - id: my_blue
+    red: 0%
+    green: 0%
+    blue: 100%
+  - id: my_gray
+    red: 50%
+    green: 50%
+    blue: 50%
+
+font:
+  - file: "fonts/Roboto-Black.ttf"
+    id: roboto
+    size: 15
+i2c:
+  sda: GPIO20
+  scl: GPIO21
+
+display:
+  - platform: ssd1306_i2c
+    model: "SH1106 128x64"
+    rotation: 180 
+      #    reset_pin: 0
+    address: 0x3C
+    lambda: |-
+      if (id(garage_temp).has_state()) {
+        it.printf(0, 0, id(roboto),"Garage: %.1f°F", id(garage_temp).state*9/5+32);
+      }
+      if (id(outside_temp).has_state()) {
+        it.printf(0, 16, id(roboto),"Outside: %.1f°F", id(outside_temp).state*9/5+32);
+      }
+      it.printf(0, 31, id(roboto), "East Door: %s", id(east_garage_door).state);
+      it.printf(0, 46, id(roboto), "West Door: %s", id(west_garage_door).state);
+</code></pre></div></div>
+
+<p><strong>Flash Procedure</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir pico-pi
+
+# Create tbe yaml file name 
+vim garage-door-temperature-display.yml
+
+# Compile the code
+esphome run garage-door-temperature-display.yml --device /Volumes/RPI-RP2
+
+cd ~/pico-pi/.esphome/build/garage-door-temperature-display.yml/.pioenvs/rpi-pico/
+
+# Plugin the pico while press the flash button
+# Run 'mount | grep RP' command to find the mount point
+
+# flash the code on to the pico 
+cp firmware.uf2 /media/&lt;user&gt;/RPI-RP2 
+</code></pre></div></div>
+<p><img src="https://devonpeel.me/images/GarageDoorSensor2.jpg" alt="screenshotTwo" class="img-responsive" />
+<img src="https://devonpeel.me/images/GarageDoorSensor3.jpg" alt="screenshotThree" class="img-responsive" /></p>
+
+
+            </div>
+            
+            </div>
+          </div>
+          <div class="pagination">
+              
+              
+                <a class="btn btn-default" href="/2023/06/Wifi-tally_lights" class="previous">Older Post</a>
+              
+</div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12 footer navbar-inverse navbar-fixed-bottom">
+            <p class="copyright">&copy;  2023 DevonPeel.me</a>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+<!--OLD -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-55797517-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WCVY0WZX3Z"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-WCVY0WZX3Z');
+</script>
+
+
+
+</body>
+</html>
+

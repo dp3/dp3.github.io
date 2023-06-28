@@ -54,15 +54,15 @@
     <h1>Recent Posts</h1>
     <ul>
         
-          <li><a href="/2022/11/superset_systemd">Systemd Start Script for Superset</a></li>
+          <li><a href="/2023/06/garage_door_sensor">Oni 3D Printer</a></li>
         
-          <li><a href="/2022/11/apache-redirect-docker">Apache redirects for Docker</a></li>
+          <li><a href="/2023/06/Wifi-tally_lights">Wifi Talley Lights</a></li>
+        
+          <li><a href="/2022/11/superset_systemd">Systemd Start Script for Superset</a></li>
         
           <li><a href="/2022/10/superset">Installing Apache SuperSet</a></li>
         
           <li><a href="/2019/08/win-ansible-win-copy">Ansible Windows win_copy is slow</a></li>
-        
-          <li><a href="/2019/07/icinga2-snmp-tempcheck">Icinga2 SNMP Temperature Check</a></li>
         
     </ul>
 </div>
@@ -81,10 +81,50 @@
         <div class="col-md-9">
           <div class="article">
             <div class="well">
-                <h1><a href="/2022/11/apache-redirect-docker">Nov 1, 2022 - Apache redirects for Docker</a></h1>
+                <h1><a href="/2023/06/Wifi-tally_lights">Jun 1, 2023 - Wifi Talley Lights</a></h1>
             
             <div class="post-content">
-            
+            <p>This is a guide on how to flash the wifi talley for the https://wifi-tally.github.io/ project on Linux.</p>
+
+<p><strong>Flash and Configure the NodeMCU with Linux</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Create Project Directory 
+mkdir ~/wifiTalley
+
+# Install the tools
+git clone https://github.com/AndiDittrich/NodeMCU-Tool.git
+sudo npm install nodemcu-tool -g
+sudo npm install cli-progress  
+pip install esptool
+
+mkdir ~/wifiTalley/fireware
+cd ~/wifiTalley/firmware/
+
+# Download the binary file and config files 
+wget https://github.com/wifi-tally/wifi-tally/releases/download/0.5.1/vtally-0.5.1-esp8266.zip
+unzip vtally-0.5.1-esp8266.zip
+
+# Flash the the Firmware 
+esptool.py --port /dev/ttyUSB0 write_flash -fm dio 0x00000 ~/wifiTally/firmware/nodemcu-3.0-master_20200610-cfe68233-float.bin 
+
+cd ~/wifiTally/NodeMCU-Tool
+
+# Upload the config files
+bin/nodemcu-tool.js upload ~/wifiTally/firmware/init.lua
+bin/nodemcu-tool.js upload ~/wifiTally/firmware/*.lci
+
+# edit the talley-settings.ini, set the ssid, ssid password, hub ip, and talley name 
+vim ~/wifiTally/firmware/tally-settings.ini
+ 
+# Upload the last config files 
+bin/nodemcu-tool.js upload ~/wifiTally/firmware/tally-settings.ini
+
+</code></pre></div></div>
+<p>Resources</p>
+<ul>
+  <li>https://wifi-tally.github.io/</li>
+  <li>https://nodemcu.readthedocs.io/en/release/getting-started/#esptoolpy</li>
+</ul>
+
 
             </div>
             
@@ -92,10 +132,10 @@
           </div>
           <div class="pagination">
               
-                <a class="btn btn-default" href="/2022/11/superset_systemd" class="next">Newer Post</a>
+                <a class="btn btn-default" href="/2023/06/garage_door_sensor" class="next">Newer Post</a>
               
               
-                <a class="btn btn-default" href="/2022/10/superset" class="previous">Older Post</a>
+                <a class="btn btn-default" href="/2022/11/superset_systemd" class="previous">Older Post</a>
               
 </div>
 
@@ -108,7 +148,7 @@
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12 footer navbar-inverse navbar-fixed-bottom">
-            <p class="copyright">&copy;  2022 DevonPeel.me</a>
+            <p class="copyright">&copy;  2023 DevonPeel.me</a>
         </div>
     </div>
 </div>
@@ -121,6 +161,8 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+<!--OLD -->
 <script>
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -131,6 +173,19 @@ ga('create', 'UA-55797517-1', 'auto');
 ga('send', 'pageview');
 
 </script>
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WCVY0WZX3Z"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-WCVY0WZX3Z');
+</script>
+
+
 
 </body>
 </html>

@@ -7,6 +7,248 @@
 		<atom:link href="https://devonpeel.me/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
+				<title>Oni 3D Printer</title>
+				<description>&lt;p&gt;This is in adaptation of Jeff Geerling’s garage door sensor project. My adaptation adds two temperature sensors and a display.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://devonpeel.me/images/GarageDoorSensor1.jpg&quot; alt=&quot;screenshotOne&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Code&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;---
+esphome:
+  name: garage-door-temp-display-pico
+
+rp2040:
+  board: rpipicow
+  framework:
+    # Required until https://github.com/platformio/platform-raspberrypi/pull/36 is merged
+    platform_version: https://github.com/maxgerhardt/platform-raspberrypi.git
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+
+api:
+  encryption:
+   key: &quot;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&quot;
+
+logger:
+  level: DEBUG
+
+output:
+  # Built-in LED
+  - platform: gpio
+    pin:
+      number: 32  # 25 for Pico (non-W)
+      mode: output
+    id: LED
+
+binary_sensor:
+  # East Garage Door
+  - platform: gpio
+    pin:
+      number: 14
+      mode:
+        input: true
+        pullup: true
+        output: false
+        open_drain: false
+        pulldown: false
+      inverted: false
+    name: East Garage Door
+    id: east_garage_door
+    device_class: garage_door
+    filters:
+      - delayed_on: 10ms
+    disabled_by_default: false
+    publish_initial_state: true
+    on_state:
+      then:
+        - if:
+            condition:
+              or:
+                - binary_sensor.is_on: east_garage_door
+                - binary_sensor.is_on: west_garage_door
+            then:
+              - output.turn_on: LED
+            else:
+              - output.turn_off: LED
+
+  # West Garage Door
+  - platform: gpio
+    pin:
+      number: 15
+      mode:
+        input: true
+        pullup: true
+        output: false
+        open_drain: false
+        pulldown: false
+      inverted: false
+    name: West Garage Door
+    id: west_garage_door
+    device_class: garage_door
+    filters:
+      - delayed_on: 10ms
+    disabled_by_default: false
+    publish_initial_state: true
+    on_state:
+      then:
+        - if:
+            condition:
+              or:
+                - binary_sensor.is_on: east_garage_door
+                - binary_sensor.is_on: west_garage_door
+            then:
+              - output.turn_on: LED
+            else:
+              - output.turn_off: LED
+
+
+# temperature
+# Example configuration entry
+dallas:
+  - id: garage_temp_bus
+    pin: GPIO18
+  - id: outside_temp_bus
+    pin: GPIO26 
+
+# Individual sensors
+sensor:
+  - platform: dallas
+    address: 0x0000000000000000
+    name: &quot;Garage Temperature&quot;
+    dallas_id: garage_temp_bus
+    id: garage_temp
+  - platform: dallas
+    address: 0x1111111111111111
+    name: &quot;Outside Temperature&quot;
+    dallas_id: outside_temp_bus
+    id: outside_temp
+
+color:
+  - id: my_red
+    red: 100%
+    green: 0%
+    blue: 0%
+  - id: my_yellow
+    red: 100%
+    green: 100%
+    blue: 0%
+  - id: my_green
+    red: 0%
+    green: 100%
+    blue: 0%
+  - id: my_blue
+    red: 0%
+    green: 0%
+    blue: 100%
+  - id: my_gray
+    red: 50%
+    green: 50%
+    blue: 50%
+
+font:
+  - file: &quot;fonts/Roboto-Black.ttf&quot;
+    id: roboto
+    size: 15
+i2c:
+  sda: GPIO20
+  scl: GPIO21
+
+display:
+  - platform: ssd1306_i2c
+    model: &quot;SH1106 128x64&quot;
+    rotation: 180 
+      #    reset_pin: 0
+    address: 0x3C
+    lambda: |-
+      if (id(garage_temp).has_state()) {
+        it.printf(0, 0, id(roboto),&quot;Garage: %.1f°F&quot;, id(garage_temp).state*9/5+32);
+      }
+      if (id(outside_temp).has_state()) {
+        it.printf(0, 16, id(roboto),&quot;Outside: %.1f°F&quot;, id(outside_temp).state*9/5+32);
+      }
+      it.printf(0, 31, id(roboto), &quot;East Door: %s&quot;, id(east_garage_door).state);
+      it.printf(0, 46, id(roboto), &quot;West Door: %s&quot;, id(west_garage_door).state);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Flash Procedure&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir pico-pi
+
+# Create tbe yaml file name 
+vim garage-door-temperature-display.yml
+
+# Compile the code
+esphome run garage-door-temperature-display.yml --device /Volumes/RPI-RP2
+
+cd ~/pico-pi/.esphome/build/garage-door-temperature-display.yml/.pioenvs/rpi-pico/
+
+# Plugin the pico while press the flash button
+# Run &apos;mount | grep RP&apos; command to find the mount point
+
+# flash the code on to the pico 
+cp firmware.uf2 /media/&amp;lt;user&amp;gt;/RPI-RP2 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;img src=&quot;https://devonpeel.me/images/GarageDoorSensor2.jpg&quot; alt=&quot;screenshotTwo&quot; class=&quot;img-responsive&quot; /&gt;
+&lt;img src=&quot;https://devonpeel.me/images/GarageDoorSensor3.jpg&quot; alt=&quot;screenshotThree&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+</description>
+				<pubDate>Sat, 10 Jun 2023 11:09:06 -0500</pubDate>
+				<link>https://devonpeel.me/2023/06/garage_door_sensor</link>
+				<guid isPermaLink="true">https://devonpeel.me/2023/06/garage_door_sensor</guid>
+			</item>
+		
+			<item>
+				<title>Wifi Talley Lights</title>
+				<description>&lt;p&gt;This is a guide on how to flash the wifi talley for the https://wifi-tally.github.io/ project on Linux.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Flash and Configure the NodeMCU with Linux&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# Create Project Directory 
+mkdir ~/wifiTalley
+
+# Install the tools
+git clone https://github.com/AndiDittrich/NodeMCU-Tool.git
+sudo npm install nodemcu-tool -g
+sudo npm install cli-progress  
+pip install esptool
+
+mkdir ~/wifiTalley/fireware
+cd ~/wifiTalley/firmware/
+
+# Download the binary file and config files 
+wget https://github.com/wifi-tally/wifi-tally/releases/download/0.5.1/vtally-0.5.1-esp8266.zip
+unzip vtally-0.5.1-esp8266.zip
+
+# Flash the the Firmware 
+esptool.py --port /dev/ttyUSB0 write_flash -fm dio 0x00000 ~/wifiTally/firmware/nodemcu-3.0-master_20200610-cfe68233-float.bin 
+
+cd ~/wifiTally/NodeMCU-Tool
+
+# Upload the config files
+bin/nodemcu-tool.js upload ~/wifiTally/firmware/init.lua
+bin/nodemcu-tool.js upload ~/wifiTally/firmware/*.lci
+
+# edit the talley-settings.ini, set the ssid, ssid password, hub ip, and talley name 
+vim ~/wifiTally/firmware/tally-settings.ini
+ 
+# Upload the last config files 
+bin/nodemcu-tool.js upload ~/wifiTally/firmware/tally-settings.ini
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Resources&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;https://wifi-tally.github.io/&lt;/li&gt;
+  &lt;li&gt;https://nodemcu.readthedocs.io/en/release/getting-started/#esptoolpy&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+				<pubDate>Thu, 01 Jun 2023 11:09:06 -0500</pubDate>
+				<link>https://devonpeel.me/2023/06/Wifi-tally_lights</link>
+				<guid isPermaLink="true">https://devonpeel.me/2023/06/Wifi-tally_lights</guid>
+			</item>
+		
+			<item>
 				<title>Systemd Start Script for Superset</title>
 				<description>&lt;p&gt;Create the file superset.service at /lib/systemd/system/superset.service and insert the following. Note the user is sysadmin, the port is 8088 and superset is installed in the /opt/super python virtual environment&lt;/p&gt;
 
@@ -35,15 +277,6 @@ systemctl start superset
 			</item>
 		
 			<item>
-				<title>Apache redirects for Docker</title>
-				<description>
-</description>
-				<pubDate>Tue, 01 Nov 2022 11:09:06 -0500</pubDate>
-				<link>https://devonpeel.me/2022/11/apache-redirect-docker</link>
-				<guid isPermaLink="true">https://devonpeel.me/2022/11/apache-redirect-docker</guid>
-			</item>
-		
-			<item>
 				<title>Installing Apache SuperSet</title>
 				<description>&lt;p&gt;Update, Upgrade and install Dependancies&lt;/p&gt;
 
@@ -67,7 +300,7 @@ pip install apache-superset --no-warn-script-location
 
 &lt;p&gt;Configuring Superset and create a Superset user&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo echo -e 'export FLASK_APP=superset' &amp;gt;&amp;gt; /etc/profile.d/superset.sh
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo echo -e &apos;export FLASK_APP=superset&apos; &amp;gt;&amp;gt; /etc/profile.d/superset.sh
   
 export FLASK_APP=superset
 FLASK_APP=superset /home/ubuntu/.local/bin/superset db upgrade
@@ -154,18 +387,18 @@ sudo systemctl restart apache2
     src:  /misc/filessoftware/chocolatey/msoffice2016/
     dest: C:\msoffice
   ignore_errors: yes
-  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is undefined
+  when: hostvars[inventory_hostname][&apos;ansible_getFacts&apos;][&apos;Microsoft Office Professional Plus 2016&apos;] is undefined
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;The new solution along with mounting a network share.&lt;/p&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- name: Transfer of msoffice2016
-  win_command: ''
+  win_command: &apos;&apos;
   with_items:
-    -  'net use  s: \\nfs.fqdn.com\software /P:yes /user:  '
-    -  'robocopy s:\msoffice2016 \msoffice2016 /E'
+    -  &apos;net use  s: \\nfs.fqdn.com\software /P:yes /user:  &apos;
+    -  &apos;robocopy s:\msoffice2016 \msoffice2016 /E&apos;
   ignore_errors: yes
   no_log: True 
-  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is undefined
+  when: hostvars[inventory_hostname][&apos;ansible_getFacts&apos;][&apos;Microsoft Office Professional Plus 2016&apos;] is undefined
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </description>
 				<pubDate>Sat, 10 Aug 2019 11:09:06 -0500</pubDate>
@@ -338,53 +571,53 @@ sudo systemctl restart apache2
 
 &lt;p&gt;To search for host for a signal program:&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ansible &amp;lt;HOST or GROUP&amp;gt; -m debug -a &quot;var=hostvars[inventory_hostname]['ansible_getFacts']['&amp;lt;PROGRAM NAME&amp;gt;']&quot;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ansible &amp;lt;HOST or GROUP&amp;gt; -m debug -a &quot;var=hostvars[inventory_hostname][&apos;ansible_getFacts&apos;][&apos;&amp;lt;PROGRAM NAME&amp;gt;&apos;]&quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;To check if a program is installed&lt;/p&gt;
 &lt;ol&gt;
   &lt;li&gt;Set the register variable
     &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- name: get variables
-  debug: var=hostvars[inventory_hostname]['ansible_getFacts']['&amp;lt;PROGRAM NAME&amp;gt;']
+  debug: var=hostvars[inventory_hostname][&apos;ansible_getFacts&apos;][&apos;&amp;lt;PROGRAM NAME&amp;gt;&apos;]
  register: &amp;lt;PROGRAM NAME&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
   &lt;/li&gt;
   &lt;li&gt;Next use the register with the ansible ‘when’ command. Below is an exaple that will run in cases of the program missing.
-    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  when: hostvars[inventory_hostname]['ansible_getFacts']['&amp;lt;PROGRAM NAME&amp;gt;'] is undefined
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  when: hostvars[inventory_hostname][&apos;ansible_getFacts&apos;][&apos;&amp;lt;PROGRAM NAME&amp;gt;&apos;] is undefined
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
   &lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;Complete Example&lt;/p&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- name: get variables
-  debug: var=hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016']
+  debug: var=hostvars[inventory_hostname][&apos;ansible_getFacts&apos;][&apos;Microsoft Office Professional Plus 2016&apos;]
   register: msoffice_check
 
 - name: create  ms office dir 
   win_file:
     path: C:\msoffice
     state: directory 
-  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is undefined
+  when: hostvars[inventory_hostname][&apos;ansible_getFacts&apos;][&apos;Microsoft Office Professional Plus 2016&apos;] is undefined
  
 - name: copy ms office dir to c drive
   win_copy:
     src:  /misc/software/msoffice2016/
     dest: C:\msoffice
   ignore_errors: yes
-  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is undefined
+  when: hostvars[inventory_hostname][&apos;ansible_getFacts&apos;][&apos;Microsoft Office Professional Plus 2016&apos;] is undefined
 
 - name:  Install msoffice
   win_command: choco install msoffice.20.16.1.nupkg -y
   args: 
     chdir: C:\msoffice
   ignore_errors: yes
-  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is undefined
+  when: hostvars[inventory_hostname][&apos;ansible_getFacts&apos;][&apos;Microsoft Office Professional Plus 2016&apos;] is undefined
 
 - name: remove MS office dir
   win_file:
     path: C:\msoffice
     state: absent
-  when: hostvars[inventory_hostname]['ansible_getFacts']['Microsoft Office Professional Plus 2016'] is defined
+  when: hostvars[inventory_hostname][&apos;ansible_getFacts&apos;][&apos;Microsoft Office Professional Plus 2016&apos;] is defined
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </description>
 				<pubDate>Thu, 21 Dec 2017 18:09:06 -0600</pubDate>
@@ -479,7 +712,7 @@ import json
 from os import listdir
 from os.path import isfile, join
 
-tempfolder = '../roles/facts/files/data/json/'
+tempfolder = &apos;../roles/facts/files/data/json/&apos;
 
 if not os.path.isdir(tempfolder):
   os.makedirs(tempfolder)
@@ -487,21 +720,21 @@ if not os.path.isdir(tempfolder):
 onlyfiles = [f for f in listdir(tempfolder) if isfile(join(tempfolder, f))]
 
 for file in onlyfiles:
-  host_name = str(file).replace('.json','')  ##I am using host ips, to use hostnames use str(file).split(&quot;.&quot;)[3]
-  with open(os.path.join(tempfolder, file),'r+') as data_file:
+  host_name = str(file).replace(&apos;.json&apos;,&apos;&apos;)  ##I am using host ips, to use hostnames use str(file).split(&quot;.&quot;)[3]
+  with open(os.path.join(tempfolder, file),&apos;r+&apos;) as data_file:
       data = json.load(data_file)
-      data['ansible_password'] = ''
-      data['ansible_password_ad'] = ''
+      data[&apos;ansible_password&apos;] = &apos;&apos;
+      data[&apos;ansible_password_ad&apos;] = &apos;&apos;
       data_file.close()
-  with open(tempfolder+'/'+file, 'w+') as outfile:
-    json.dump(data, outfile, sort_keys=True, indent=2, separators=(',', ': '))
+  with open(tempfolder+&apos;/&apos;+file, &apos;w+&apos;) as outfile:
+    json.dump(data, outfile, sort_keys=True, indent=2, separators=(&apos;,&apos;, &apos;: &apos;))
   outfile.close()
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Create one last file the vars file for the role. Create &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;vars/main.yml&lt;/code&gt; and add the following.&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;json_files: '../roles/facts/files/data/json/'
-host_program_csv: '../roles/facts/files/data/programs'
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;json_files: &apos;../roles/facts/files/data/json/&apos;
+host_program_csv: &apos;../roles/facts/files/data/programs&apos;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Now install the redis service.
@@ -527,43 +760,6 @@ systemctl start redis
 				<pubDate>Tue, 14 Nov 2017 12:37:06 -0600</pubDate>
 				<link>https://devonpeel.me/2017/11/addition-ansible-windows-facts</link>
 				<guid isPermaLink="true">https://devonpeel.me/2017/11/addition-ansible-windows-facts</guid>
-			</item>
-		
-			<item>
-				<title>SMTP to SMS relay</title>
-				<description>&lt;p&gt;This script will send SMS via various smtp relays.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import smtplib
-
-# Use sms gateway provided by mobile carrier:
-# alltel         number@message.Alltel.com 
-# at&amp;amp;t:          number@mms.att.net
-# boost:         number@myboostmobile.com
-# google voice   number@@txt.voice.google.com (needs work)
-# metro pcs:     number@mymetropcs.com
-# sprint:        number@page.nextel.com
-# straight talk  number@mypixmessages.com
-# t-mobile:      number@tmomail.net
-# us cellular:   number@mms.uscc.net  
-# verizon:-       number@vtext.com
-# virgin:        number@vmpix.com
-
-server = smtplib.SMTP( &quot;smtp.gmail.com&quot;, 587 )
-server.ehlo()
-server.starttls()
-server.ehlo()
-server.login( 'Google username', '&amp;lt;Google app password &amp;gt;' )
-
-
-#server.sendmail( '&amp;lt;from&amp;gt;', '&amp;lt;number&amp;gt;@tmomail.net', 'Hello!' )
-
-server.sendmail( '&amp;lt;sending phone number&amp;gt;', '&amp;lt;receiving phone numver&amp;gt;@&amp;lt;domain.com&amp;gt;', 'Leory Jenkins!!!!' )
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-</description>
-				<pubDate>Sat, 25 Feb 2017 12:12:06 -0600</pubDate>
-				<link>https://devonpeel.me/2017/02/SMTPtoSMSrelay</link>
-				<guid isPermaLink="true">https://devonpeel.me/2017/02/SMTPtoSMSrelay</guid>
 			</item>
 		
 	</channel>
