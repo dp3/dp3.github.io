@@ -1,13 +1,13 @@
 ---
 layout: post
-title: "Oni 3D Printer"
+title: "Garage Door Sensor"
 date: 2023-06-10 09:09:06 -0700
 comments: false
 ---
  
 This is in adaptation of Jeff Geerling's garage door sensor project. My adaptation adds two temperature sensors and a display. 
 
-![screenshotOne]({{ site.url }}/images/GarageDoorSensor1.jpg){:class="img-responsive"}
+![screenshotOne]({{ site.url }}/images/GarageDoorSensor1.png){:class="img-responsive"}
 
 **Code**
 ```
@@ -189,7 +189,7 @@ cd ~/pico-pi/.esphome/build/garage-door-temperature-display.yml/.pioenvs/rpi-pic
 # flash the code on to the pico 
 cp firmware.uf2 /media/<user>/RPI-RP2 
 ```
-![screenshotTwo]({{ site.url }}/images/GarageDoorSensor2.jpg){:class="img-responsive"}
-![screenshotThree]({{ site.url }}/images/GarageDoorSensor3.jpg){:class="img-responsive"}
+![screenshotTwo]({{ site.url }}/images/GarageDoorSensor2.png){:class="img-responsive"}
+![screenshotThree]({{ site.url }}/images/GarageDoorSensor3.png){:class="img-responsive"}`
 
 

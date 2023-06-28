@@ -7,10 +7,10 @@
 		<atom:link href="https://devonpeel.me/feed.xml" rel="self" type="application/rss+xml" />
 		
 			<item>
-				<title>Oni 3D Printer</title>
+				<title>Garage Door Sensor</title>
 				<description>&lt;p&gt;This is in adaptation of Jeff Geerling’s garage door sensor project. My adaptation adds two temperature sensors and a display.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://devonpeel.me/images/GarageDoorSensor1.jpg&quot; alt=&quot;screenshotOne&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://devonpeel.me/images/GarageDoorSensor1.png&quot; alt=&quot;screenshotOne&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Code&lt;/strong&gt;&lt;/p&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;---
@@ -190,8 +190,8 @@ cd ~/pico-pi/.esphome/build/garage-door-temperature-display.yml/.pioenvs/rpi-pic
 # flash the code on to the pico 
 cp firmware.uf2 /media/&amp;lt;user&amp;gt;/RPI-RP2 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;&lt;img src=&quot;https://devonpeel.me/images/GarageDoorSensor2.jpg&quot; alt=&quot;screenshotTwo&quot; class=&quot;img-responsive&quot; /&gt;
-&lt;img src=&quot;https://devonpeel.me/images/GarageDoorSensor3.jpg&quot; alt=&quot;screenshotThree&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://devonpeel.me/images/GarageDoorSensor2.png&quot; alt=&quot;screenshotTwo&quot; class=&quot;img-responsive&quot; /&gt;
+&lt;img src=&quot;https://devonpeel.me/images/GarageDoorSensor3.png&quot; alt=&quot;screenshotThree&quot; class=&quot;img-responsive&quot; /&gt;`&lt;/p&gt;
 
 </description>
 				<pubDate>Sat, 10 Jun 2023 11:09:06 -0500</pubDate>
