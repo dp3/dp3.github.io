@@ -8,7 +8,7 @@
 		
 			<item>
 				<title>Garage Door Sensor</title>
-				<description>&lt;p&gt;This is in adaptation of Jeff Geerling’s garage door sensor project. My adaptation adds two temperature sensors and a display.&lt;/p&gt;
+				<description>&lt;p&gt;This is an adaptation of &lt;a href=&quot;https://youtu.be/dFDGtlSi9Eg&quot;&gt;Jeff Geerling’s garage door sensor project&lt;/a&gt;. My adaptation adds two temperature sensors and a display.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;https://devonpeel.me/images/GarageDoorSensor1.png&quot; alt=&quot;screenshotOne&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
 
@@ -126,28 +126,6 @@ sensor:
     dallas_id: outside_temp_bus
     id: outside_temp
 
-color:
-  - id: my_red
-    red: 100%
-    green: 0%
-    blue: 0%
-  - id: my_yellow
-    red: 100%
-    green: 100%
-    blue: 0%
-  - id: my_green
-    red: 0%
-    green: 100%
-    blue: 0%
-  - id: my_blue
-    red: 0%
-    green: 0%
-    blue: 100%
-  - id: my_gray
-    red: 50%
-    green: 50%
-    blue: 50%
-
 font:
   - file: &quot;fonts/Roboto-Black.ttf&quot;
     id: roboto
@@ -172,12 +150,20 @@ display:
       it.printf(0, 31, id(roboto), &quot;East Door: %s&quot;, id(east_garage_door).state);
       it.printf(0, 46, id(roboto), &quot;West Door: %s&quot;, id(west_garage_door).state);
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Install Esphome&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Install the following python packages&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pip3 install wheel
+pip3 install esphome
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;strong&gt;Flash Procedure&lt;/strong&gt;&lt;/p&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir pico-pi
 
-# Create tbe yaml file name 
+# Create the yaml file name and insert the code 
 vim garage-door-temperature-display.yml
+
 
 # Compile the code
 esphome run garage-door-temperature-display.yml --device /Volumes/RPI-RP2

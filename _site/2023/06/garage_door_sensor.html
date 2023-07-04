@@ -84,7 +84,7 @@
                 <h1><a href="/2023/06/garage_door_sensor">Jun 10, 2023 - Garage Door Sensor</a></h1>
             
             <div class="post-content">
-            <p>This is in adaptation of Jeff Geerling’s garage door sensor project. My adaptation adds two temperature sensors and a display.</p>
+            <p>This is an adaptation of <a href="https://youtu.be/dFDGtlSi9Eg">Jeff Geerling’s garage door sensor project</a>. My adaptation adds two temperature sensors and a display.</p>
 
 <p><img src="https://devonpeel.me/images/GarageDoorSensor1.png" alt="screenshotOne" class="img-responsive" /></p>
 
@@ -202,28 +202,6 @@ sensor:
     dallas_id: outside_temp_bus
     id: outside_temp
 
-color:
-  - id: my_red
-    red: 100%
-    green: 0%
-    blue: 0%
-  - id: my_yellow
-    red: 100%
-    green: 100%
-    blue: 0%
-  - id: my_green
-    red: 0%
-    green: 100%
-    blue: 0%
-  - id: my_blue
-    red: 0%
-    green: 0%
-    blue: 100%
-  - id: my_gray
-    red: 50%
-    green: 50%
-    blue: 50%
-
 font:
   - file: "fonts/Roboto-Black.ttf"
     id: roboto
@@ -248,12 +226,20 @@ display:
       it.printf(0, 31, id(roboto), "East Door: %s", id(east_garage_door).state);
       it.printf(0, 46, id(roboto), "West Door: %s", id(west_garage_door).state);
 </code></pre></div></div>
+<p><strong>Install Esphome</strong></p>
+
+<p>Install the following python packages</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip3 install wheel
+pip3 install esphome
+</code></pre></div></div>
 
 <p><strong>Flash Procedure</strong></p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir pico-pi
 
-# Create tbe yaml file name 
+# Create the yaml file name and insert the code 
 vim garage-door-temperature-display.yml
+
 
 # Compile the code
 esphome run garage-door-temperature-display.yml --device /Volumes/RPI-RP2

@@ -5,7 +5,7 @@ date: 2023-06-10 09:09:06 -0700
 comments: false
 ---
  
-This is in adaptation of Jeff Geerling's garage door sensor project. My adaptation adds two temperature sensors and a display. 
+This is an adaptation of [Jeff Geerling's garage door sensor project](https://youtu.be/dFDGtlSi9Eg). My adaptation adds two temperature sensors and a display. 
 
 ![screenshotOne]({{ site.url }}/images/GarageDoorSensor1.png){:class="img-responsive"}
 
@@ -124,28 +124,6 @@ sensor:
     dallas_id: outside_temp_bus
     id: outside_temp
 
-color:
-  - id: my_red
-    red: 100%
-    green: 0%
-    blue: 0%
-  - id: my_yellow
-    red: 100%
-    green: 100%
-    blue: 0%
-  - id: my_green
-    red: 0%
-    green: 100%
-    blue: 0%
-  - id: my_blue
-    red: 0%
-    green: 0%
-    blue: 100%
-  - id: my_gray
-    red: 50%
-    green: 50%
-    blue: 50%
-
 font:
   - file: "fonts/Roboto-Black.ttf"
     id: roboto
@@ -170,13 +148,22 @@ display:
       it.printf(0, 31, id(roboto), "East Door: %s", id(east_garage_door).state);
       it.printf(0, 46, id(roboto), "West Door: %s", id(west_garage_door).state);
 ```
+**Install Esphome**
+
+Install the following python packages
+
+```
+pip3 install wheel
+pip3 install esphome
+```
 
 **Flash Procedure**
 ```
 mkdir pico-pi
 
-# Create tbe yaml file name 
+# Create the yaml file name and insert the code 
 vim garage-door-temperature-display.yml
+
 
 # Compile the code
 esphome run garage-door-temperature-display.yml --device /Volumes/RPI-RP2
